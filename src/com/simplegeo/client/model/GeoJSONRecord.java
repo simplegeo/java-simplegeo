@@ -61,7 +61,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.android.sdk.model.IRecord#getCreated()
+	 * @see com.simplegeo.client.model.IRecord#getCreated()
 	 */
 	public long getCreated() {
 		long created = 0;		
@@ -83,7 +83,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.android.sdk.model.IRecord#getExpiration()
+	 * @see com.simplegeo.client.model.IRecord#getExpiration()
 	 */
 	public long getExpiration() {
 		long expires = 0;		
@@ -107,7 +107,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.android.sdk.model.IRecord#getLatitude()
+	 * @see com.simplegeo.client.model.IRecord#getLatitude()
 	 */
 	public double getLatitude() {
 		double latitude = -1.0;		
@@ -148,7 +148,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.android.sdk.model.IRecord#getLongitude()
+	 * @see com.simplegeo.client.model.IRecord#getLongitude()
 	 */
 	public double getLongitude() {
 		double longitude = -1.0;		
@@ -170,7 +170,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.android.sdk.model.IRecord#getProperties()
+	 * @see com.simplegeo.client.model.IRecord#getProperties()
 	 */
 	public JSONObject getProperties() {
 		JSONObject properties = null;		
@@ -193,7 +193,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.android.sdk.model.IRecord#getRecordId()
+	 * @see com.simplegeo.client.model.IRecord#getRecordId()
 	 */
 	public String getRecordId() {
 		String recordId = null;

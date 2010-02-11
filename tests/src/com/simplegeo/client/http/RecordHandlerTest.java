@@ -3,12 +3,14 @@
  */
 package com.simplegeo.client.http;
 
+import com.simplegeo.client.test.ModelHelperTest;
+
 
 /**
  * @author dsmith
  *
  */
-public class RecordHandlerTest {
+public class RecordHandlerTest extends ModelHelperTest {
 
 
 }

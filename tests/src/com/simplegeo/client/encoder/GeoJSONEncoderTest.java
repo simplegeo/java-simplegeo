@@ -4,13 +4,16 @@
 package com.simplegeo.client.encoder;
 
 
+import java.util.List;
+
 import org.json.JSONException;
 
 import android.test.suitebuilder.annotation.MediumTest;
 
-import com.simplegeo.android.sdk.model.DefaultRecord;
-import com.simplegeo.android.sdk.model.GeoJSONRecord;
-import com.simplegeo.android.sdk.test.ModelHelperTest;
+import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.GeoJSONRecord;
+import com.simplegeo.client.model.IRecord;
+import com.simplegeo.client.test.ModelHelperTest;
 
 /**
  * @author dsmith
@@ -19,42 +22,47 @@ import com.simplegeo.android.sdk.test.ModelHelperTest;
 public class GeoJSONEncoderTest extends ModelHelperTest {
 
 	@MediumTest
-	public void testRecordToGeoJSON() {
+	public void testRecordToGeoJSON() throws JSONException {
 		
 		DefaultRecord record = getRandomDefaultRecord();
+		record.getProperties().put("name", "derek");
 		
-		try {
-			record.getProperties().put("name", "derek");
-		} catch (JSONException e) {
-			;
-		}
-		
-		GeoJSONRecord jsonRecord = (GeoJSONRecord)GeoJSONEncoder.getGeoJSONObject(record);
+		GeoJSONRecord jsonRecord = GeoJSONEncoder.getGeoJSONRecord(record);
 		assertNotNull(jsonRecord);
 		assertTrue(equals(record, jsonRecord));
 		
-		jsonRecord = (GeoJSONRecord)GeoJSONEncoder.getGeoJSONObject(null);
+		jsonRecord = (GeoJSONRecord)GeoJSONEncoder.getGeoJSONRecord((DefaultRecord)null);
 		assertNull(jsonRecord);
 	}
 	
 	@MediumTest
 	public void testGeoJSONToRecord() {
 
-		
 		GeoJSONRecord jsonRecord = getRandomGeoJSONRecord();
-		
-		try {
-			jsonRecord.getProperties().put("name", "derek");
-		} catch (JSONException e) {
-			;
-		}
-		
+		jsonRecord.setObjectProperty("name", "derek");
+				
 		DefaultRecord record = GeoJSONEncoder.getRecord(jsonRecord);
 		assertNotNull(record);
 		assertTrue(equals(record, jsonRecord));
 		
 		record = GeoJSONEncoder.getRecord(null);
 		assertNull(record);
+		
+	}
+	
+	@MediumTest
+	public void testMultiGeoJSONToRecords() {
+		
+		GeoJSONRecord bigGeoJSONRecord = getRandomGeoJSONRecordList(10);
+		
+		List<DefaultRecord> defaultRecords = GeoJSONEncoder.getRecords(bigGeoJSONRecord);
+		
+		
+	}
+	
+	@MediumTest
+	public void testMultiRecordsToGeoJSON() {
+		
 		
 	}
 

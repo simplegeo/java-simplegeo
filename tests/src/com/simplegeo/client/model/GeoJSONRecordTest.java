@@ -3,10 +3,12 @@
  */
 package com.simplegeo.client.model;
 
+import com.simplegeo.client.test.ModelHelperTest;
+
 /**
  * @author dsmith
  *
  */
-public class GeoJSONRecordTest {
+public class GeoJSONRecordTest extends ModelHelperTest {
 
 }

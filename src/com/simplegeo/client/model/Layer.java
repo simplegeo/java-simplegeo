@@ -12,7 +12,7 @@ import org.json.JSONException;
 
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.android.sdk.service.LocationService;
+import com.simplegeo.client.service.LocationService;
 
 /**
  * @author dsmith

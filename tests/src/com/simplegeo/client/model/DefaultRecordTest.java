@@ -3,11 +3,13 @@
  */
 package com.simplegeo.client.model;
 
+import com.simplegeo.client.test.ModelHelperTest;
+
 
 /**
  * @author dsmith
  *
  */
-public class DefaultRecordTest {
+public class DefaultRecordTest extends ModelHelperTest {
 
 }

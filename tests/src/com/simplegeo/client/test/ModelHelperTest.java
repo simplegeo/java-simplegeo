@@ -8,9 +8,9 @@ import java.util.List;
 
 import android.test.AndroidTestCase;
 
-import com.simplegeo.android.sdk.model.DefaultRecord;
-import com.simplegeo.android.sdk.model.GeoJSONRecord;
-import com.simplegeo.android.sdk.model.IRecord;
+import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.GeoJSONRecord;
+import com.simplegeo.client.model.IRecord;
 
 /**
  * @author dsmith

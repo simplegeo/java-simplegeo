@@ -4,7 +4,7 @@
 package com.simplegeo.client.http;
 
 
-import com.simplegeo.android.sdk.test.ModelHelperTest;
+import com.simplegeo.client.test.ModelHelperTest;
 
 /**
  * @author dsmith

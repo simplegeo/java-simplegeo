@@ -15,9 +15,9 @@ import org.apache.http.client.ResponseHandler;
 
 import android.util.Log;
 
-import com.simplegeo.android.sdk.http.exceptions.APIException;
-import com.simplegeo.android.sdk.http.exceptions.NoSuchRecordException;
-import com.simplegeo.android.sdk.http.exceptions.NotAuthorizedException;
+import com.simplegeo.client.http.exceptions.APIException;
+import com.simplegeo.client.http.exceptions.NoSuchRecordException;
+import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 
 /**
  * @author dsmith

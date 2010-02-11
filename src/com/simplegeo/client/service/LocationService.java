@@ -26,18 +26,18 @@ import org.json.JSONObject;
 import android.util.Log;
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.android.sdk.concurrent.RequestThreadPoolExecutor;
-import com.simplegeo.android.sdk.encoder.GeoJSONEncoder;
-import com.simplegeo.android.sdk.http.GeoJSONHandler;
-import com.simplegeo.android.sdk.http.OAuthHttpClient;
-import com.simplegeo.android.sdk.http.RecordHandler;
-import com.simplegeo.android.sdk.http.SimpleGeoHandler;
-import com.simplegeo.android.sdk.http.exceptions.APIException;
-import com.simplegeo.android.sdk.model.DefaultRecord;
-import com.simplegeo.android.sdk.model.GeoJSONObject;
-import com.simplegeo.android.sdk.model.GeoJSONRecord;
-import com.simplegeo.android.sdk.model.IRecord;
-import com.simplegeo.android.sdk.utilities.SimpleGeoUtilities;
+import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
+import com.simplegeo.client.encoder.GeoJSONEncoder;
+import com.simplegeo.client.http.GeoJSONHandler;
+import com.simplegeo.client.http.OAuthHttpClient;
+import com.simplegeo.client.http.RecordHandler;
+import com.simplegeo.client.http.SimpleGeoHandler;
+import com.simplegeo.client.http.exceptions.APIException;
+import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.GeoJSONObject;
+import com.simplegeo.client.model.GeoJSONRecord;
+import com.simplegeo.client.model.IRecord;
+import com.simplegeo.client.utilities.SimpleGeoUtilities;
 
 /**
  * @author dsmith

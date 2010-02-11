@@ -6,7 +6,7 @@ package com.simplegeo.client.http.exceptions;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 
-import com.simplegeo.android.sdk.http.exceptions.APIException;
+import com.simplegeo.client.http.exceptions.APIException;
 
 /**
  * @author dsmith

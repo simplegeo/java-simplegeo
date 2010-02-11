@@ -14,9 +14,9 @@ import org.json.JSONException;
 
 import android.util.Log;
 
-import com.simplegeo.android.sdk.encoder.GeoJSONEncoder;
-import com.simplegeo.android.sdk.model.DefaultRecord;
-import com.simplegeo.android.sdk.model.GeoJSONObject;
+import com.simplegeo.client.encoder.GeoJSONEncoder;
+import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.GeoJSONObject;
 
 
 /**

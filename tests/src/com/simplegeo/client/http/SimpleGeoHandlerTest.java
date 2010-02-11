@@ -3,11 +3,13 @@
  */
 package com.simplegeo.client.http;
 
+import com.simplegeo.client.test.ModelHelperTest;
+
 
 /**
  * @author dsmith
  *
  */
-public class SimpleGeoHandlerTest {
+public class SimpleGeoHandlerTest extends ModelHelperTest {
 
 }
