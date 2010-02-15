@@ -19,7 +19,7 @@ import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class ModelHelperTest extends TestCase {

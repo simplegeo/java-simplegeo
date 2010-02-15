@@ -29,7 +29,7 @@ import com.simplegeo.client.model.IRecord;
 
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class GeoJSONHandler extends SimpleGeoHandler {

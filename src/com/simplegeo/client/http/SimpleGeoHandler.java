@@ -24,7 +24,7 @@ import com.simplegeo.client.http.exceptions.NoSuchRecordException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class SimpleGeoHandler implements ResponseHandler<Object> {

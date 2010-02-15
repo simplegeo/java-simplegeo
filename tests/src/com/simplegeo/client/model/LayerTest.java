@@ -14,7 +14,7 @@ import com.simplegeo.client.test.ModelHelperTest;
 
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class LayerTest extends ModelHelperTest {

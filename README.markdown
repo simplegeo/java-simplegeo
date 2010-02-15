@@ -25,5 +25,4 @@ CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
 TBA
 
-Copyright (C) 2010 SimpleGeo Inc. All rights reserved.
---------------------------------------------------------------------------------
+### Copyright (C) 2010 SimpleGeo Inc. All rights reserved.

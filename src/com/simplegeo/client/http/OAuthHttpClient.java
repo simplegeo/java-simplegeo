@@ -24,7 +24,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class OAuthHttpClient extends DefaultHttpClient {

@@ -6,7 +6,7 @@ package com.simplegeo.client.utilities;
 import java.util.List;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class SimpleGeoUtilities {

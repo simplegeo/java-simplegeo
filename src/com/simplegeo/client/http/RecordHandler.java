@@ -20,7 +20,7 @@ import com.simplegeo.client.model.GeoJSONObject;
 
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class RecordHandler extends GeoJSONHandler {

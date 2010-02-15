@@ -13,7 +13,7 @@ import com.simplegeo.client.encoder.GeoJSONEncoder;
 
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class GeoJSONRecord extends GeoJSONObject implements IRecord {

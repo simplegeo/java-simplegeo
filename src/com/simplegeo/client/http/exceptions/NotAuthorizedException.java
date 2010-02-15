@@ -9,7 +9,7 @@ import org.apache.http.StatusLine;
 import com.simplegeo.client.http.exceptions.APIException;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 @SuppressWarnings("serial")

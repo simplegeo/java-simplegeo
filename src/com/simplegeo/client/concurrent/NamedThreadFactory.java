@@ -6,16 +6,33 @@ package com.simplegeo.client.concurrent;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
+/**
+ * A simple subclass of {@link java.util.concurrent.ThreadFactory} that
+ * is used by {@link RequestThreadPoolExecutor}.
+ * 
+ * @author Derek Smith
+ */
 public class NamedThreadFactory implements ThreadFactory
 {
-    protected final String id;
+    protected final String id;    
     protected final AtomicInteger n = new AtomicInteger(1);
 
+    /**
+     * Creates a new ThreadFactory with a value that can be used
+     * to retrieve itself later.
+     * @see java.util.concurrent.ThreadFactory#ThreadFactory()
+     * 
+     * @param id The name of the the thread factory;
+     */
     public NamedThreadFactory(String id)
     {
+    	super();
         this.id = id;
     }
 
+    /* (non-Javadoc)
+     * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
+     */
     public Thread newThread(Runnable runnable)
     {        
         String name = id + ":" + n.getAndIncrement();

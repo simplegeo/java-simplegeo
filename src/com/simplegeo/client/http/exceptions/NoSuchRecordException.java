@@ -7,7 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 @SuppressWarnings("serial")

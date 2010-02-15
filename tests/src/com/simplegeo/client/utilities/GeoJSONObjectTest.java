@@ -5,7 +5,7 @@ package com.simplegeo.client.utilities;
 
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class GeoJSONObjectTest {

@@ -15,7 +15,7 @@ import ch.hsr.geohash.GeoHash;
 import com.simplegeo.client.service.LocationService;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class Layer {

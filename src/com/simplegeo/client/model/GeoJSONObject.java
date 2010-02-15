@@ -18,7 +18,7 @@ import com.simplegeo.client.encoder.GeoJSONEncoder;
 
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class GeoJSONObject extends JSONObject {

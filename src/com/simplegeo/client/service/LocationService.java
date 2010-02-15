@@ -43,7 +43,7 @@ import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.utilities.SimpleGeoUtilities;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class LocationService {

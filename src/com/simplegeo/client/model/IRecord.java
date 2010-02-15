@@ -6,7 +6,7 @@ package com.simplegeo.client.model;
 import org.json.JSONObject;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public interface IRecord {

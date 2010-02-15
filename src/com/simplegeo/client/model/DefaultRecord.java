@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @author dsmith
+ * @author Derek Smith
  *
  */
 public class DefaultRecord implements IRecord {
