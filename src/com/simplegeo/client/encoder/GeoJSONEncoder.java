@@ -19,15 +19,25 @@ import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 
 /**
- * @author Derek Smith
+ * Encodes and decodes {@link org.json.JSONObject} into {@link IRecord}s.
  * 
+ * @author Derek Smith
  */
 public class GeoJSONEncoder {
 
 	private static Logger logger = Logger.getLogger(GeoJSONEncoder.class);
 	private static final String TAG = GeoJSONEncoder.class.getName();
 
+	/**
+	 * Converts a {@link org.json.JSONObject} into a 
+	 * {@link com.simplegeo.client.model.DefaultRecord}. If
+	 * a parse exception is thrown, the return value will be null.
+	 * 
+	 * @param jsonObject the {@link org.json.JSONObject} to convert
+	 * @return a newly constructed {@link com.simplegeo.client.model.DefaultRecord}
+	 */
 	public static DefaultRecord getRecord(JSONObject jsonObject) {
+		
 		DefaultRecord defaultRecord = null;
 		try {
 
@@ -59,6 +69,16 @@ public class GeoJSONEncoder {
 		return defaultRecord;
 	}
 
+	/**
+	 * Converts a {@link com.simplegeo.client.model.GeoJSONObject} into an Array of 
+	 * {@link com.simplegeo.client.model.DefaultRecord}. If
+	 * a parse exception is thrown, the return value will be null. An array 
+	 * is returned instead of a single object due to the fact that a single 
+	 * GeoJSON object has the capacity to maintain a collection. 
+	 * 
+	 * @param geoJSONObject the {@link com.simplegeo.client.model.GeoJSONObject} to convert
+	 * @return a newly constructed list of {@link com.simplegeo.client.model.DefaultRecord}
+	 */
 	public static List<DefaultRecord> getRecords(GeoJSONObject geoJSONObject) {
 
 		List<DefaultRecord> defaultRecords = null;
@@ -96,6 +116,14 @@ public class GeoJSONEncoder {
 		return defaultRecords;
 	}
 
+	/**
+	 * Converts a {@link com.simplegeo.client.model.IRecord} into a 
+	 * {@link com.simplegeo.client.model.GeoJSONObject}. If
+	 * a parse exception is thrown, the return value will be null.
+	 * 
+	 * @param record the {@link com.simplegeo.client.model.IRecord} to convert
+	 * @return a newly constructed {@link com.simplegeo.client.model.GeoJSONObject}
+	 */
 	public static GeoJSONRecord getGeoJSONRecord(IRecord record) {
 
 		if (record == null)
@@ -132,6 +160,9 @@ public class GeoJSONEncoder {
 		return geoJSONRecord;
 	}
 
+	/**
+	 * @see GeoJSONEncoder#getGeoJSONRecord(com.simplegeo.client.model.IRecord)
+	 */
 	public static GeoJSONObject getGeoJSONRecord(List<IRecord> records) {
 
 		if (records == null || records.isEmpty())

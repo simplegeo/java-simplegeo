@@ -9,20 +9,23 @@ import org.json.JSONObject;
 //import android.util.Log;
 import org.apache.log4j.Logger;
 
-import com.simplegeo.client.encoder.GeoJSONEncoder;
-
-
 /**
  * @author Derek Smith
- *
+
  */
 public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	
 	private static final String TAG = GeoJSONRecord.class.getName();
 	private static Logger logger = Logger.getLogger(GeoJSONRecord.class);
 	
+	/**
+	 * @param recordId
+	 * @param layer
+	 * @param type
+	 * @param created
+	 * @param expiration
+	 */
 	public GeoJSONRecord(String recordId, String layer, String type, long created, long expiration) {
-		super();
 		
 		setProperties(new JSONObject());
 		
@@ -46,22 +49,15 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		
 	}
 
+	/**
+	 * @param recordId
+	 * @param layer
+	 * @param type
+	 */
 	public GeoJSONRecord(String recordId, String layer, String type) {
 		this(recordId, layer, type, System.currentTimeMillis(), 0);
 	}
-	
-	public GeoJSONRecord() {
-		super();
-	}
-	
-	public GeoJSONRecord(String type) {
-		super(type);
-	}
-
-	public GeoJSONRecord(String type, String jsonString) throws JSONException {
-		super(type, jsonString);
-	}
-
+		
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.model.IRecord#getCreated()
 	 */
@@ -76,6 +72,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return created;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setCreated(long)
+	 */
 	public void setCreated(long created) {
 		try {
 			super.put("created", created);
@@ -98,6 +97,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return expires;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setExpiration(long)
+	 */
 	public void setExpiration(long expiration) {
 
 		try {
@@ -122,6 +124,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return latitude;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.model.GeoJSONObject#setLatitude(double)
+	 */
 	public void setLatitude(double lat) {
 		try {
 			super.setLatitude(lat);
@@ -130,6 +135,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.model.IRecord#getLayer()
+	 */
 	public String getLayer() {
 		String layer = null;		
 		try {
@@ -141,6 +149,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return layer;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setLayer(String)
+	 */
 	public void setLayer(String layer) {
 		try {
 			super.put("layer", layer);
@@ -163,6 +174,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return longitude;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.model.GeoJSONObject#setLongitude(double)
+	 */
 	public void setLongitude(double lon) {
 		try {
 			super.setLongitude(lon);
@@ -185,6 +199,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return properties;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.model.GeoJSONObject#setProperties(org.json.JSONObject)
+	 */
 	public void setProperties(JSONObject properties) {
 		
 		try {
@@ -208,6 +225,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return recordId;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setRecordId(String)
+	 */
 	public void setRecordId(String recordId) {
 		try {
 			super.put("id", recordId);
@@ -216,6 +236,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.model.IRecord#getObjectType()
+	 */
 	public String getObjectType() {
 		
 		String type = null;		
@@ -228,6 +251,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return type;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setObjectType(String)
+	 */
 	public void setObjectType(String type) {
 		try {
 			super.getProperties().put("type", type);
@@ -236,6 +262,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		}
 	}
 
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#getIntProperty(String)
+	 */
 	public int getIntProperty(String key) {
 		int value = 0;
 		try {
@@ -247,6 +276,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return value;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setIntProperty(String, int)
+	 */
 	public void setIntProperty(String key, int value) {
 		try {
 			super.getProperties().put(key, value);
@@ -255,6 +287,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		}
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#getDoubleProperty(String)
+	 */
 	public double getDoubleProperty(String key) {
 		double value = 0.0;
 		try {
@@ -266,6 +301,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return value;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setDoubleProperty(String, double)
+	 */
 	public void setDoubleProperty(String key, double value) {
 		try {
 			super.getProperties().put(key, value);
@@ -274,6 +312,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		}	
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#getLongProperty(String)
+	 */
 	public long getLongProperty(String key) {
 		long value = 0;
 		try {
@@ -285,6 +326,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return value;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setLongProperty(String, long)
+	 */
 	public void setLongProperty(String key, long value) {
 		try {
 			super.getProperties().put(key, value);
@@ -293,6 +337,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		}
 	}
 
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#getObjectProperty(String)
+	 */
 	public Object getObjectProperty(String key) {
 		Object value = null;
 		try {
@@ -304,6 +351,9 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		return value;
 	}
 	
+	/**
+	 * @see com.simplegeo.client.model.DefaultRecord#setObjectProperty(String, Object)
+	 */
 	public void setObjectProperty(String key, Object value) {
 		if(value == null)
 			value = JSONObject.NULL;

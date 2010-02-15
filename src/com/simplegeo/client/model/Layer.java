@@ -15,23 +15,40 @@ import ch.hsr.geohash.GeoHash;
 import com.simplegeo.client.service.LocationService;
 
 /**
+ * A Layer object has the capability of retrieving and updating multiple records. 
+ * The records must already be registered with the internal array of the object
+ * in order for any requests to be successful.  
+ * 
  * @author Derek Smith
- *
  */
 public class Layer {
 	
 	private String name = null;
 	private ArrayList<IRecord> records = null;
 	
+	/**
+	 * Initializes a new Layer object with the name.
+	 * 
+	 * @param name the name of the layer (e.g. com.derek.testing)
+	 */
 	public Layer(String name) {
 		this.name = name;
 		this.records = new ArrayList<IRecord>();
 	}
 	
+	/**
+	 * @return all records that have been registered with the object
+	 */
 	public ArrayList<IRecord> getRecords() {
 		return this.records;
 	}
 	
+	/**
+	 * Adds the record to the interal list and attempts to update the
+	 * layer value.
+	 * 
+	 * @param record the newly registered record 
+	 */
 	public void add(IRecord record) {
 		
 		// Attempt to update the layer name.
@@ -49,49 +66,110 @@ public class Layer {
 		records.add(record);
 	}
 	
+	/**
+	 * Registers a list of records with the layer object
+	 * 
+	 * @param records the list of records 
+	 */
 	public void add(List<IRecord> records) {
+		
 		for(IRecord record : records)
 			add(record);
+		
 	}
 	
+	/**
+	 * @param record the record to remove (unregister) from the Layer
+	 * object
+	 */
 	public void remove(IRecord record) {
 		records.remove(record);
 	}
 	
+	/**
+	 * @param records the list of records to remove (unregister) from the
+	 * Layer object
+	 */
 	public void remove(List<IRecord> records) {
 		for(IRecord record : records)
 			remove(record);
 	}
 	
+	/**
+	 * @param index the index of the record
+	 * @return the record at the index
+	 */
 	public IRecord getRecord(int index) {
 		return records.get(index);
 	}
 	
+	/**
+	 * @param index the index of the record to remove
+	 * @return the removed record
+	 */
 	public IRecord removeRecord(int index) {
 		return records.remove(index);
 	}
 	
+	/**
+	 * @return the amount of records registerd with the Layer object
+	 */
 	public int size() {
 		return records.size();
 	}
 	
+	/**
+	 * Updates all records that are registered with the Layer object.
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public void update() throws ClientProtocolException, IOException {
 		LocationService.getInstance().update(records);
 	}
 	
+	/**
+	 * Retrieves all records that are registered witht the Layer object.
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public void retrieve() throws ClientProtocolException, IOException {
 		LocationService.getInstance().retrieve(records);
 	}
 		
+	/**
+	 * Returns a list of nearby records for a geohash.
+	 * 
+	 * @param geoHash the bounding box to search in
+	 * @param types the types of object to retrieve @see com.simplegeo.client.model.RecordTypes
+	 * @param limit the maximum value of records to retrieve
+	 * @return a list of nearby records 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public List<IRecord> nearby(GeoHash geoHash, List<String> types, int limit)
 				throws ClientProtocolException, IOException {
 		
 		ArrayList<String> layers = new ArrayList<String>();
 		layers.add(name);
 		List<IRecord> nearby = (List<IRecord>)LocationService.getInstance().nearby(geoHash, layers, types, limit);
+		
 		return nearby;		
 	}
 	
+	/**
+	 * Returns a list of nearby records for a give lat,long coordinate.
+	 * 
+	 * @param lat the latitude to use
+	 * @param lon the longitude to use
+	 * @param radius the radius to search in
+	 * @param types the types of objects to retrieve @see com.simplegeo.client.model.RecordTypes
+	 * @param limit the maximum value of records to retrieve
+	 * @return a list of nearby records
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public List<IRecord> nearby(double lat, double lon, double radius, List<String> types, int limit) 
 				throws ClientProtocolException, IOException {
 		
@@ -102,9 +180,4 @@ public class Layer {
 		
 	}
 	
-	public List<IRecord> nearby(int lat, int lon, double radius, List<String> types, int limit) 
-		throws ClientProtocolException, IOException {
-		return nearby(1000000 * lat, 1000000 * lon, radius, types, limit);
-	}
-
 }

@@ -5,10 +5,6 @@ package com.simplegeo.client.utilities;
 
 import java.util.List;
 
-/**
- * @author Derek Smith
- *
- */
 public class SimpleGeoUtilities {
 
 	static public String commaSeparatedString(List<String> strings) {

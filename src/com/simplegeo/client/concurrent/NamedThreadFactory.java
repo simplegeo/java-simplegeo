@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.*;
 
 /**
  * A simple subclass of {@link java.util.concurrent.ThreadFactory} that
- * is used by {@link RequestThreadPoolExecutor}.
+ * is used by {@link com.simplegeo.client.concurrent.RequestThreadPoolExecutor}.
  * 
  * @author Derek Smith
  */
@@ -20,7 +20,6 @@ public class NamedThreadFactory implements ThreadFactory
     /**
      * Creates a new ThreadFactory with a value that can be used
      * to retrieve itself later.
-     * @see java.util.concurrent.ThreadFactory#ThreadFactory()
      * 
      * @param id The name of the the thread factory;
      */

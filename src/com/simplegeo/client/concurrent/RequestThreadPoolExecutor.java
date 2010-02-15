@@ -10,8 +10,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A simple subclass of {@link ThreadPoolExecutor} that is used
- * mainly by {@link LocationService} to do threaded HttpRequests.
+ * A simple subclass of {@link java.util.concurrent.ThreadPoolExecutor} that is used
+ * mainly by {@link com.simplegeo.client.service.LocationService} to do threaded HttpRequests.
  * 
  * @author Derek Smith
  */
@@ -21,7 +21,7 @@ public class RequestThreadPoolExecutor extends ThreadPoolExecutor {
 	 * A default constructor that builds the object using
 	 * {@link NamedThreadFactory}
 	 *  
-	 * @param name name of the {@link NamedThreadFactory}
+	 * @param name name of the {@link com.simplegeo.client.concurrent.NamedThreadFactory}
 	 */
 	public RequestThreadPoolExecutor(String name) {
 		

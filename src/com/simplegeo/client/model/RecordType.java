@@ -1,5 +1,11 @@
 package com.simplegeo.client.model;
 
+/**
+ * Defines all allowed object types for records that are 
+ * stored in SimpleGeo.
+ * 
+ * @author Derek Smith
+ */
 public enum RecordType {
 	
 	OBJECT {

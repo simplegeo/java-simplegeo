@@ -3,14 +3,13 @@
  */
 package com.simplegeo.client.http.exceptions;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-
 import com.simplegeo.client.http.exceptions.APIException;
 
 /**
+ * An exception that is created when an Http response contains a status
+ * code of 401.
+ * 
  * @author Derek Smith
- *
  */
 @SuppressWarnings("serial")
 public class NotAuthorizedException extends APIException {
@@ -18,6 +17,5 @@ public class NotAuthorizedException extends APIException {
 	public NotAuthorizedException(int statusCode, String reason) {
 		super(statusCode, reason);
 	}
-
 
 }

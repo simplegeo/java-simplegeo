@@ -64,8 +64,15 @@ public class LocationService {
 	
 	public boolean futureTask = false; 
 	
+	/**
+	 * @author dsmith
+	 *
+	 */
 	static public enum Handler { GEOJSON, RECORD, SIMPLEGEO }
 	
+	/**
+	 * @return
+	 */
 	static public LocationService getInstance() {
 		
 		if(sharedLocationService == null)
@@ -85,6 +92,10 @@ public class LocationService {
 		this.simpleGeoHandler = new SimpleGeoHandler();
 	}
 
+	/**
+	 * @param type
+	 * @param handler
+	 */
 	public void setHandler(Handler type, SimpleGeoHandler handler) {
 		
 		switch(type) {
@@ -99,6 +110,10 @@ public class LocationService {
 		}
 	}
 	
+	/**
+	 * @param type
+	 * @return
+	 */
 	public SimpleGeoHandler getHandler(Handler type) {
 		
 		SimpleGeoHandler handler = null;
@@ -118,6 +133,12 @@ public class LocationService {
 		return handler;
 	}
 		
+	/**
+	 * @param defaultRecord
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object retrieve(IRecord defaultRecord) throws ClientProtocolException, IOException {
 		
 		List<IRecord> list = new ArrayList<IRecord>();
@@ -128,6 +149,12 @@ public class LocationService {
 		return futureTask ? object : getIRecord(retrieve(list));
 	}	
 					
+	/**
+	 * @param records
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object retrieve(List<IRecord> records) throws ClientProtocolException, IOException {
 		
 		if(!records.isEmpty()) {
@@ -139,6 +166,14 @@ public class LocationService {
 		return null;
 	}
 	
+	/**
+	 * @param layer
+	 * @param recordIds
+	 * @param handler
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	private Object retrieve(String layer, String recordIds, SimpleGeoHandler handler) throws ClientProtocolException, IOException {
 		
 		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordIds);
@@ -148,14 +183,32 @@ public class LocationService {
 		return execute(new HttpGet(uri), handler);
 	}
 		
+	/**
+	 * @param record
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object update(IRecord record) throws ClientProtocolException, IOException {		
 		return update(getGeoJSONObject(record));
 	}
 	
+	/**
+	 * @param records
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object update(List<IRecord> records) throws ClientProtocolException, IOException {		
 		return update(getGeoJSONObject(records));
 	}
 
+	/**
+	 * @param geoJSONRecord
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object update(GeoJSONObject geoJSONRecord) throws ClientProtocolException, IOException {
 		
 		GeoJSONObject record = null;
@@ -183,6 +236,14 @@ public class LocationService {
 		
 	}
 	
+	/**
+	 * @param layer
+	 * @param geoJSONObject
+	 * @param handler
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoHandler handler) 
 	throws ClientProtocolException, IOException {
 	
@@ -197,6 +258,12 @@ public class LocationService {
 		return execute(post, handler);
 	}
 	
+	/**
+	 * @param record
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object delete(IRecord record) throws ClientProtocolException, IOException {
 		
 		if(record != null)
@@ -213,12 +280,31 @@ public class LocationService {
 		return execute(new HttpDelete(uri), handler);
 	}
 	
+	/**
+	 * @param geoHash
+	 * @param layers
+	 * @param types
+	 * @param limit
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object nearby(GeoHash geoHash, List<String> layers, List<String> types, int limit) 
 						throws ClientProtocolException, IOException {
 		return nearby(geoHash, layers, types, limit, Handler.GEOJSON);
 	}
 
 	
+	/**
+	 * @param geoHash
+	 * @param layers
+	 * @param types
+	 * @param limit
+	 * @param type
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object nearby(GeoHash geoHash, List<String> layers, List<String> types, int limit, Handler type) 
 						throws ClientProtocolException, IOException {
 		
@@ -233,13 +319,52 @@ public class LocationService {
 		request.setParams(params);
 		return execute(request, getHandler(type));
 	}
-	
+
+	/**
+	 * @param lat
+	 * @param lon
+	 * @param radius
+	 * @param layers
+	 * @param types
+	 * @param limit
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public Object nearby(int lat, int lon, double radius, List<String> layers, List<String> types, int limit) 
+		throws ClientProtocolException, IOException {
+		return nearby(lat * 1000000.0, lon * 1000000.0, radius, layers, types, limit, Handler.GEOJSON);
+	}
+
+	/**
+	 * @param lat
+	 * @param lon
+	 * @param radius
+	 * @param layers
+	 * @param types
+	 * @param limit
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object nearby(double lat, double lon, double radius, List<String> layers, List<String> types, int limit) 
 		throws ClientProtocolException, IOException {
 		return nearby(lat, lon, radius, layers, types, limit, Handler.GEOJSON);
 	}
 
 	
+	/**
+	 * @param lat
+	 * @param lon
+	 * @param radius
+	 * @param layers
+	 * @param types
+	 * @param limit
+	 * @param type
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object nearby(double lat, double lon, double radius, List<String> layers, List<String> types, int limit, Handler type) 
 						throws ClientProtocolException, IOException {
 
@@ -257,6 +382,13 @@ public class LocationService {
 
 	}
 	
+	/**
+	 * @param lat
+	 * @param lon
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object reverseGeocode(double lat, double lon)
 			throws ClientProtocolException, IOException {
 		
@@ -266,6 +398,9 @@ public class LocationService {
 		return execute(request, getHandler(Handler.GEOJSON));
 	}
 	
+	/**
+	 * @return
+	 */
 	public OAuthHttpClient getHttpClient() {
 		return this.httpClient;
 	}
@@ -407,10 +542,7 @@ public class LocationService {
 			IRecord r = (IRecord)record;
 			layer = r.getLayer();
 		}
-		
-
 			
-		
 		return layer;
 	}
 	
@@ -509,5 +641,4 @@ public class LocationService {
 		throw new APIException(SimpleGeoHandler.NOT_AUTHORIZED, e.getMessage());
 		
 	}
-
 }

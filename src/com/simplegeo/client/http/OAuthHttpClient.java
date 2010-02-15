@@ -3,7 +3,6 @@
  */
 package com.simplegeo.client.http;
 
-
 import java.io.IOException;
 
 import oauth.signpost.OAuthConsumer;
@@ -24,8 +23,10 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
 /**
+ * A subclass of {@link org.apache.http.impl.client.DefaultHttpClient}
+ * that signs requests using a given OAuth key and secret.
+ * 
  * @author Derek Smith
- *
  */
 public class OAuthHttpClient extends DefaultHttpClient {
 	
@@ -34,10 +35,22 @@ public class OAuthHttpClient extends DefaultHttpClient {
 	
 	private OAuthConsumer token;
 	
+	/**
+	 * Initializes the object with a null token value.
+	 */
 	public OAuthHttpClient() {
+		
 		this(null, null);
+		
 	}
 	
+	/**
+	 * Initializes the object with a key/secret pair that
+	 * will be used to sign requests.
+	 * 
+	 * @param key a valid OAuth key
+	 * @param secret a valid OAuth secret
+	 */
 	public OAuthHttpClient(String key, String secret) {
 		setToken(key, secret);
 		
@@ -47,15 +60,37 @@ public class OAuthHttpClient extends DefaultHttpClient {
 		
 	}
 		
+	/**
+	 * Returns the consumer key that is used to sign Http requests.
+	 * 
+	 * @return the consumer key
+	 */
 	public String getKey() {
+		
 		return token.getConsumerKey();
+		
 	}
 
+	/**
+	 * Returns the consumer secret that is used to sign Http requests.
+	 * 
+	 * @return the consumer secret
+	 */
 	public String getSecret() {
+		
 		return token.getTokenSecret();
+		
 	}
 	
+	/**
+	 * Set the key/secret pair that will be used to sign Http
+	 * requests.
+	 * 
+	 * @param key the consumer key
+	 * @param secret the secret key
+	 */
 	public void setToken(String key, String secret) {
+		
 		if(key != null && secret != null) {
 			
 			token  = new CommonsHttpOAuthConsumer(key, secret);
@@ -65,8 +100,23 @@ public class OAuthHttpClient extends DefaultHttpClient {
 			else
 				logger.debug(String.format("token was created with %s,%s", key, secret));
 		}
+		
 	}
 	
+	/**
+	 * Signs the Http request with the registered token before
+	 * execution.
+	 * 
+	 * @param request the request that will be sent
+	 * @param responseHandler the handler that will be used on a successful
+	 * response
+	 * @return an Object that was created by the handler
+	 * @throws OAuthMessageSignerException
+	 * @throws OAuthCommunicationException
+	 * @throws OAuthExpectationFailedException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public Object executeOAuthRequest(HttpUriRequest request, ResponseHandler<Object> responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
 		

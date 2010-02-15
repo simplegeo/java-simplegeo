@@ -24,8 +24,9 @@ import com.simplegeo.client.http.exceptions.NoSuchRecordException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 
 /**
+ * A handler used to parse requests sent to http://api.simplegeo.com.
+ * 
  * @author Derek Smith
- *
  */
 public class SimpleGeoHandler implements ResponseHandler<Object> {
 	
@@ -39,6 +40,9 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	public static final int NO_SUCH = 404;
 	public static final int NOT_AUTHORIZED = 401;
 	
+	/* (non-Javadoc)
+	 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
+	 */
 	public Object handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 

@@ -3,13 +3,8 @@
  */
 package com.simplegeo.client.http;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 //import android.util.Log;
 import org.apache.log4j.Logger;
@@ -21,22 +16,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
-import com.simplegeo.client.model.IRecord;
-
-
 
 /**
+ * A response handler used for creating {@link com.simplegeo.client.model.GeoJSONObject}s
+ * from a given payload.
+ * 
  * @author Derek Smith
- *
  */
 public class GeoJSONHandler extends SimpleGeoHandler {
 	
 	private static final String TAG = GeoJSONHandler.class.getName();
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class);
 
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.http.SimpleGeoHandler#handleResponse(org.apache.http.HttpResponse)
+	 */
 	public Object handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 		
@@ -78,7 +74,7 @@ public class GeoJSONHandler extends SimpleGeoHandler {
         	
 		} catch (JSONException e) {
 			
-			
+			logger.debug(e.getMessage());
 		}
         
 		return topObject;
