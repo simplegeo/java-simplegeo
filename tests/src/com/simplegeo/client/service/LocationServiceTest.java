@@ -10,12 +10,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import org.apache.http.client.ClientProtocolException;
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.client.TestEnvironment;
+import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
@@ -70,10 +69,8 @@ public class LocationServiceTest extends ModelHelperTest {
 			for(IRecord record : records)
 				locationService.delete(record);
 			
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			;
 		}
 	}
 
@@ -85,11 +82,11 @@ public class LocationServiceTest extends ModelHelperTest {
 			
 			// null means that the object was successful
 			Object nothing = locationService.update(defaultRecord);
-			assertNull(nothing);
+			assertNull("Should return a null value", nothing);
 			ModelHelperTest.waitForWrite();
 			
 			nothing = locationService.update((GeoJSONObject)feature);
-			assertNull(nothing);
+			assertNull("Should return a null value", nothing);
 			ModelHelperTest.waitForWrite();
 			
 			IRecord retrievedRecord = (DefaultRecord)locationService.retrieve(defaultRecord);
@@ -97,20 +94,18 @@ public class LocationServiceTest extends ModelHelperTest {
 			assertTrue(equals(retrievedRecord, defaultRecord));
 			
 			retrievedRecord = (GeoJSONRecord)locationService.retrieve(feature);
-			assertTrue(GeoJSONRecord.class.isInstance(retrievedRecord));
-			assertTrue(equals(retrievedRecord, feature));
+			assertTrue("Should be an instance of GeoJSONRecord", GeoJSONRecord.class.isInstance(retrievedRecord));
+			assertTrue("The two records should be equal", equals(retrievedRecord, feature));
 			
 			nothing = locationService.update(defaultRecordList);
-			assertNull(nothing);
+			assertNull("Should return a null value", nothing);
 			nothing = locationService.update(featureCollection);
-			assertNull(nothing);
+			assertNull("Should return a null value", nothing);
 						
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getLocalizedMessage(), false);
 		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getLocalizedMessage(), false);
 		}
 		
 		defaultRecord.setRecordId("not-here-102939484");
@@ -137,32 +132,30 @@ public class LocationServiceTest extends ModelHelperTest {
 		try {
 			
 			Object nothing = locationService.update(defaultRecord);
-			assertNull(nothing);
+			assertNull("A null value should be returned", nothing);
 			LocationServiceTest.waitForWrite();
 				
 			IRecord r = (IRecord)locationService.retrieve(defaultRecord);
-			assertNotNull(r);
-			assertTrue(equals(defaultRecord, r));
+			assertNotNull("The record should be retrievable", r);
+			assertTrue("The records should be equal", equals(defaultRecord, r));
 				
 			locationService.delete(defaultRecord);
 			
 			nothing = locationService.update((GeoJSONObject)feature);
-			assertNull(nothing);
+			assertNull("A null value should be returned", nothing);
 			LocationServiceTest.waitForWrite();
 			
 			r = (IRecord)locationService.retrieve(feature);
-			assertNotNull(r);
-			assertTrue(equals(feature, r));
+			assertNotNull("The record should be retrievable", r);
+			assertTrue("The records should be equal", equals(feature, r));
 			
 			locationService.delete(feature);
 			
 
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getMessage(), false);
 		}
 		
 	}
@@ -189,11 +182,9 @@ public class LocationServiceTest extends ModelHelperTest {
 			ModelHelperTest.waitForWrite();
 			
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e.getLocalizedMessage(), false);
 		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);			
+			assertTrue(e.getLocalizedMessage(), false);			
 		}
 		
 		List<String> layers = new ArrayList<String>();
@@ -203,7 +194,6 @@ public class LocationServiceTest extends ModelHelperTest {
 		types.add("object");
 		
 		GeoHash geoHash = GeoHash.withBitPrecision(10.0, 10.0, 4);
-		
 		
 		try {
 			
@@ -218,11 +208,9 @@ public class LocationServiceTest extends ModelHelperTest {
 			assertTrue(nearbyRecords.size() >= 2);
 
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		} catch (IOException e) {
-			e.printStackTrace();
-			assertFalse(true);			
+			assertFalse(e.getLocalizedMessage(), true);			
 		}
 		
 	}
@@ -238,14 +226,11 @@ public class LocationServiceTest extends ModelHelperTest {
 			assertTrue(jsonObject.getProperties().get("country").equals("US"));
 			
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		} catch (IOException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		} catch (JSONException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		}
 	} 
 	
@@ -286,17 +271,13 @@ public class LocationServiceTest extends ModelHelperTest {
 			assertTrue(equals(returnedRecord, feature));
 			
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		} catch (IOException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
-			assertFalse(true);
+			assertFalse(e.getLocalizedMessage(), true);
 		}
 	}
 }

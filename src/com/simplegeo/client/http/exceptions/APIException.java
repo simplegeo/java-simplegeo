@@ -5,23 +5,25 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+//import android.util.Log;
+import org.apache.log4j.Logger;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-
-import android.util.Log;
 
 @SuppressWarnings("serial")
 public class APIException extends ClientProtocolException {
 
 	private static String TAG = APIException.class.getName();
+	private static Logger logger = Logger.getLogger(APIException.class);
 	
 	public int statusCode;
-	public String reason;
 	
-	public APIException(HttpEntity entity, StatusLine statusLine) {
+	public static APIException createException(HttpEntity entity, StatusLine statusLine) {
 		
-		this.statusCode = statusLine.getStatusCode();
+		int statusCode = statusLine.getStatusCode();
+		String reason = null;
 		
 		try {
 			
@@ -42,16 +44,18 @@ public class APIException extends ClientProtocolException {
 		if(reason == null)
 			reason = statusLine.getReasonPhrase();
 		
-		
-		Log.e(TAG, String.format("(status %d) %s", statusCode, reason));
-	}
 	
+		logger.debug(String.format("(status %d) %s", statusCode, reason));
+		
+		return new APIException(statusCode, reason);
+	}
+		
 	public APIException(int statusCode, String reason) {
 		
+		super(reason);
 		this.statusCode = statusCode;
-		this.reason = reason;
 		
-		Log.e(TAG, String.format("(status %d) %s", statusCode, reason));
+		logger.debug(String.format("(status %d) %s", statusCode, reason));
 	}
 
 }

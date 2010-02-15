@@ -6,9 +6,15 @@ package com.simplegeo.client.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.test.AndroidTestCase;
+import org.json.JSONArray;
+import org.json.JSONException;
 
+import junit.framework.*;
+//import android.test.AndroidTestCase;
+
+import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 
@@ -16,23 +22,29 @@ import com.simplegeo.client.model.IRecord;
  * @author dsmith
  *
  */
-public class ModelHelperTest extends AndroidTestCase {
+public class ModelHelperTest extends TestCase {
 	
-	public static final String TESTING_LAYER =  "com.simplegeo.testing";
+	private static final String TAG = ModelHelperTest.class.getName();
 	
-	public static final String ACCESS_KEY = "my_key";
-	public static final String SECRET_KEY = "my_secret";
-
 	public DefaultRecord getRandomDefaultRecord() {
-		DefaultRecord record = new DefaultRecord(getRandomRecordId(), TESTING_LAYER, "object");
+		
+		DefaultRecord record = new DefaultRecord(getRandomRecordId(), TestEnvironment.TESTING_LAYER, "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
 		return record;
 	}
 	
+	public static void waitForWrite() {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			System.out.println(TAG+"unable to sleep for 5 seconds");
+		}
+	}
+	
 	public List<IRecord> getRandomDefaultRecordList(int length) {
-		ArrayList<DefaultRecord> list = new ArrayList<DefaultRecord>(length);
+		List<IRecord> list = new ArrayList<IRecord>(length);
 		
 		for(int i = 0; i < length; i++) 
 			list.add(getRandomDefaultRecord());
@@ -42,32 +54,38 @@ public class ModelHelperTest extends AndroidTestCase {
 	
 	public GeoJSONRecord getRandomGeoJSONRecord() {
 		
-		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), TESTING_LAYER, "object");
+		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), TestEnvironment.TESTING_LAYER, "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
 		return record;
 	}
 	
-	public List<IRecord> getRandomGeoJSONRecordList(int length) {
-		ArrayList<IRecord> list = new ArrayList<GeoJSONRecord>(length);
-
-		for(int i = 0; i < length; i++) 
-			list.add(getRandomGeoJSONRecord());
+	public GeoJSONRecord getRandomGeoJSONRecordList(int length) {
 		
-		return list;
+		GeoJSONRecord bigGeoJSONRecord = new GeoJSONRecord("FeatureCollection");
+		
+		JSONArray list = new JSONArray();
+		for(int i = 0; i < length; i++) 
+			list.put(getRandomGeoJSONRecord());
+		
+		try {
+			bigGeoJSONRecord.putOpt("features", list);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return bigGeoJSONRecord;
 	}
 	
 	public boolean equals(IRecord recordOne, IRecord recordTwo) {
 
 		boolean areEqual = true;
-		areEqual &= recordOne.getLatitude() == recordTwo.getLatitude();
-		areEqual &= recordOne.getLongitude() == recordTwo.getLongitude();
+		areEqual &= roundDouble(recordOne.getLatitude()) == roundDouble(recordTwo.getLatitude());
+		areEqual &= roundDouble(recordOne.getLongitude()) == roundDouble(recordTwo.getLongitude());
 		areEqual &= recordOne.getLayer().equals(recordTwo.getLayer());
-		areEqual &= recordOne.getType().equals(recordTwo.getType());
-		areEqual &= recordOne.getExpiration() == recordTwo.getExpiration();
+		areEqual &= recordOne.getObjectType().equals(recordTwo.getObjectType());
 		areEqual &= recordOne.getCreated() == recordTwo.getCreated();
-		areEqual &= recordOne.getProperties().equals(recordTwo.getProperties());
 		
 		return areEqual;
 	}
@@ -81,9 +99,44 @@ public class ModelHelperTest extends AndroidTestCase {
 		
 		return areEqual;
 	}
+	
+	public boolean equals(List<IRecord> records, GeoJSONObject geoJSONObject) {
+		
+		int recordSize = records.size();
+		try {
+			
+			if(geoJSONObject.getType().equals("FeatureCollection")) {
+			
+				JSONArray features = geoJSONObject.getJSONArray("features");
+				if(features != null) {
+					
+					int featuresSize = features.length();
+					if(featuresSize == recordSize) {
+						
+						for(int index = 0; index < featuresSize; index++) {
+							
+							IRecord record = records.get(index);
+							GeoJSONRecord jsonObject = (GeoJSONRecord) features.get(index);
+							if(!equals(record, jsonObject))
+								return false;
+						}
+						
+						return true;
+					}
+					
+				}
+				
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 
 	private String getRandomRecordId() {
-		return String.format("testing-%i", (int)(Math.random() * 10000.0));
+		return String.format("testing-%d", (int)(Math.random() * 10000.0));
 	}
 	
 	private double getRandomLatitude() {
@@ -92,5 +145,11 @@ public class ModelHelperTest extends AndroidTestCase {
 	
 	private double getRandomLongitude() {
 		return Math.random() * 180.0 * (((int)Math.random() * 2) == 0 ? (-1.0) : (1.0));
-	}	
+	}
+	
+	private double roundDouble(double d) {
+		int c = 10;
+		int temp=(int)((d*Math.pow(10,c)));
+		return (((double)temp)/Math.pow(10,c));
+	}
 }

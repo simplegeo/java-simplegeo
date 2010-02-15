@@ -5,8 +5,6 @@ package com.simplegeo.client.model;
 
 import org.json.JSONObject;
 
-import com.google.android.maps.OverlayItem;
-
 /**
  * @author dsmith
  *

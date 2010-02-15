@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.json.JSONException;
 
-import android.test.suitebuilder.annotation.MediumTest;
-
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
@@ -21,21 +19,19 @@ import com.simplegeo.client.test.ModelHelperTest;
  */
 public class GeoJSONEncoderTest extends ModelHelperTest {
 
-	@MediumTest
 	public void testRecordToGeoJSON() throws JSONException {
 		
 		DefaultRecord record = getRandomDefaultRecord();
 		record.getProperties().put("name", "derek");
 		
 		GeoJSONRecord jsonRecord = GeoJSONEncoder.getGeoJSONRecord(record);
-		assertNotNull(jsonRecord);
-		assertTrue(equals(record, jsonRecord));
-		
+		assertNotNull(String.format("GeoJSON record %s should not be null", jsonRecord.toString()), jsonRecord);
+		assertTrue(String.format("Record %s does not equal %s", record, jsonRecord), equals(record, jsonRecord));
+
 		jsonRecord = (GeoJSONRecord)GeoJSONEncoder.getGeoJSONRecord((DefaultRecord)null);
-		assertNull(jsonRecord);
+		assertNull(String.format("GeoJSON record %s should be null", jsonRecord), jsonRecord);
 	}
 	
-	@MediumTest
 	public void testGeoJSONToRecord() {
 
 		GeoJSONRecord jsonRecord = getRandomGeoJSONRecord();
@@ -50,7 +46,6 @@ public class GeoJSONEncoderTest extends ModelHelperTest {
 		
 	}
 	
-	@MediumTest
 	public void testMultiGeoJSONToRecords() {
 		
 		GeoJSONRecord bigGeoJSONRecord = getRandomGeoJSONRecordList(10);
@@ -60,7 +55,6 @@ public class GeoJSONEncoderTest extends ModelHelperTest {
 		
 	}
 	
-	@MediumTest
 	public void testMultiRecordsToGeoJSON() {
 		
 		

@@ -15,12 +15,9 @@ import com.simplegeo.client.http.exceptions.APIException;
 @SuppressWarnings("serial")
 public class NotAuthorizedException extends APIException {
 
-	/**
-	 * @param entity
-	 * @param statusLine
-	 */
-	public NotAuthorizedException(HttpEntity entity, StatusLine statusLine) {
-		super(entity, statusLine);
+	public NotAuthorizedException(int statusCode, String reason) {
+		super(statusCode, reason);
 	}
+
 
 }

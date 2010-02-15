@@ -6,11 +6,12 @@ package com.simplegeo.client.encoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+//import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
 
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.GeoJSONObject;
@@ -23,10 +24,10 @@ import com.simplegeo.client.model.IRecord;
  */
 public class GeoJSONEncoder {
 
+	private static Logger logger = Logger.getLogger(GeoJSONEncoder.class);
 	private static final String TAG = GeoJSONEncoder.class.getName();
 
 	public static DefaultRecord getRecord(JSONObject jsonObject) {
-
 		DefaultRecord defaultRecord = null;
 		try {
 
@@ -51,7 +52,7 @@ public class GeoJSONEncoder {
 
 		} catch (JSONException e) {
 
-			Log.d(TAG, String.format("%s", e.getLocalizedMessage()));
+			logger.debug(String.format("%s", e.getLocalizedMessage()));
 
 		}
 
@@ -88,7 +89,7 @@ public class GeoJSONEncoder {
 
 		} catch (JSONException e) {
 
-			Log.d(TAG, String.format("%s for %s", e.getLocalizedMessage(),
+			logger.debug(String.format("%s for %s", e.getLocalizedMessage(),
 					geoJSONObject.toString()));
 		}
 
@@ -123,7 +124,7 @@ public class GeoJSONEncoder {
 
 		} catch (JSONException e) {
 
-			Log.d(TAG, String.format("%s for %s", e.getLocalizedMessage(),
+			logger.debug(TAG+  String.format("%s for %s", e.getLocalizedMessage(),
 					record.toString()));
 
 		}
@@ -155,7 +156,7 @@ public class GeoJSONEncoder {
 
 		} catch (JSONException e) {
 
-			Log.e(TAG, e.getLocalizedMessage());
+			logger.debug(TAG + e.getLocalizedMessage());
 		}
 
 		return geoJSONObject;

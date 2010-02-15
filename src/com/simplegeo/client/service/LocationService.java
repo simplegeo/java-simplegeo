@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
@@ -23,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
+//import android.util.Log;
+import org.apache.log4j.Logger;
+
 import ch.hsr.geohash.GeoHash;
 
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
@@ -46,6 +49,8 @@ import com.simplegeo.client.utilities.SimpleGeoUtilities;
 public class LocationService {
 	
 	private static final String TAG = LocationService.class.getName();
+	private static Logger logger = Logger.getLogger(LocationService.class);
+	
 	private static final String mainURL = "http://api.simplegeo.com/0.1";
 	
 	private static LocationService sharedLocationService = null;
@@ -138,7 +143,7 @@ public class LocationService {
 		
 		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordIds);
 		
-		Log.d(TAG, String.format("retrieving %s from %s", layer, recordIds));
+		logger.debug( String.format("retrieving %s from %s", layer, recordIds));
 		
 		return execute(new HttpGet(uri), handler);
 	}
@@ -187,7 +192,7 @@ public class LocationService {
 		String jsonString = geoJSONObject.toString();
 		post.setEntity(new ByteArrayEntity(jsonString.getBytes()));
 		
-		Log.d(TAG, String.format("updating %s", jsonString));
+		logger.debug( String.format("updating %s", jsonString));
 		
 		return execute(post, handler);
 	}
@@ -204,7 +209,7 @@ public class LocationService {
 		throws ClientProtocolException, IOException {
 		
 		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordId);
-		Log.d(TAG, String.format("deleting %s at %s", layer, recordId));
+		logger.debug( String.format("deleting %s at %s", layer, recordId));
 		return execute(new HttpDelete(uri), handler);
 	}
 	
@@ -268,7 +273,7 @@ public class LocationService {
 	private Object execute(HttpUriRequest request, SimpleGeoHandler handler)
 									throws ClientProtocolException, IOException {
 		
-		Log.d(TAG, String.format("sending %s", request.toString()));
+		logger.debug( String.format("sending %s", request.toString()));
 		
 		if(futureTask) {
 			
@@ -285,6 +290,8 @@ public class LocationService {
 							dealWithAuthorizationException(e);
 						} catch (OAuthExpectationFailedException e) {
 							dealWithAuthorizationException(e);
+						} catch (OAuthCommunicationException e) {
+							dealWithAuthorizationException(e);
 						}
 						
 						return object;
@@ -295,6 +302,7 @@ public class LocationService {
 			return future;
 			
 		} else {
+			
 			Object object = null;
 			try {
 				object = httpClient.executeOAuthRequest(request, handler);
@@ -302,7 +310,9 @@ public class LocationService {
 				dealWithAuthorizationException(e);
 			} catch (OAuthExpectationFailedException e) {
 				dealWithAuthorizationException(e);
-			}
+			} catch (OAuthCommunicationException e) {
+				dealWithAuthorizationException(e);
+			};
 			
 			return object;
 		}
@@ -317,7 +327,7 @@ public class LocationService {
 				jsonObject = (GeoJSONObject)object;
 				jsonObject.flatten();
 			} catch (JSONException e) {
-				Log.d(TAG, "unable to flatten GeoJSONObject");
+				logger.debug( "unable to flatten GeoJSONObject");
 			}
 			
 		} else {
@@ -350,7 +360,7 @@ public class LocationService {
 				
 			} catch (JSONException e) {
 				
-				Log.d(TAG, String.format("unable to create GeoJSONObject from %s", records));
+				logger.debug( String.format("unable to create GeoJSONObject from %s", records));
 				
 			}
 		}
@@ -389,7 +399,7 @@ public class LocationService {
 
 			} catch (JSONException e) {
 				
-				Log.d(TAG, String.format("unable to locate layer for the %s", record));
+				logger.debug( String.format("unable to locate layer for the %s", record));
 			} 			
 			
 		} else if(IRecord.class.isInstance(record)) {
@@ -457,7 +467,7 @@ public class LocationService {
 
 			} catch (JSONException e) {
 				
-				Log.d(TAG, String.format("unable to locate layer for the %s", object));
+				logger.debug( String.format("unable to locate layer for the %s", object));
 			} 			
 
 			

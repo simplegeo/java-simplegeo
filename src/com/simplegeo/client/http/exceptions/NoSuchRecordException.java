@@ -13,12 +13,9 @@ import org.apache.http.StatusLine;
 @SuppressWarnings("serial")
 public class NoSuchRecordException extends APIException {
 
-	/**
-	 * @param entity
-	 * @param statusLine
-	 */
-	public NoSuchRecordException(HttpEntity entity, StatusLine statusLine) {
-		super(entity, statusLine);
+	public NoSuchRecordException(int statusCode, String reason) {
+		super(statusCode, reason);
 	}
+
 
 }

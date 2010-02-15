@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 
-import com.simplegeo.client.TestEnvironment;
+import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.service.LocationService;
 import com.simplegeo.client.test.ModelHelperTest;
 

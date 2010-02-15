@@ -10,7 +10,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
+//import android.util.Log;
+import org.apache.log4j.Logger;
+
+import com.simplegeo.client.encoder.GeoJSONEncoder;
+
+
 
 /**
  * @author dsmith
@@ -19,6 +24,7 @@ import android.util.Log;
 public class GeoJSONObject extends JSONObject {
 	
 	private static final String TAG = GeoJSONObject.class.getName();
+	private static Logger logger = Logger.getLogger(GeoJSONObject.class);
 	
 	public GeoJSONObject(String type, String jsonString) throws JSONException {
 		// Ignoring the type for the moment
@@ -57,7 +63,7 @@ public class GeoJSONObject extends JSONObject {
 			
 		} catch (JSONException e) {
 			
-			Log.d(TAG, "unable to initialize properly");
+			logger.debug("unable to initialize properly");
 		}
 
 	}

@@ -1,10 +1,10 @@
 
-package com.simplegeo.client.test;
+package com.simplegeo.client;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import android.test.suitebuilder.TestSuiteBuilder;
+//import android.test.suitebuilder.TestSuiteBuilder;
 
 /**
  * A test suite containing all tests for ApiDemos.

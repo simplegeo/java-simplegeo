@@ -6,10 +6,11 @@ package com.simplegeo.client.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
+//import android.util.Log;
+import org.apache.log4j.Logger;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.OverlayItem;
+import com.simplegeo.client.encoder.GeoJSONEncoder;
+
 
 /**
  * @author dsmith
@@ -18,6 +19,7 @@ import com.google.android.maps.OverlayItem;
 public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	
 	private static final String TAG = GeoJSONRecord.class.getName();
+	private static Logger logger = Logger.getLogger(GeoJSONRecord.class);
 	
 	public GeoJSONRecord(String recordId, String layer, String type, long created, long expiration) {
 		super();
@@ -38,7 +40,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 			
 		} catch (JSONException e) {
 			
-			Log.d(TAG, "unable to locate type key");
+			logger.debug("unable to locate type key");
 			
 		}
 		
@@ -68,7 +70,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			created = super.getLong("created");
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate created");
+			logger.debug( "unable to locate created");
 		}
 		
 		return created;
@@ -78,7 +80,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.put("created", created);
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}
 	}
 
@@ -90,7 +92,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			expires = super.getLong("expiration");
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate expiration");
+			logger.debug( "unable to locate expiration");
 		}
 		
 		return expires;
@@ -101,7 +103,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.put("expiration", expiration);
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}
 		
 	}
@@ -114,7 +116,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			latitude = super.getLatitude();
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate latitude");
+			logger.debug( "unable to locate latitude");
 		}
 		
 		return latitude;
@@ -124,7 +126,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.setLatitude(lat);
 		} catch (JSONException e) {
-			Log.e(TAG, "unable to locate latitude");
+			logger.debug( "unable to locate latitude");
 		}
 	}
 	
@@ -133,7 +135,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			layer = super.getString("layer");
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate layer");
+			logger.debug( "unable to locate layer");
 		}
 		
 		return layer;
@@ -143,7 +145,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.put("layer", layer);
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}		
 	}
 
@@ -155,7 +157,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			longitude = super.getLongitude();
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate longitude");
+			logger.debug( "unable to locate longitude");
 		}
 		
 		return longitude;
@@ -165,7 +167,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.setLongitude(lon);
 		} catch (JSONException e) {
-			Log.e(TAG, "unable to locate longitude");
+			logger.debug( "unable to locate longitude");
 		}
 	}
 
@@ -177,7 +179,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			properties = super.getProperties();
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}
 		
 		return properties;
@@ -188,7 +190,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.setProperties(properties);
 		} catch (JSONException e) {
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}
 	}
 
@@ -200,7 +202,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			recordId = super.getString("id");
 		} catch (JSONException e) {
-			Log.e(TAG, "unable to locate id");
+			logger.debug( "unable to locate id");
 		}
 		
 		return recordId;
@@ -210,7 +212,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.put("id", recordId);
 		} catch (JSONException e) {
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}
 	}
 
@@ -220,7 +222,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			type = super.getProperties().getString("type");
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate type");
+			logger.debug( "unable to locate type");
 		}
 		
 		return type;
@@ -230,7 +232,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.getProperties().put("type", type);
 		} catch (JSONException e) {			
-			Log.e(TAG, "unable to locate properties");
+			logger.debug( "unable to locate properties");
 		}
 	}
 
@@ -239,7 +241,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			value = super.getProperties().getInt(key);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}
 		
 		return value;
@@ -249,7 +251,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.getProperties().put(key, value);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}
 	}
 	
@@ -258,7 +260,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			value = super.getProperties().getDouble(key);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}	
 		
 		return value;
@@ -268,7 +270,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.getProperties().put(key, value);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}	
 	}
 	
@@ -277,7 +279,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			value = super.getProperties().getLong(key);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}	
 		
 		return value;
@@ -287,7 +289,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.getProperties().put(key, value);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}
 	}
 
@@ -296,7 +298,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			value = super.getProperties().get(key);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}	
 		
 		return value;
@@ -308,7 +310,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		try {
 			super.getProperties().put(key, value);
 		} catch (JSONException e) {
-			Log.e(TAG, String.format("unable to locate %s", key));
+			logger.debug( String.format("unable to locate %s", key));
 		}
 	}
 		

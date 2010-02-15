@@ -7,14 +7,18 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+//import android.util.Log;
+import org.apache.log4j.Logger;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 
-import android.util.Log;
 
+
+import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.NoSuchRecordException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
@@ -26,6 +30,7 @@ import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 public class SimpleGeoHandler implements ResponseHandler<Object> {
 	
 	static private String TAG = SimpleGeoHandler.class.getCanonicalName();
+	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class);
 	
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
@@ -37,13 +42,13 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	public Object handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 
-		Log.d(TAG, "recieved response " + response);
+		logger.debug("recieved response " + response);
 
 		StatusLine statusLine = response.getStatusLine();
 		int statusCode = statusLine.getStatusCode();
 		
 		HttpEntity entity = response.getEntity();
-		
+
 		HttpResponse validResponse = null;
 		switch(statusCode) {
 		
@@ -52,13 +57,13 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 				validResponse = response; 
 				break;
 			case BAD_REQUEST:
-				throw new APIException(entity, statusLine);
+				throw APIException.createException(entity, statusLine);
 			case NO_SUCH:
-				throw new NoSuchRecordException(entity, statusLine);
+				throw NoSuchRecordException.createException(entity, statusLine);
 			case NOT_AUTHORIZED:
-				throw new NotAuthorizedException(entity, statusLine);
+				throw NotAuthorizedException.createException(entity, statusLine);
 			default:
-				throw new APIException(entity, statusLine);
+				throw APIException.createException(entity, statusLine);
 		
 		}
 	

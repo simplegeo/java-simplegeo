@@ -12,7 +12,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.util.Log;
+
 
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.model.DefaultRecord;
