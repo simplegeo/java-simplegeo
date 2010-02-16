@@ -49,7 +49,22 @@ import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.utilities.SimpleGeoUtilities;
 
 /**
- * A service
+ * Interfaces with the SimpleGeo API. Requests are created through 
+ * {@link com.simplegeo.client.http.OAuthHttpClient}, which is created
+ * with a thread-safe connection manager.
+ * 
+ * Requests can be created and set on the same thread or they can be
+ * used in a non-blocking fashion. The default behavior is to send the
+ * request on the same thread the call was made. By setting 
+ * {@link com.simplegeo.client.service.LocationService#futureTask} to true,
+ * requests will be built and sent on a thread chosen by
+ * {@link com.simplegeo.client.concurrent.RequestThreadPoolExcecutor} and
+ * a {@link java.util.concurrent.FutureTask} will be returned instead of
+ * the return object that is build from the ResponseHandler.
+ * 
+ * In order to properly authenticate requests, an OAuth token is required.
+ * This property is set by calling 
+ * {@link com.simplegeo.client.http.OAuthHttpClient#setToken(String, String)}.
  * 
  * @author Derek Smith
  */

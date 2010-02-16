@@ -26,11 +26,6 @@ import com.simplegeo.client.service.LocationService;
 import com.simplegeo.client.service.LocationService.Handler;
 import com.simplegeo.client.test.ModelHelperTest;
 
-
-/**
- * @author Derek Smith
- *
- */
 public class LocationServiceTest extends ModelHelperTest {
 	
 	private DefaultRecord defaultRecord;
