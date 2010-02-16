@@ -316,7 +316,11 @@ public class LocationService {
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * Deletes the {@link com.simplegeo.client.model.IRecord} from SimpleGeo.
+=======
+	 * Deletes the {@link com.simplegeo.client.service.model.IRecord} from SimpleGeo.
+>>>>>>> 798e495d03244d7990c90c5a9975d4d37d2637da
 	 * The record must already exist in SimpleGeo in order for the request to be successful. 
 	 * 
 	 * @param record the record to delete
