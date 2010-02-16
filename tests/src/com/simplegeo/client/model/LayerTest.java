@@ -21,10 +21,10 @@ public class LayerTest extends ModelHelperTest {
 
 	private Layer testingLayer;
 	
-	public void setUp() {
+	public void setUp() throws Exception {
 		
-		LocationService.getInstance().getHttpClient().setToken(TestEnvironment.ACCESS_KEY, TestEnvironment.SECRET_KEY);
-		testingLayer = new Layer(TestEnvironment.TESTING_LAYER);
+		LocationService.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
+		testingLayer = new Layer(TestEnvironment.getLayer());
 		
 	}
 
@@ -41,13 +41,13 @@ public class LayerTest extends ModelHelperTest {
 				locationService.delete(record);
 			
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			assertTrue(e.getMessage(), false);
 		} catch (IOException e) {
-			e.printStackTrace();
+			assertTrue(e.getMessage(), false);	
 		}
 	}
 
-	public void testLayerRetrieval() {
+	public void testLayerRetrieval() throws Exception {
 		
 		
 		testingLayer.add(getRandomDefaultRecordList(50));
@@ -56,9 +56,9 @@ public class LayerTest extends ModelHelperTest {
 			testingLayer.update();
 			
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			assertTrue(e.getMessage(), false);
 		} catch (IOException e) {
-			e.printStackTrace();
+			assertTrue(e.getMessage(), false);
 		}
 		
 		

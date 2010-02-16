@@ -26,9 +26,9 @@ public class ModelHelperTest extends TestCase {
 	
 	private static final String TAG = ModelHelperTest.class.getName();
 	
-	public DefaultRecord getRandomDefaultRecord() {
+	public DefaultRecord getRandomDefaultRecord() throws Exception {
 		
-		DefaultRecord record = new DefaultRecord(getRandomRecordId(), TestEnvironment.TESTING_LAYER, "object");
+		DefaultRecord record = new DefaultRecord(getRandomRecordId(), TestEnvironment.getLayer(), "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
@@ -43,7 +43,7 @@ public class ModelHelperTest extends TestCase {
 		}
 	}
 	
-	public List<IRecord> getRandomDefaultRecordList(int length) {
+	public List<IRecord> getRandomDefaultRecordList(int length) throws Exception {
 		List<IRecord> list = new ArrayList<IRecord>(length);
 		
 		for(int i = 0; i < length; i++) 
@@ -52,16 +52,16 @@ public class ModelHelperTest extends TestCase {
 		return list;
 	}
 	
-	public GeoJSONRecord getRandomGeoJSONRecord() {
+	public GeoJSONRecord getRandomGeoJSONRecord() throws Exception {
 		
-		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), TestEnvironment.TESTING_LAYER, "object");
+		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), TestEnvironment.getLayer(), "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
 		return record;
 	}
 	
-	public GeoJSONRecord getRandomGeoJSONRecordList(int length) {
+	public GeoJSONRecord getRandomGeoJSONRecordList(int length) throws Exception {
 		
 		GeoJSONRecord bigGeoJSONRecord = new GeoJSONRecord("FeatureCollection");
 		

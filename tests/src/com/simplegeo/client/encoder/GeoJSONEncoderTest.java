@@ -19,7 +19,7 @@ import com.simplegeo.client.test.ModelHelperTest;
  */
 public class GeoJSONEncoderTest extends ModelHelperTest {
 
-	public void testRecordToGeoJSON() throws JSONException {
+	public void testRecordToGeoJSON() throws Exception {
 		
 		DefaultRecord record = getRandomDefaultRecord();
 		record.getProperties().put("name", "derek");
@@ -32,7 +32,7 @@ public class GeoJSONEncoderTest extends ModelHelperTest {
 		assertNull(String.format("GeoJSON record %s should be null", jsonRecord), jsonRecord);
 	}
 	
-	public void testGeoJSONToRecord() {
+	public void testGeoJSONToRecord() throws Exception {
 
 		GeoJSONRecord jsonRecord = getRandomGeoJSONRecord();
 		jsonRecord.setObjectProperty("name", "derek");
@@ -46,7 +46,7 @@ public class GeoJSONEncoderTest extends ModelHelperTest {
 		
 	}
 	
-	public void testMultiGeoJSONToRecords() {
+	public void testMultiGeoJSONToRecords() throws Exception {
 		
 		GeoJSONRecord bigGeoJSONRecord = getRandomGeoJSONRecordList(10);
 		

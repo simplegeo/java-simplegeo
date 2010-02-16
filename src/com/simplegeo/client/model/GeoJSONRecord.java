@@ -58,6 +58,14 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 		this(recordId, layer, type, System.currentTimeMillis(), 0);
 	}
 		
+	public GeoJSONRecord(String type, String jsonString) throws JSONException {
+		super(type, jsonString);
+	}
+
+	public GeoJSONRecord(String string) {
+		super(string);
+	}
+
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.model.IRecord#getCreated()
 	 */

@@ -4,8 +4,9 @@ SGClient v0.1.0
 ABSTRACT:
 --------------------------------------------------------------------------------
 
-A Java HttpClient used to interface with the SimpleGeo API. The project is capable
-of transforming into an Android project as well.
+A thread-safe, Java HttpClient used to interface with the SimpleGeo API. Both
+synchronous and asynchronous calls are provided. The project is also capable of 
+transforming into an Android project.
 
 USAGE:
 --------------------------------------------------------------------------------
@@ -21,8 +22,10 @@ initial state.
 
 Running `ant dist` will generate jars and JavaDocs.
 
+Currently, there is only one example located in _examples_. There will be more
+to come. The unit tests in _tests_ should also provide as examples.
+
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
-TBA
 
 ### Copyright (C) 2010 SimpleGeo Inc. All rights reserved.

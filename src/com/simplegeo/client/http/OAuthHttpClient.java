@@ -18,6 +18,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
@@ -33,33 +34,17 @@ public class OAuthHttpClient extends DefaultHttpClient {
 	private static String TAG = OAuthHttpClient.class.getSimpleName();
 	private static Logger logger = Logger.getLogger(OAuthHttpClient.class);
 	
-	private OAuthConsumer token;
-	
+	private OAuthConsumer token = null;
+			
 	/**
-	 * Initializes the object with a null token value.
+	 * @param connManager
+	 * @param params
 	 */
-	public OAuthHttpClient() {
-		
-		this(null, null);
-		
+	public OAuthHttpClient(ThreadSafeClientConnManager connManager,
+			HttpParams params) {
+		super(connManager, params);
 	}
-	
-	/**
-	 * Initializes the object with a key/secret pair that
-	 * will be used to sign requests.
-	 * 
-	 * @param key a valid OAuth key
-	 * @param secret a valid OAuth secret
-	 */
-	public OAuthHttpClient(String key, String secret) {
-		setToken(key, secret);
-		
-		HttpParams params = new BasicHttpParams();
-		HttpProtocolParams.setUseExpectContinue(params, false);
-		this.setParams(params);
-		
-	}
-		
+
 	/**
 	 * Returns the consumer key that is used to sign Http requests.
 	 * 

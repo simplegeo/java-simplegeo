@@ -18,8 +18,14 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +92,14 @@ public class LocationService {
 	
 	private LocationService() {
 		
-		this.httpClient = new OAuthHttpClient();
+		// We want to make sure the client is threadsafe
+		HttpParams params = new BasicHttpParams();
+		HttpProtocolParams.setUseExpectContinue(params, false);
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
+		
+		this.httpClient = new OAuthHttpClient(connManager, params);
 		this.threadExecutor = new RequestThreadPoolExecutor(TAG);
 		
 		setHandler(Handler.RECORD, new RecordHandler());
@@ -316,11 +329,7 @@ public class LocationService {
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * Deletes the {@link com.simplegeo.client.model.IRecord} from SimpleGeo.
-=======
-	 * Deletes the {@link com.simplegeo.client.service.model.IRecord} from SimpleGeo.
->>>>>>> 798e495d03244d7990c90c5a9975d4d37d2637da
 	 * The record must already exist in SimpleGeo in order for the request to be successful. 
 	 * 
 	 * @param record the record to delete
@@ -470,8 +479,12 @@ public class LocationService {
 		BasicHttpParams params = new BasicHttpParams();
 		params.setIntParameter("limit", limit);
 		params.setDoubleParameter("radius", radius);
-		params.setParameter("types", SimpleGeoUtilities.commaSeparatedString(types));
-		params.setParameter("layers", SimpleGeoUtilities.commaSeparatedString(layers));
+		
+		if(types != null && !types.isEmpty())
+			params.setParameter("types", SimpleGeoUtilities.commaSeparatedString(types));
+		
+		if(types != null && !types.isEmpty())
+			params.setParameter("layers", SimpleGeoUtilities.commaSeparatedString(layers));
 		
 		request.setParams(params);
 		return execute(request, getHandler(type));

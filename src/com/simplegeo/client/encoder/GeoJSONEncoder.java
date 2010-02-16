@@ -131,22 +131,20 @@ public class GeoJSONEncoder {
 
 		GeoJSONRecord geoJSONRecord = null;
 		try {
-
-			geoJSONRecord = new GeoJSONRecord();
-			geoJSONRecord.setLatitude(record.getLatitude());
-			geoJSONRecord.setLongitude(record.getLongitude());
+			
+			geoJSONRecord = new GeoJSONRecord(record.getRecordId(), record.getLayer(), record.getObjectType());
 
 			JSONObject properties = record.getProperties();
 			if (properties != null)
 				properties = new JSONObject(properties.toString());
 			else
 				properties = new JSONObject();
+			
+			geoJSONRecord.setLatitude(record.getLatitude());
+			geoJSONRecord.setLongitude(record.getLongitude());
 
-			properties.put("type", record.getObjectType());
 			geoJSONRecord.setProperties(properties);
 
-			geoJSONRecord.setLayer(record.getLayer());
-			geoJSONRecord.setRecordId(record.getRecordId());
 			geoJSONRecord.setCreated(record.getCreated());
 			geoJSONRecord.setExpiration(record.getExpiration());
 

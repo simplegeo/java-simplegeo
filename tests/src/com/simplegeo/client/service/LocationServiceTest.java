@@ -38,9 +38,9 @@ public class LocationServiceTest extends ModelHelperTest {
 	private List<IRecord> defaultRecordList;
 	private GeoJSONObject featureCollection;
 	
-	public void setUp() {
+	public void setUp() throws Exception {
 		
-		LocationService.getInstance().getHttpClient().setToken(TestEnvironment.ACCESS_KEY, TestEnvironment.SECRET_KEY);
+		LocationService.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 		
 		defaultRecord = getRandomDefaultRecord();
 		defaultRecord.setObjectProperty("name", "derek");
@@ -160,7 +160,7 @@ public class LocationServiceTest extends ModelHelperTest {
 		
 	}
 	
-	public void testNearby() {
+	public void testNearby() throws Exception {
 		
 		LocationService locationService = LocationService.getInstance();
 		
@@ -188,7 +188,7 @@ public class LocationServiceTest extends ModelHelperTest {
 		}
 		
 		List<String> layers = new ArrayList<String>();
-		layers.add(TestEnvironment.TESTING_LAYER);
+		layers.add(TestEnvironment.getLayer());
 		
 		List<String> types = new ArrayList<String>();
 		types.add("object");
