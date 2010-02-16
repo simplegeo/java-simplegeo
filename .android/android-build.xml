@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="simplegeo-client" default="help">
+
+    <!-- The local.properties file is created and updated by the 'android' tool.
+         It contains the path to the SDK. It should *NOT* be checked in in Version
+         Control Systems. -->
+    <property file="local.properties" />
+
+    <!-- The build.properties file can be created by you and is never touched
+         by the 'android' tool. This is the place to change some of the default property values
+         used by the Ant rules.
+         Here are some properties you may want to change/update:
+
+         application.package
+             the name of your application package as defined in the manifest. Used by the
+             'uninstall' rule.
+         source.dir
+             the name of the source directory. Default is 'src'.
+         out.dir
+             the name of the output directory. Default is 'bin'.
+
+         Properties related to the SDK location or the project target should be updated
+          using the 'android' tool with the 'update' action.
+
+         This file is an integral part of the build system for your application and
+         should be checked in in Version Control Systems.
+
+         -->
+    <property file="build.properties" />
+
+    <!-- The default.properties file is created and updated by the 'android' tool, as well
+         as ADT.
+         This file is an integral part of the build system for your application and
+         should be checked in in Version Control Systems. -->
+    <property file="default.properties" />
+
+    <!-- Custom Android task to deal with the project target, and import the proper rules.
+         This requires ant 1.6.0 or above. -->
+    <path id="android.antlibs">
+        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/sdklib.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/androidprefs.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/apkbuilder.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/jarutils.jar" />
+    </path>
+
+    <taskdef name="setup"
+        classname="com.android.ant.SetupTask"
+        classpathref="android.antlibs" />
+
+    <!-- Execute the Android Setup task that will setup some properties specific to the target,
+         and import the build rules files.
+
+         The rules file is imported from
+            <SDK>/platforms/<target_platform>/templates/android_rules.xml
+
+         To customize some build steps for your project:
+         - copy the content of the main node <project> from android_rules.xml
+         - paste it in this build.xml below the <setup /> task.
+         - disable the import by changing the setup task below to <setup import="false" />
+
+         This will ensure that the properties are setup correctly but that your customized
+         build steps are used.
+    -->
+    <setup />
+	<property name="build.src" value="${basedir}/src" />
+	<property name="build.lib" value="${basedir}/libs" />
+	<property name="build.out" value="${basedir}/bin" />
+	<property name="build.classes" value="${build.out}/classes" />
+	<property name="build.test.dir" value="${build.out}/test" />
+	<property name="javadoc.dir" value="${build.out}/javadoc" />
+	<property name="test.dir" value="${basedir}/tests" />
+	<property name="test.src.dir" value="${test.dir}/src" />
+	<property name="test.classes" value="${build.out}/test/classes" />
+
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="android.dist.dir" value="${dist.dir}/android" />
+	<property name="version" value="0.1.0" />
+	<property name="final.name" value="simplegeo-android-client-${version}" />
+
+    <path id="android.simplegeo.classpath">
+        <pathelement location="${build.classes}"/>
+        <fileset dir="${build.lib}">
+          <include name="*.jar" />
+          <include name="android/*.jar" />
+        </fileset>
+    </path>
+	
+	<target name="init">
+		<mkdir dir="${build.out}" />
+		<mkdir dir="${build.classes}" />
+	</target>
+
+	<target name="build" depends="init">
+		<javac destdir="${build.classes}">
+			<src path="${build.src}" />
+			<classpath>
+				<path refid="android.simplegeo.classpath" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="jar" depends="clean,build">
+		<mkdir dir="${build.classes}/META-INF" />
+		<jar jarfile="${build.out}/${final.name}.jar" basedir="${build.classes}" />
+	</target>
+
+	<target name="dist" depends="jar,javadoc">
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${android.dist.dir}" />
+		<copy file="${build.out}/${final.name}.jar" todir="${dist.dir}" />
+		<copy todir="${dist.dir}" flatten="true">
+			<fileset dir="${build.lib}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	    <copy todir="${dist.dir}/javadoc">
+	        <fileset dir="${javadoc.dir}"/>
+	    </copy>
+	</target>
+	
+    <target name="build-test" depends="build">
+        <mkdir dir="${test.classes}" />
+        <javac destdir="${test.classes}" >
+          <classpath>
+            <path refid="android.simplegeo.classpath" />
+          	<pathelement location="${build.classes}" />
+          </classpath>
+          <src path="${test.src.dir}"/>
+        </javac>
+
+    </target>
+		
+	<target name="test">
+		<ant antfile="build.xml" target="reinstall" />
+		<exec executable="adb" >
+			<arg value="shell"/>
+			<arg value="am" />
+			<arg value="instrument" />
+			<arg value="-w" />
+			<arg value="com.simplegeo.client/android.test.InstrumentationTestRunner" />
+		</exec>
+	</target>
+	
+	<target name="javadoc" depends="init">
+		<tstamp>
+	     	<format property="YEAR" pattern="yyyy"/>
+	   	</tstamp>
+	   	<javadoc destdir="${javadoc.dir}" author="true" version="true" use="true"
+  	    	  windowtitle="${ant.project.name}" classpathref="android.simplegeo.classpath"
+	      		bottom="Copyright &amp;copy; ${YEAR} SimpleGeo Inc">
+
+	     	<fileset dir="${build.src}" defaultexcludes="yes">
+	       		<include name="**/*.java"/>
+	     	</fileset>
+	 </javadoc>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.out}" />
+		<delete dir="${dist.dir}" />
+	</target>
+	
+	<target name="to-java" depends="clean">
+		<replace dir="${basedir}" token="Log.d(TAG, " value="logger.debug(">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token="//import org.apache.log4j.Logger;" value="import org.apache.log4j.Logger;">
+			<include name="**/*.java" />
+		</replace>		
+		<replace dir="${basedir}" token="//private static Logger" value="private static Logger">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token="import android.util.Log" value="//import android.util.Log">
+			<include name="**/*.java" />
+		</replace>		
+		<replace dir="${basedir}" token=" AndroidTestCase" value=" TestCase">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token="import android.test" value="//import android.test">
+			<include name="**/*.java" />
+		</replace>
+		
+		<move failonerror="no" file="tests/src/com/simplegeo/client/AllTests.java" todir=".android" />
+		<move failonerror="no" file="default.properties" todir=".android/" />
+		<move failonerror="no" file="gen" todir=".android/" />
+		<move failonerror="no" file="local.properties" todir=".android/" />
+		<move failonerror="no" file="res" todir=".android/" />
+		<move failonerror="no" file="AndroidManifest.xml" todir=".android/" />
+		<move failonerror="no" file="build.xml" tofile=".android/android-build.xml" />
+		<move failonerror="no" file=".android/java-build.xml" tofile="build.xml" />
+		<move failonerror="no" file=".android/conf" todir="./" />	
+		<echo message="Simplegeo HttpClient has been converted for normal Java processing." />
+	</target>
+
+</project>

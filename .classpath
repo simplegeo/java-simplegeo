@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="tests/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/dsmith/workspace/eclipse_workspace/simplegeo-java-client/libs/geohash-java-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/signpost-commonshttp4-1.2.jar"/>
+	<classpathentry kind="lib" path="libs/signpost-core-1.2.jar"/>
+	<classpathentry kind="lib" path="libs/java/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="libs/java/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="libs/java/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/java/httpclient-4.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/java/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/java/httpcore-nio-4.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/java/httpmime-4.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/java/json.jar"/>
+	<classpathentry kind="lib" path="libs/java/junit.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

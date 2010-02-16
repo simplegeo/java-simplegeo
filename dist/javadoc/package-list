@@ -1,0 +1,7 @@
+com.simplegeo.client.concurrent
+com.simplegeo.client.encoder
+com.simplegeo.client.http
+com.simplegeo.client.http.exceptions
+com.simplegeo.client.model
+com.simplegeo.client.service
+com.simplegeo.client.utilities

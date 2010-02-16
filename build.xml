@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="build" name="simplegeo-client">
+	<property name="build.src" value="${basedir}/src" />
+	<property name="java.build.lib" value="${basedir}/libs/java" />
+	<property name="build.out" value="${basedir}/bin" />
+	<property name="build.classes" value="${build.out}/classes" />
+	<property name="build.test.dir" value="${build.out}/test" />
+	<property name="javadoc.dir" value="${build.out}/javadoc" />
+	<property name="test.dir" value="${basedir}/tests" />
+	<property name="test.src.dir" value="${test.dir}/src" />
+	<property name="test.classes" value="${build.out}/test/classes" />
+	<property name="ant.lib" value="${basedir}/ant/lib" />
+
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="version" value="0.1.0" />
+	<property name="final.name" value="simplegeo-java-client-${version}" />
+
+    <path id="java.simplegeo.classpath">
+        <pathelement location="${build.classes}"/>
+        <fileset dir="${java.build.lib}">
+        	<include name="*.jar" />
+        </fileset>
+    	<fileset dir="${basedir}/libs">
+    	  	<include name="*.jar" />
+    	</fileset>	
+    </path>
+
+	<target name="init">
+		<mkdir dir="${build.classes}" />
+	</target>
+
+	<target name="build" depends="init">
+		<javac destdir="${build.classes}">
+			<src path="${build.src}" />
+			<classpath>
+				<path refid="java.simplegeo.classpath" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="jar" depends="clean,build">
+		<mkdir dir="${build.classes}/META-INF" />
+		<jar jarfile="${build.out}/${final.name}.jar" basedir="${build.classes}" />
+	</target>
+	
+	<target name="dist" depends="jar,javadoc">
+		<mkdir dir="${dist.dir}" />
+		<copy file="${build.out}/${final.name}.jar" todir="${dist.dir}" />
+		<copy todir="${dist.dir}" flatten="true">
+			<fileset dir="${java.build.lib}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	    <copy todir="${dist.dir}/javadoc">
+	        <fileset dir="${javadoc.dir}"/>
+	    </copy>
+	</target>
+	
+	<target name="build-test" depends="build">
+		<mkdir dir="${test.classes}" />
+	    <javac destdir="${test.classes}" >
+	      <classpath>
+	      	<path refid="java.simplegeo.classpath" />
+		  </classpath>
+	      <src path="${test.src.dir}"/>
+	    </javac>
+
+	</target>
+
+	<target name="test" depends="build,build-test">
+		<junit haltonfailure="yes" printsummary="on">
+			<classpath>
+				<path refid="java.simplegeo.classpath" />
+				<pathelement location="${test.classes}" />
+				<pathelement location="${basedir}/conf" />
+			</classpath>
+			<formatter type="plain" usefile="false"/>
+			<batchtest todir="${build.test.dir}/output" >
+        		<fileset dir="${test.classes}" includes="**/*Test.class" />
+      		</batchtest>
+		</junit>
+	</target>
+	
+	<target name="javadoc" depends="init">
+		<tstamp>
+	     	<format property="YEAR" pattern="yyyy"/>
+	   	</tstamp>
+	   	<javadoc destdir="${javadoc.dir}" author="true" version="true" use="true"
+  	    	  windowtitle="${ant.project.name}" classpathref="java.simplegeo.classpath"
+	      		bottom="Copyright &amp;copy; ${YEAR} SimpleGeo Inc">
+
+	     	<fileset dir="${build.src}" defaultexcludes="yes">
+	       		<include name="**/*.java"/>
+	     	</fileset>
+	 </javadoc>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.out}" />
+		<delete dir="${dist.dir}" />
+	</target>
+				
+	<target name="to-android" >
+		<replace dir="${basedir}" token="logger.debug(" value="Log.d(TAG, ">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token="import org.apache.log4j.Logger;" value="//import org.apache.log4j.Logger;">
+			<include name="**/*.java" />
+		</replace>		
+		<replace dir="${basedir}" token="private static Logger" value="//private static Logger">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token="//import android.util.Log;" value="import android.util.Log;">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token=" TestCase" value=" AndroidTestCase">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${basedir}" token="//import android.test" value="import android.test">
+			<include name="**/*.java" />
+		</replace>		
+		
+		<move failonerror="no" file=".android/AllTests.java" todir="tests/src/com/simplegeo/client/" />
+		<move failonerror="no" file=".android/default.properties" todir="./" />
+		<move failonerror="no" file=".android/gen" todir="./" />
+		<move failonerror="no" file=".android/local.properties" todir="./" />
+		<move failonerror="no" file=".android/res" todir=".android/" />
+		<move failonerror="no" file=".android/AndroidManifest.xml" todir="./" />
+		<move failonerror="no" file="build.xml" tofile=".android/java-build.xml" />
+		<move failonerror="no" file="conf" todir=".android" />		
+		<move failonerror="no" file=".android/android-build.xml" tofile="./build.xml" />
+		
+		<echo message="Simplegeo HttpClient has been converted for Android processing." />
+
+	</target>
+
+</project>
+
