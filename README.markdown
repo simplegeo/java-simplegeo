@@ -1,4 +1,4 @@
-SGClient v0.1.0
+SGClient v0.1.1
 ================================================================================
 
 ABSTRACT:
@@ -23,9 +23,14 @@ initial state.
 Running `ant dist` will generate jars and JavaDocs.
 
 Currently, there is only one example located in _examples_. There will be more
-to come. The unit tests in _tests_ should also provide as examples.
+to come. The unit tests in _tests_ should also provide as examples. In order for
+unit tests to be successful, you must replace three static fields in
+_tests/com/simplegeo/client/test/TestEnvironment.java_: TESTING_LAYER, ACCESS_KEY 
+and SECRETY_KEY.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 0.1.1
+- Added license
 
 ### Copyright (C) 2010 SimpleGeo Inc. All rights reserved.
