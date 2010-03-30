@@ -29,6 +29,7 @@
 package com.simplegeo.client.encoder;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -164,6 +165,15 @@ public class GeoJSONEncoder {
 				properties = new JSONObject(properties.toString());
 			else
 				properties = new JSONObject();
+			
+			JSONObject gjrp = geoJSONRecord.getProperties();
+			
+			Iterator<String> keys = (Iterator<String>)(gjrp.keys());
+			while (keys.hasNext())
+			{
+				String s = keys.next();
+				properties.put(s, gjrp.get(s));
+			}
 			
 			geoJSONRecord.setLatitude(record.getLatitude());
 			geoJSONRecord.setLongitude(record.getLongitude());

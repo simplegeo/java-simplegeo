@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="tests/src"/>
 	<classpathentry kind="src" path="examples/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/dsmith/workspace/eclipse_workspace/simplegeo-java-client/libs/geohash-java-1.0.jar"/>
 	<classpathentry kind="lib" path="libs/signpost-commonshttp4-1.2.jar"/>
 	<classpathentry kind="lib" path="libs/signpost-core-1.2.jar"/>
 	<classpathentry kind="lib" path="libs/java/log4j-1.2.15.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry kind="lib" path="libs/java/json.jar"/>
 	<classpathentry kind="lib" path="libs/java/junit.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="libs/geohash-java-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

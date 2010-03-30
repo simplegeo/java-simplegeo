@@ -1,3 +1,5 @@
+package com.simplegeo.client.model;
+
 /**
  * Copyright (c) 2009-2010, SimpleGeo
  * All rights reserved.
