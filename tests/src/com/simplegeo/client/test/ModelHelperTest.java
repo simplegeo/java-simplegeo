@@ -3,9 +3,11 @@
  */
 package com.simplegeo.client.test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -25,6 +27,10 @@ import com.simplegeo.client.model.IRecord;
 public class ModelHelperTest extends TestCase {
 	
 	private static final String TAG = ModelHelperTest.class.getName();
+	
+public void testTestsAreAlive() {
+	    assertTrue("Tests exist!", true);
+	}
 	
 	public DefaultRecord getRandomDefaultRecord() throws Exception {
 		
