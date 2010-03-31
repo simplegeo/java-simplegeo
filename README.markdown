@@ -30,6 +30,9 @@ and SECRETY_KEY.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 1.0.0
+- Nearby requests only accept a single layer instead of multiple.
+
 Version 0.1.1
 - Added license
 
