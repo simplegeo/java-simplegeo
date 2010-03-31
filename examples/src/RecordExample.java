@@ -64,11 +64,7 @@ public class RecordExample {
 		
 		GeoJSONObject geoJSON = null;
 		try {
-			
-			List<String> layers = new ArrayList<String>();
-			layers.add(this.layer);
-			geoJSON = (GeoJSONObject)LocationService.getInstance().nearby(lat, lon, 10.0, layers, null, 2);
-			
+			geoJSON = (GeoJSONObject)LocationService.getInstance().nearby(lat, lon, 10.0, this.layer, null, 2);
 		} catch(ClientProtocolException e) {
 			e.printStackTrace();
 		} catch(IOException e) {

@@ -30,6 +30,7 @@ package com.simplegeo.client.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -416,7 +417,7 @@ public class LocationService {
 	 * objects is not specfied, then all object types will be used in the query.
 	 * 
 	 * @param geoHash the area to search for records
-	 * @param layers the layers to search in
+	 * @param layer the layer in which to search
 	 * @param types the different types to look for
 	 * @param limit
 	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
@@ -426,9 +427,9 @@ public class LocationService {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(GeoHash geoHash, List<String> layers, List<String> types, int limit) 
+	public Object nearby(GeoHash geoHash, String layer, List<String> types, int limit) 
 						throws ClientProtocolException, IOException {
-		return nearby(geoHash, layers, types, limit, Handler.GEOJSON);
+		return nearby(geoHash, layer, types, limit, Handler.GEOJSON);
 	}
 
 	
@@ -439,7 +440,7 @@ public class LocationService {
 	 * objects is not specfied, then all object types will be used in the query. 
 	 * 
 	 * @param geoHash the area to search for records
-	 * @param layers the layers to search in
+	 * @param layer the layer in which to search
 	 * @param types the different types to look for
 	 * @param limit the maximum amount of records to return (defaults to 100)
 	 * @param type the handler responsible for creating the return object
@@ -450,16 +451,17 @@ public class LocationService {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(GeoHash geoHash, List<String> layers, List<String> types, int limit, Handler type) 
+	public Object nearby(GeoHash geoHash, String layer, List<String> types, int limit, Handler type) 
 						throws ClientProtocolException, IOException {
 		
-		String uri = mainURL + String.format("/nearby/%s.json", geoHash.toBase32());
+		// /records/{layer}/nearby/{geohash}.json
+				
+		String uri = mainURL + String.format("/records/%s/nearby/%s.json", layer, geoHash.toBase32());
 		HttpGet request = new HttpGet(uri);
 		
 		BasicHttpParams params = new BasicHttpParams();
 		params.setIntParameter("limit", limit);
 		params.setParameter("types", SimpleGeoUtilities.commaSeparatedString(types));
-		params.setParameter("layers", SimpleGeoUtilities.commaSeparatedString(layers));
 		
 		request.setParams(params);
 		return execute(request, getHandler(type));
@@ -473,7 +475,7 @@ public class LocationService {
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param radius the radius of the search in km
-	 * @param layers the layers to search in
+	 * @param layer the layer in which to search
 	 * @param types the different types to look for
 	 * @param limit the maximum amount of records to return (defaults to 100)
 	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
@@ -483,9 +485,9 @@ public class LocationService {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(double lat, double lon, double radius, List<String> layers, List<String> types, int limit) 
+	public Object nearby(double lat, double lon, double radius, String layer, List<String> types, int limit) 
 		throws ClientProtocolException, IOException {
-		return nearby(lat, lon, radius, layers, types, limit, Handler.GEOJSON);
+		return nearby(lat, lon, radius, layer, types, limit, Handler.GEOJSON);
 	}
 
 	
@@ -499,7 +501,7 @@ public class LocationService {
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param radius the radius of the search in km
-	 * @param layers the layers to search in
+	 * @param layer the layer in which to search
 	 * @param types the different types to look for
 	 * @param limit the maximum amount of records to return (defaults to 100)
 	 * @param type the handler responsible for creating the return object
@@ -510,10 +512,11 @@ public class LocationService {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(double lat, double lon, double radius, List<String> layers, List<String> types, int limit, Handler type) 
+	public Object nearby(double lat, double lon, double radius, String layer, List<String> types, int limit, Handler type) 
 						throws ClientProtocolException, IOException {
-
-		String uri = mainURL + String.format("/nearby/%f,%f.json", lat, lon);
+		// /records/{layer}/nearby/{lat},{lon}.json
+		
+		String uri = mainURL + String.format("/records/%s/nearby/%f,%f.json", layer, lat, lon);
 		HttpGet request = new HttpGet(uri);
 		
 		BasicHttpParams params = new BasicHttpParams();
@@ -523,12 +526,8 @@ public class LocationService {
 		if(types != null && !types.isEmpty())
 			params.setParameter("types", SimpleGeoUtilities.commaSeparatedString(types));
 		
-		if(types != null && !types.isEmpty())
-			params.setParameter("layers", SimpleGeoUtilities.commaSeparatedString(layers));
-		
 		request.setParams(params);
 		return execute(request, getHandler(type));
-
 	}
 	
 	/**
@@ -547,6 +546,63 @@ public class LocationService {
 			throws ClientProtocolException, IOException {
 		
 		String uri = mainURL + String.format("/nearby/address/%f,%f.json", lat, lon);
+		HttpGet request = new HttpGet(uri);
+		
+		return execute(request, getHandler(Handler.GEOJSON));
+	}
+	
+	/**
+	 * 
+	 * @param day any day from {@link java.util.Calendar#DAY_OF_WEEK} in the DAY_OF_WEEK section
+	 * @param hour an hour between 0 and 23, or something outside that range to query the whole day
+	 * @param lat the latitude
+	 * @param lon the longitude
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object density(int day, int hour, double lat, double lon)
+			throws ClientProtocolException, IOException {
+		// /density/{dayname}/{hour}/{lat},{lon}.json
+		String dayname = "";
+		switch (day)
+		{
+		case Calendar.SUNDAY:
+			dayname = "sun";
+			break;
+		case Calendar.MONDAY:
+			dayname = "mon";
+			break;
+		case Calendar.TUESDAY:
+			dayname = "tue";
+			break;
+		case Calendar.WEDNESDAY:
+			dayname = "wed";
+			break;
+		case Calendar.THURSDAY:
+			dayname = "thu";
+			break;
+		case Calendar.FRIDAY:
+			dayname = "fri";
+			break;
+		case Calendar.SATURDAY:
+			dayname = "sat";
+			break;
+		}
+		
+		String uri = mainURL;
+		
+		if (hour >=0 && hour <= 23)
+		{
+			uri += String.format("/density/%s/%d/%f,%f.json", dayname, hour, lat, lon);
+		}
+		else
+		{
+			uri += String.format("/density/%s/%f,%f.json", dayname, lat, lon);
+		}
 		HttpGet request = new HttpGet(uri);
 		
 		return execute(request, getHandler(Handler.GEOJSON));

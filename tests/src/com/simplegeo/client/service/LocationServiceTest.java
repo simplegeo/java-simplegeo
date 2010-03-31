@@ -5,6 +5,7 @@ package com.simplegeo.client.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -120,6 +121,65 @@ public class LocationServiceTest extends ModelHelperTest {
 		
 	}
 	
+	public void testNearby() throws Exception {
+		
+		LocationService locationService = LocationService.getInstance();
+		
+		DefaultRecord record = (DefaultRecord)defaultRecordList.get(0);
+		record.setLatitude(10.0);
+		record.setLongitude(10.0);
+		locationService.update(record);
+		
+		record = (DefaultRecord)defaultRecordList.get(1);
+		record.setLatitude(10.0);
+		record.setLongitude(10.0);
+		locationService.update(record);
+		
+		record = (DefaultRecord)defaultRecordList.get(2);
+		record.setLatitude(10.0);
+		record.setLongitude(10.0);
+		locationService.update(record);
+		
+		try {
+			
+			locationService.update(defaultRecordList);
+			ModelHelperTest.waitForWrite();
+			
+			locationService.update((IRecord)featureCollection);
+			ModelHelperTest.waitForWrite();
+			
+		} catch (ClientProtocolException e) {
+			assertTrue(e.getLocalizedMessage(), false);
+		} catch (IOException e) {
+			assertTrue(e.getLocalizedMessage(), false);			
+		}
+		
+		
+		List<String> types = new ArrayList<String>();
+		types.add("object");
+		
+		GeoHash geoHash = GeoHash.withBitPrecision(10.0, 10.0, 4);
+		
+		try {
+			
+			List<IRecord> nearbyRecords = (List<IRecord>)locationService.nearby(geoHash, TestEnvironment.getLayer(), types, 100, Handler.RECORD);
+			assertNotNull(nearbyRecords);
+			assertTrue(List.class.isInstance(nearbyRecords));
+			assertTrue(nearbyRecords.size() >= 2);
+			
+			nearbyRecords = (List<IRecord>)locationService.nearby(10.0, 10.0, 10.0, TestEnvironment.getLayer(), types, 100, Handler.RECORD);
+			assertNotNull(nearbyRecords);
+			assertTrue(List.class.isInstance(nearbyRecords));			
+			assertTrue(nearbyRecords.size() >= 2);
+
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);			
+		}
+		
+	}
+	
 	public void testDeleteRecord() {
 		
 		LocationService locationService = LocationService.getInstance();
@@ -155,60 +215,7 @@ public class LocationServiceTest extends ModelHelperTest {
 		
 	}
 	
-	public void testNearby() throws Exception {
-		
-		LocationService locationService = LocationService.getInstance();
-		
-		((DefaultRecord)defaultRecordList.get(0)).setLatitude(10.0);
-		((DefaultRecord)defaultRecordList.get(0)).setLongitude(10.0);
-		
-		((DefaultRecord)defaultRecordList.get(1)).setLatitude(10.0);
-		((DefaultRecord)defaultRecordList.get(1)).setLongitude(10.0);
-		
-		((DefaultRecord)defaultRecordList.get(2)).setLatitude(10.0);
-		((DefaultRecord)defaultRecordList.get(2)).setLongitude(10.0);
-		
-		try {
-			
-			locationService.update(defaultRecordList);
-			ModelHelperTest.waitForWrite();
-			
-			locationService.update((IRecord)featureCollection);
-			ModelHelperTest.waitForWrite();
-			
-		} catch (ClientProtocolException e) {
-			assertTrue(e.getLocalizedMessage(), false);
-		} catch (IOException e) {
-			assertTrue(e.getLocalizedMessage(), false);			
-		}
-		
-		List<String> layers = new ArrayList<String>();
-		layers.add(TestEnvironment.getLayer());
-		
-		List<String> types = new ArrayList<String>();
-		types.add("object");
-		
-		GeoHash geoHash = GeoHash.withBitPrecision(10.0, 10.0, 4);
-		
-		try {
-			
-			List<IRecord> nearbyRecords = (List<IRecord>)locationService.nearby(geoHash, layers, types, 100, Handler.RECORD);
-			assertNotNull(nearbyRecords);
-			assertTrue(List.class.isInstance(nearbyRecords));
-			assertTrue(nearbyRecords.size() >= 2);
-			
-			nearbyRecords = (List<IRecord>)locationService.nearby(10.0, 10.0, 10.0, layers, types, 100, Handler.RECORD);
-			assertNotNull(nearbyRecords);
-			assertTrue(List.class.isInstance(nearbyRecords));			
-			assertTrue(nearbyRecords.size() >= 2);
-
-		} catch (ClientProtocolException e) {
-			assertFalse(e.getLocalizedMessage(), true);
-		} catch (IOException e) {
-			assertFalse(e.getLocalizedMessage(), true);			
-		}
-		
-	}
+	
 	
 	public void testReverseGeocode() {
 
@@ -219,6 +226,27 @@ public class LocationServiceTest extends ModelHelperTest {
 			GeoJSONObject jsonObject = (GeoJSONObject)locationService.reverseGeocode(40.01729499086, -105.2775999994);
 			assertTrue(jsonObject.getProperties().length() > 8);
 			assertTrue(jsonObject.getProperties().get("country").equals("US"));
+			
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (JSONException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		}
+	} 
+	
+	public void testDensity() {
+
+		LocationService locationService = LocationService.getInstance();
+		
+		try {
+			Object o = locationService.density(Calendar.WEDNESDAY, 12, 40.01729499086, -105.2775999994);
+			GeoJSONObject jsonObject = (GeoJSONObject)o;
+			
+			assertTrue(jsonObject.getGeometry().getJSONArray("coordinates").length()>3);
+			
+			assertTrue(jsonObject.getProperties().getInt("worldwide_rank") != -983);
 			
 		} catch (ClientProtocolException e) {
 			assertFalse(e.getLocalizedMessage(), true);

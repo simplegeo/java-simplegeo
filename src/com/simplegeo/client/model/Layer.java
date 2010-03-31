@@ -175,11 +175,7 @@ public class Layer {
 	 */
 	public List<IRecord> nearby(GeoHash geoHash, List<String> types, int limit)
 				throws ClientProtocolException, IOException {
-		
-		ArrayList<String> layers = new ArrayList<String>();
-		layers.add(name);
-		List<IRecord> nearby = (List<IRecord>)LocationService.getInstance().nearby(geoHash, layers, types, limit);
-		
+		List<IRecord> nearby = (List<IRecord>)LocationService.getInstance().nearby(geoHash, name, types, limit);
 		return nearby;		
 	}
 	
@@ -197,10 +193,7 @@ public class Layer {
 	 */
 	public List<IRecord> nearby(double lat, double lon, double radius, List<String> types, int limit) 
 				throws ClientProtocolException, IOException {
-		
-		ArrayList<String> layers = new ArrayList<String>();
-		layers.add(name);
-		List<IRecord> nearby = (List<IRecord>)LocationService.getInstance().nearby(lat, lon, radius, layers, types, limit);
+		List<IRecord> nearby = (List<IRecord>)LocationService.getInstance().nearby(lat, lon, radius, name, types, limit);
 		return nearby;
 		
 	}
