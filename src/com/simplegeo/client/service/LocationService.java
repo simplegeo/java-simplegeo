@@ -29,9 +29,14 @@
 package com.simplegeo.client.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
@@ -52,6 +57,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -457,13 +463,15 @@ public class LocationService {
 		// /records/{layer}/nearby/{geohash}.json
 				
 		String uri = mainURL + String.format("/records/%s/nearby/%s.json", layer, geoHash.toBase32());
-		HttpGet request = new HttpGet(uri);
 		
-		BasicHttpParams params = new BasicHttpParams();
-		params.setIntParameter("limit", limit);
-		params.setParameter("types", SimpleGeoUtilities.commaSeparatedString(types));
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("limit", Integer.toString(limit));
+		if (types != null && !types.isEmpty()) {			
+			params.put("types", SimpleGeoUtilities.commaSeparatedString(types));
+		}
 		
-		request.setParams(params);
+		HttpGet request = new HttpGet(buildUrl(uri, params));
+		
 		return execute(request, getHandler(type));
 	}
 
@@ -517,16 +525,16 @@ public class LocationService {
 		// /records/{layer}/nearby/{lat},{lon}.json
 		
 		String uri = mainURL + String.format("/records/%s/nearby/%f,%f.json", layer, lat, lon);
-		HttpGet request = new HttpGet(uri);
 		
-		BasicHttpParams params = new BasicHttpParams();
-		params.setIntParameter("limit", limit);
-		params.setDoubleParameter("radius", radius);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("limit", Integer.toString(limit));
+		params.put("radius", Double.toString(radius));
+		if (types != null && !types.isEmpty()) {			
+			params.put("types", SimpleGeoUtilities.commaSeparatedString(types));
+		}
 		
-		if(types != null && !types.isEmpty())
-			params.setParameter("types", SimpleGeoUtilities.commaSeparatedString(types));
+		HttpGet request = new HttpGet(buildUrl(uri, params));
 		
-		request.setParams(params);
 		return execute(request, getHandler(type));
 	}
 	
@@ -613,6 +621,25 @@ public class LocationService {
 	 */
 	public OAuthHttpClient getHttpClient() {
 		return this.httpClient;
+	}
+	
+	private String buildUrl(String url, Map<String, ?> parameters) {
+		StringBuilder sb = new StringBuilder(url);
+		boolean first = true;
+		for (Entry<String, ?> entry : parameters.entrySet()) {
+			if (entry.getValue() != null) {
+				sb.append(first ? "?" : "&");
+				try {
+					String key = URLEncoder.encode(entry.getKey(), HTTP.DEFAULT_CONTENT_CHARSET);
+					String value = URLEncoder.encode(entry.getValue().toString(), HTTP.DEFAULT_CONTENT_CHARSET);
+					sb.append(key).append("=").append(value);
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				}
+				first = false;
+			}
+		}
+		return sb.toString();
 	}
 		
 	private Object execute(HttpUriRequest request, SimpleGeoHandler handler)
