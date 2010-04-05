@@ -30,6 +30,9 @@ and SECRETY_KEY.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 1.1.0
+- Fix query parameters for nearby calls
+
 Version 1.0.0
 - Nearby requests only accept a single layer instead of multiple.
 
