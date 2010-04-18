@@ -78,6 +78,7 @@ import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
+import com.simplegeo.client.service.exceptions.ValidLayerException;
 import com.simplegeo.client.utilities.SimpleGeoUtilities;
 
 /**
@@ -399,8 +400,8 @@ public class LocationService {
 	 * Deletes the record form SimpleGeo. The record must already exist in SimpleGeo in
 	 * order for the request to be successful.
 	 * 
-	 * @param layer
-	 * @param recordId
+	 * @param layer the name of the layer that holds the record.
+	 * @param recordId the id of the record.
 	 * @param handler the handler responsible for creating the return object
 	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
@@ -419,22 +420,22 @@ public class LocationService {
 	
 	/**
 	 * Sends a nearby request to SimpleGeo using a geohash as the bounding box. If
-	 * layers is not specified, then all global layers will be used in the query. If
 	 * objects is not specfied, then all object types will be used in the query.
 	 * 
 	 * @param geoHash the area to search for records
 	 * @param layer the layer in which to search
 	 * @param types the different types to look for
-	 * @param limit
+	 * @param limit the amount to return
 	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
 	 * @throws IOException
+	 * @throws ValidLayerException 
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object nearby(GeoHash geoHash, String layer, List<String> types, int limit) 
-						throws ClientProtocolException, IOException {
+						throws ClientProtocolException, IOException, ValidLayerException {
 		return nearby(geoHash, layer, types, limit, Handler.GEOJSON);
 	}
 
@@ -442,7 +443,6 @@ public class LocationService {
 	/**
 	 * Sends a nearby request to SimpleGeo using a geohash as the bounding box. This method
 	 * also provides a way to set the Handler used in the Http response. If
-	 * layers is not specified, then all global layers will be used in the query. If
 	 * objects is not specfied, then all object types will be used in the query. 
 	 * 
 	 * @param geoHash the area to search for records
@@ -455,12 +455,14 @@ public class LocationService {
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
 	 * @throws IOException
+	 * @throws ValidLayerException 
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object nearby(GeoHash geoHash, String layer, List<String> types, int limit, Handler type) 
-						throws ClientProtocolException, IOException {
+						throws ClientProtocolException, IOException, ValidLayerException {
 		
-		// /records/{layer}/nearby/{geohash}.json
+		if (layer == null || layer.equals(""))
+			throw new ValidLayerException("");
 				
 		String uri = mainURL + String.format("/records/%s/nearby/%s.json", layer, geoHash.toBase32());
 		
@@ -477,7 +479,6 @@ public class LocationService {
 
 	/**
 	 * Sends a nearby request to SimpleGeo using the lat, lon and radius. If
-	 * layers is not specified, then all global layers will be used in the query. If
 	 * objects is not specfied, then all object types will be used in the query. 
 	 *
 	 * @param lat the latitude
@@ -491,18 +492,18 @@ public class LocationService {
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
 	 * @throws IOException
+	 * @throws ValidLayerException 
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object nearby(double lat, double lon, double radius, String layer, List<String> types, int limit) 
-		throws ClientProtocolException, IOException {
+		throws ClientProtocolException, IOException, ValidLayerException {
 		return nearby(lat, lon, radius, layer, types, limit, Handler.GEOJSON);
 	}
 
 	
 	/**
 	 * Sends a nearby request to SimpleGeo using the lat, lon and radius. This method
-	 * also provides a way to set the Handler used in the Http response.  If
-	 * layers is not specified, then all global layers will be used in the query. If
+	 * also provides a way to set the Handler used in the Http response. If
 	 * objects is not specfied, then all object types will be used in the query. 
 	 *
 	 * 
@@ -518,12 +519,15 @@ public class LocationService {
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
 	 * @throws IOException
+	 * @throws ValidLayerException 
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object nearby(double lat, double lon, double radius, String layer, List<String> types, int limit, Handler type) 
-						throws ClientProtocolException, IOException {
-		// /records/{layer}/nearby/{lat},{lon}.json
+						throws ClientProtocolException, IOException, ValidLayerException {
 		
+		if (layer == null || layer.equals(""))
+			throw new ValidLayerException("");
+
 		String uri = mainURL + String.format("/records/%s/nearby/%f,%f.json", layer, lat, lon);
 		
 		Map<String, String> params = new HashMap<String, String>();

@@ -10,6 +10,7 @@ import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.model.RecordType;
 import com.simplegeo.client.service.LocationService;
+import com.simplegeo.client.service.exceptions.ValidLayerException;
 
 
 public class RecordExample {
@@ -68,6 +69,8 @@ public class RecordExample {
 		} catch(ClientProtocolException e) {
 			e.printStackTrace();
 		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (ValidLayerException e) {
 			e.printStackTrace();
 		}
 		
