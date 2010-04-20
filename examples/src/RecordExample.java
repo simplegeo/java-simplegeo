@@ -18,9 +18,13 @@ public class RecordExample {
 	private DefaultRecord record = null;
 	private GeoJSONRecord geoJSON = null;
 	
+	// Change these values to your account
+	// access and secret keys.
 	public static String key = "my-key";
 	public static String secret = "my-secret";
 
+	// Change this to a valid layer that you own
+	// and have created from the http://simplegeo.com
 	private String layer = "com.layer.my";
 	
 	private final double lat = 39.91;
