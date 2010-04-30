@@ -75,6 +75,7 @@ import com.simplegeo.client.http.RecordHandler;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
@@ -506,7 +507,6 @@ public class LocationService {
 	 * also provides a way to set the Handler used in the Http response. If
 	 * objects is not specfied, then all object types will be used in the query. 
 	 *
-	 * 
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param radius the radius of the search in km
@@ -577,6 +577,25 @@ public class LocationService {
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object density(int day, int hour, double lat, double lon)
+	throws ClientProtocolException, IOException {
+		return density(day, hour, lat, lon, Handler.GEOJSON);
+	}
+	
+	/**
+	 * 
+	 * @param day any day from {@link java.util.Calendar#DAY_OF_WEEK} in the DAY_OF_WEEK section
+	 * @param hour an hour between 0 and 23, or something outside that range to query the whole day
+	 * @param lat the latitude
+	 * @param lon the longitude
+	 * @param type the handler responsible for creating the return object
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object density(int day, int hour, double lat, double lon, Handler type)
 			throws ClientProtocolException, IOException {
 		// /density/{dayname}/{hour}/{lat},{lon}.json
 		String dayname = "";
@@ -606,7 +625,6 @@ public class LocationService {
 		}
 		
 		String uri = mainURL;
-		
 		if (hour >=0 && hour <= 23)
 		{
 			uri += String.format("/density/%s/%d/%f,%f.json", dayname, hour, lat, lon);
@@ -618,6 +636,202 @@ public class LocationService {
 		HttpGet request = new HttpGet(uri);
 		
 		return execute(request, getHandler(Handler.GEOJSON));
+	}
+	
+	/**
+	 * Does a "pushpin" query through a series of polygon layers and identifies the "cone" of
+	 * administrative and other boundaries in which the point lies.
+	 *  
+	 * Returns a FeatureCollection where the features contain these key fields:
+	 * <ul>
+	 * <li>id: A string that uniquely identifies the feature in the SimpleGeo gazetteer. This ID can 
+	 * be used to query the exact shape of the polygon itself via the `boundary` API call.</li>
+	 * <li>name: A well-known name English-language name for the entity. This may change in the future.</li>
+	 * <li>abbr: If present, an official abbreviation for the entity, e.g. an ISO code, postal 
+	 * code, or similar.</li>
+	 * <li>bounds: A list containing the (west, south, east, north) bounds of the polygon, in that order.</li>
+	 * <li>type: A string describing the type of feature identified. May or may not be one of:
+	 *   <ul>
+	 *   <li>Country: A national boundary.</li>
+     *   <li>Province: A state or province.</li>
+	 *   <li>County: A county, parish, or similar sub-provincial administrative entity. US only at present.</li>
+	 *   <li>City: An incorporated city, town, village, hamlet, etc. US only at present.</li>
+	 *   <li>Urban Area: An approximate metropolitan region, from the 1:10M NaturalEarth cultural dataset. 
+	 *   May be useful for places outside the US where no incorporated place boundary is (yet) available.</li>
+	 *   <li>Neighborhood: A usually approximate boundary for a (usually informal) sub-division of a city. 
+	 *   US only at present.</li>
+	 *   <li>Postal Code: A postal delivery region. In the US, a ZIP code. US only at present.</li>
+	 *   <li>Legislative District: In the US, a congressional district for the currently sitting US Congress.</li>
+	 *   <li>Census Tract: As defined by the US Census Bureau in the most recently published census (2000).</li> 
+	 *   <li>Other values are possible, so this list will be updated from time to time.</li>
+	 *   </ul>
+	 * </li>
+	 * </ul>
+	 * @param lat the latitude
+	 * @param lon the longitude
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object contains(double lat, double lon)
+	throws ClientProtocolException, IOException {
+		
+		return contains(lat, lon, Handler.GEOJSON);
+		
+	}
+	
+	/**
+	 * Does a "pushpin" query through a series of polygon layers and identifies the "cone" of
+	 * administrative and other boundaries in which the point lies.
+	 *  
+	 * Returns a FeatureCollection where the features contain these key fields:
+	 * <ul>
+	 * <li>id: A string that uniquely identifies the feature in the SimpleGeo gazetteer. This ID can 
+	 * be used to query the exact shape of the polygon itself via the `boundary` API call.</li>
+	 * <li>name: A well-known name English-language name for the entity. This may change in the future.</li>
+	 * <li>abbr: If present, an official abbreviation for the entity, e.g. an ISO code, postal 
+	 * code, or similar.</li>
+	 * <li>bounds: A list containing the (west, south, east, north) bounds of the polygon, in that order.</li>
+	 * <li>type: A string describing the type of feature identified. May or may not be one of:
+	 *   <ul>
+	 *   <li>Country: A national boundary.</li>
+     *   <li>Province: A state or province.</li>
+	 *   <li>County: A county, parish, or similar sub-provincial administrative entity. US only at present.</li>
+	 *   <li>City: An incorporated city, town, village, hamlet, etc. US only at present.</li>
+	 *   <li>Urban Area: An approximate metropolitan region, from the 1:10M NaturalEarth cultural dataset. 
+	 *   May be useful for places outside the US where no incorporated place boundary is (yet) available.</li>
+	 *   <li>Neighborhood: A usually approximate boundary for a (usually informal) sub-division of a city. 
+	 *   US only at present.</li>
+	 *   <li>Postal Code: A postal delivery region. In the US, a ZIP code. US only at present.</li>
+	 *   <li>Legislative District: In the US, a congressional district for the currently sitting US Congress.</li>
+	 *   <li>Census Tract: As defined by the US Census Bureau in the most recently published census (2000).</li> 
+	 *   <li>Other values are possible, so this list will be updated from time to time.</li>
+	 *   </ul>
+	 * </li>
+	 * </ul>
+	 * @param lat the latitude
+	 * @param lon the longitude
+	 * @param type the handler responsible for creating the return object
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object contains(double lat, double lon, Handler type)
+	throws ClientProtocolException, IOException {
+
+		String uri = mainURL + String.format("/contains/%f,%f.json", lat, lon);
+		HttpGet request = new HttpGet(uri);
+		
+		return execute(request, getHandler(type));
+	}
+	
+	/**
+	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.service.LocationService#contains}, 
+	 * along with the geometry of the feature in GeoJSON format in the geometry field.
+	 * 
+	 * @param featureId A string that uniquely identifies the feature in the SimpleGeo gazetteer.
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object boundaries(String featureId)
+	throws ClientProtocolException, IOException {
+		
+		return boundaries(featureId, Handler.GEOJSON);
+		
+	}
+	
+	/**
+	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.service.LocationService#contains}, 
+	 * along with the geometry of the feature in GeoJSON format in the geometry field.
+	 * 
+	 * @param featureId A string that uniquely identifies the feature in the SimpleGeo gazetteer.
+	 * @param type the handler responsible for creating the return object
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object boundaries(String featureId, Handler type)
+	throws ClientProtocolException, IOException {
+		
+		String uri = mainURL + String.format("/boundary/%s.json", featureId);
+		HttpGet request = new HttpGet(uri);
+		
+		return execute(request, getHandler(type));
+	}
+	
+	/**
+	 * Queries a series of polygon layers and identifies the "cone" of administrative and
+	 * other boundaries that overlap with the given bounding box.
+	 * 
+	 * Specifying a limit is not a strict count of how many features will be returned, but 
+	 * rather the maximum amount that will be returned. The maximum 
+	 * number of features returned is 1000.  The results are not paginated, so if you need more than
+	 * 1000 results, consider breaking down your bounding box into multiple queries.
+	 * 
+	 * @param envelope the bounding box area
+	 * @param limit the amount of features to return. 
+	 * @param featureType the feature type to filter by
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object overlaps(Envelope envelope, int limit, String featureType) 
+	throws ClientProtocolException, IOException {
+		
+		return overlaps(envelope, limit, featureType);
+	}
+	
+	/**
+	 * Queries a series of polygon layers and identifies the "cone" of administrative and
+	 * other boundaries that overlap with the given bounding box.
+	 * 
+	 * Specifying a limit is not a strict count of how many features will be returned, but 
+	 * rather the maximum amount that will be returned. The maximum 
+	 * number of features returned is 1000.  The results are not paginated, so if you need more than
+	 * 1000 results, consider breaking down your bounding box into multiple queries.
+	 * 
+	 * @param envelope the bounding box area
+	 * @param limit the amount of features to return. 
+	 * @param featureType the feature type to filter by
+	 * @param type the handler responsible for creating the return object
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object overlaps(Envelope envelope, int limit, String featureType, Handler type)
+	throws ClientProtocolException, IOException {
+		
+		String uri = mainURL + String.format("/overlaps/%s.json", envelope.toString());
+		
+		Map<String, String> params = new HashMap<String, String>();
+		
+		if (limit > 0)
+			params.put("limit", Integer.toString(limit));
+		
+		if (featureType != null) 			
+			params.put("type", featureType);
+		
+		HttpGet request = new HttpGet(buildUrl(uri, params));
+		return execute(request, getHandler(type));
 	}
 	
 	/**
