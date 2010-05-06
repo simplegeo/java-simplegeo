@@ -11,7 +11,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import ch.hsr.geohash.GeoHash;
 
@@ -20,6 +22,7 @@ import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.model.DefaultRecord;
+import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
@@ -255,7 +258,71 @@ public class LocationServiceTest extends ModelHelperTest {
 		} catch (JSONException e) {
 			assertFalse(e.getLocalizedMessage(), true);
 		}
-	} 
+	}
+	
+	public void testContains() {
+		
+		LocationService locationService = LocationService.getInstance();
+		
+		try {
+			double lat = 40.017294990861913;
+			double lon = -105.27759999949176;
+			
+			JSONArray jsonArray = (JSONArray)locationService.contains(lat, lon);
+			assertNotNull(jsonArray);
+			assertTrue(jsonArray.length() == 9);
+			
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		}
+
+	}
+	
+	public void testOverlaps() {
+		
+		LocationService locationService = LocationService.getInstance();
+		
+		try {
+			
+			Envelope envelope = new Envelope(40.0, -90.0, 50.0, -80.0);
+			JSONArray jsonArray = (JSONArray)locationService.overlaps(envelope, 2, null);
+			assertNotNull(jsonArray);
+			assertTrue(jsonArray.length() == 2);
+			
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		}
+
+	}
+	
+	public void testBoundary() {
+		LocationService locationService = LocationService.getInstance();
+		
+		try {
+			
+			String featureId = "Province:Bauchi:s1zj73";
+		    String name = "Bauchi";
+		    
+		    GeoJSONObject geoJSON = (GeoJSONObject)locationService.boundaries(featureId);
+		    assertTrue(geoJSON.isFeature());
+		    JSONObject properties = geoJSON.getProperties();
+		    assertTrue(properties.getString("id").equals(featureId));
+		    assertTrue(properties.getString("name").equals(name));
+		    
+			
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (JSONException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		}
+
+	}
 	
 	public void testFutureRetrieval() {
 		

@@ -70,10 +70,12 @@ import ch.hsr.geohash.GeoHash;
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.http.GeoJSONHandler;
+import com.simplegeo.client.http.JSONHandler;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.RecordHandler;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
+import com.simplegeo.client.http.exceptions.UnsupportedHandlerException;
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONObject;
@@ -116,6 +118,7 @@ public class LocationService {
 	
 	private RecordHandler recordHandler = null;
 	private GeoJSONHandler geoJSONHandler = null;
+	private JSONHandler jsonHandler = null;
 	private SimpleGeoHandler simpleGeoHandler = null;
 	
 	/**
@@ -126,7 +129,7 @@ public class LocationService {
 	/**
 	 * Enums that are used to differentiate between different handlers.
 	 */
-	static public enum Handler { GEOJSON, RECORD, SIMPLEGEO }
+	static public enum Handler { JSON, GEOJSON, RECORD, SIMPLEGEO }
 	
 	/**
 	 * @return the shared instance of this class
@@ -151,6 +154,7 @@ public class LocationService {
 		this.httpClient = new OAuthHttpClient(connManager, params);
 		this.threadExecutor = new RequestThreadPoolExecutor(TAG);
 		
+		setHandler(Handler.JSON, new JSONHandler());
 		setHandler(Handler.RECORD, new RecordHandler());
 		setHandler(Handler.GEOJSON, new GeoJSONHandler());
 		
@@ -177,6 +181,9 @@ public class LocationService {
 			case RECORD:
 				recordHandler = (RecordHandler)handler;
 				break;
+			case JSON:
+				jsonHandler = (JSONHandler)handler;
+				break;
 			default:
 				break;
 		}
@@ -198,6 +205,9 @@ public class LocationService {
 				break;
 			case RECORD:
 				handler = recordHandler;
+				break;
+			case JSON:
+				handler = jsonHandler;
 				break;
 			default:
 				break;
@@ -642,7 +652,7 @@ public class LocationService {
 	 * Does a "pushpin" query through a series of polygon layers and identifies the "cone" of
 	 * administrative and other boundaries in which the point lies.
 	 *  
-	 * Returns a FeatureCollection where the features contain these key fields:
+	 * Returns a list of elements where each element contains these key fields:
 	 * <ul>
 	 * <li>id: A string that uniquely identifies the feature in the SimpleGeo gazetteer. This ID can 
 	 * be used to query the exact shape of the polygon itself via the `boundary` API call.</li>
@@ -679,7 +689,7 @@ public class LocationService {
 	public Object contains(double lat, double lon)
 	throws ClientProtocolException, IOException {
 		
-		return contains(lat, lon, Handler.GEOJSON);
+		return contains(lat, lon, Handler.JSON);
 		
 	}
 	
@@ -687,7 +697,7 @@ public class LocationService {
 	 * Does a "pushpin" query through a series of polygon layers and identifies the "cone" of
 	 * administrative and other boundaries in which the point lies.
 	 *  
-	 * Returns a FeatureCollection where the features contain these key fields:
+	 * Returns a list of elements where each element contains these key fields:
 	 * <ul>
 	 * <li>id: A string that uniquely identifies the feature in the SimpleGeo gazetteer. This ID can 
 	 * be used to query the exact shape of the polygon itself via the `boundary` API call.</li>
@@ -724,6 +734,9 @@ public class LocationService {
 	 */
 	public Object contains(double lat, double lon, Handler type)
 	throws ClientProtocolException, IOException {
+		
+		if(type != Handler.JSON)
+			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON objects.");
 
 		String uri = mainURL + String.format("/contains/%f,%f.json", lat, lon);
 		HttpGet request = new HttpGet(uri);
@@ -794,7 +807,7 @@ public class LocationService {
 	public Object overlaps(Envelope envelope, int limit, String featureType) 
 	throws ClientProtocolException, IOException {
 		
-		return overlaps(envelope, limit, featureType);
+		return overlaps(envelope, limit, featureType, Handler.JSON);
 	}
 	
 	/**
@@ -819,6 +832,9 @@ public class LocationService {
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType, Handler type)
 	throws ClientProtocolException, IOException {
+		
+		if(type != Handler.JSON)
+			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON objects.");
 		
 		String uri = mainURL + String.format("/overlaps/%s.json", envelope.toString());
 		

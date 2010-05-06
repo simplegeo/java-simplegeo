@@ -2,10 +2,10 @@ package com.simplegeo.client.test;
 
 public class TestEnvironment {
 
-       private static final String TESTING_LAYER =  "com.testing.my";
+       private static final String TESTING_LAYER =  "com.my.testing.layer";
        
-       private static final String ACCESS_KEY = "my-key";
-       private static final String SECRET_KEY = "my-secret";
+       private static final String ACCESS_KEY = "wZzDWhTDGyUZG84tMfQK36y7DRwRjHE7";
+       private static final String SECRET_KEY = "Ud6f4gvxKqpBpHsKjdvvMT6GJ2jBpGa9";
        
        public static String getKey() throws Exception {
     	   if(ACCESS_KEY.equals("my-key"))

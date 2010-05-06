@@ -30,6 +30,10 @@ and SECRETY_KEY.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 1.2.0
+- Added access to the new PushPin endpoints: contains, overlaps and boundary
+- Added access to the new SpotRank endpoint: density
+
 Version 1.1.0
 - Fix query parameters for nearby calls
 

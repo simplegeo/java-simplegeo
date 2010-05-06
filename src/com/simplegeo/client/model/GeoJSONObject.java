@@ -119,32 +119,42 @@ public class GeoJSONObject extends JSONObject {
 	 * @return true if the object is of type Feature; otherwise false
 	 */
 	public boolean isFeature() {
-		boolean isFeature = false;
-		try {
-			String type = this.getType();
-			isFeature = type.equals("Feature");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		return isFeature;
+		return isType("Feature");
 	}
 	
 	/**
 	 * @return true if the object is of type FeatureCollection; otherwise false
 	 */
 	public boolean isFeatureCollection() {
-		boolean isFeatureCollection = false;
+		return isType("FeatureCollection");
+	}
+	
+	/**
+	 * @return true if the object is of type MultiPolygon; otherwise false
+	 */
+	public boolean isMultiPolygon() {
+		return isType("MultiPolygon");
+	}
+
+	/**
+	 * @return true if the object is of type Polygon; otherwise false
+	 */
+	public boolean isPolygon() {
+		return isType("Polygon");
+	}
+
+	private boolean isType(String type) {
+		boolean isType = false;
 		try {
-			String type = this.getType();
-			isFeatureCollection = type.equals("FeatureCollection");
+			String objectType = this.getType();
+			isType = objectType.equals(type);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
-		return isFeatureCollection;
+		return isType;		
 	}
-
+	
 	/**
 	 * @return the latitude of the record
 	 * @throws JSONException

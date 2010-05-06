@@ -8,10 +8,10 @@ package com.simplegeo.client.model;
  */
 public class Envelope {
 	
-	private String south;
-	private String west;
-	private String north;
-	private String east;
+	private double south;
+	private double west;
+	private double north;
+	private double east;
 
 	/**
 	 * Creates a new Envelope object with the given latitude and longitude
@@ -22,7 +22,7 @@ public class Envelope {
 	 * @param north the north latitude line of the bounding box
 	 * @param east the east longitude line of the bounding box
 	 */
-	public Envelope(String south, String west, String north, String east) {
+	public Envelope(double south, double west, double north, double east) {
 		
 		this.south = south;
 		this.west = west;
@@ -33,62 +33,62 @@ public class Envelope {
 	/**
 	 * @return the south
 	 */
-	public String getSouth() {
+	public double getSouth() {
 		return south;
 	}
 
 	/**
 	 * @param south the south to set
 	 */
-	public void setSouth(String south) {
+	public void setSouth(double south) {
 		this.south = south;
 	}
 
 	/**
 	 * @return the west
 	 */
-	public String getWest() {
+	public double getWest() {
 		return west;
 	}
 
 	/**
 	 * @param west the west to set
 	 */
-	public void setWest(String west) {
+	public void setWest(double west) {
 		this.west = west;
 	}
 
 	/**
 	 * @return the north
 	 */
-	public String getNorth() {
+	public double getNorth() {
 		return north;
 	}
 
 	/**
 	 * @param north the north to set
 	 */
-	public void setNorth(String north) {
+	public void setNorth(double north) {
 		this.north = north;
 	}
 
 	/**
 	 * @return the east
 	 */
-	public String getEast() {
+	public double getEast() {
 		return east;
 	}
 
 	/**
 	 * @param east the east to set
 	 */
-	public void setEast(String east) {
+	public void setEast(double east) {
 		this.east = east;
 	}
 
 	public String toString() {
 		
-		return String.format("%s,%s,%s,%s", south, west, north, east);
+		return String.format("%f,%f,%f,%f", south, west, north, east);
 		
 	}
 }
