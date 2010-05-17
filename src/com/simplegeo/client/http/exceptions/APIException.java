@@ -44,7 +44,7 @@ import org.apache.http.client.ClientProtocolException;
  * An exception class that can be built from the components of
  * a {@link org.apache.http.HttpResponse}.
  * 
- * @author dsmith
+ * @author Derek Smith
  */
 @SuppressWarnings("serial")
 public class APIException extends ClientProtocolException {

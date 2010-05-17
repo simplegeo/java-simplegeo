@@ -1,5 +1,3 @@
-package com.simplegeo.client.model;
-
 /**
  * Copyright (c) 2009-2010, SimpleGeo
  * All rights reserved.
@@ -28,6 +26,8 @@ package com.simplegeo.client.model;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.simplegeo.client.model;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
