@@ -47,6 +47,8 @@ public abstract class NearbyQuery implements IQuery {
 	private String layer;
 	private List<String> types;
 	private int limit;
+	private double start;
+	private double end;
 
 	/**
 	 * @param layer @see com.simplegeo.client.service.query.NearbyQuery#getLayer()
@@ -56,6 +58,12 @@ public abstract class NearbyQuery implements IQuery {
 	 * @throws ValidLayerException
 	 */
 	public NearbyQuery(String layer, List<String> types, int limit, String cursor) throws ValidLayerException {
+		this(layer, types, limit, cursor, -1, -1);
+	}
+	
+	public NearbyQuery(String layer, List<String> types, int limit, String cursor, double start, double end) 
+			throws ValidLayerException {
+
 		this.types = types;
 		this.cursor = cursor;
 		this.limit = limit;
@@ -64,6 +72,9 @@ public abstract class NearbyQuery implements IQuery {
 			throw new ValidLayerException("");
 
 		this.layer = layer;
+		
+		this.start = start;
+		this.end = end;
 	}
 	
 	/**
@@ -79,6 +90,11 @@ public abstract class NearbyQuery implements IQuery {
 		
 		if(cursor != null)
 			params.put("cursor", cursor);
+		
+		if(start > 0 && end > 0) {
+			params.put("start", Double.toString(start));
+			params.put("end", Double.toString(end));
+		}
 
 		return params;
 	}
