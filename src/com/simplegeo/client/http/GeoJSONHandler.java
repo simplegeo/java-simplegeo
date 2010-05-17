@@ -85,10 +85,8 @@ public class GeoJSONHandler extends SimpleGeoHandler {
         				
         				JSONObject record = (JSONObject)features.get(index);
         				record.put("layer", getLayerForGeoJSONRecord(record));
-        				
+        		
         			}
-        				
-        			
         		}
         	}
         	

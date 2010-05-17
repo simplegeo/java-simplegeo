@@ -82,6 +82,8 @@ import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.service.exceptions.ValidLayerException;
+import com.simplegeo.client.service.query.HistoryQuery;
+import com.simplegeo.client.service.query.NearbyQuery;
 import com.simplegeo.client.utilities.SimpleGeoUtilities;
 
 /**
@@ -430,128 +432,102 @@ public class LocationService {
 	}
 	
 	/**
-	 * Sends a nearby request to SimpleGeo using a geohash as the bounding box. If
-	 * objects is not specfied, then all object types will be used in the query.
+	 * Return a reverse chronological list of where a record has been over time.
+	 * Currently only returns the last 10 places a record has been. The response
+	 * is a GeoJSON GeometryCollection containing a list of Point objects,
+	 * each with a created field containing the timestamp. 
 	 * 
-	 * @param geoHash the area to search for records
-	 * @param layer the layer in which to search
-	 * @param types the different types to look for
-	 * @param limit the amount to return
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
-	 * then the return value will be the result of the response based on the handler used. Otherwise,
-	 * the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 * @throws ValidLayerException 
-	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
-	 */
-	public Object nearby(GeoHash geoHash, String layer, List<String> types, int limit) 
-						throws ClientProtocolException, IOException, ValidLayerException {
-		return nearby(geoHash, layer, types, limit, Handler.GEOJSON);
-	}
-
-	
-	/**
-	 * Sends a nearby request to SimpleGeo using a geohash as the bounding box. This method
-	 * also provides a way to set the Handler used in the Http response. If
-	 * objects is not specfied, then all object types will be used in the query. 
+	 * This query supports pagination which means "next_cursor" will be set as a top-level key/value
+	 * pair if there are more data points to offer after the initial query limit has been reached.
+	 * You can use the value at "next_cursor" to get the remaining results of the query.
+	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
 	 * 
-	 * @param geoHash the area to search for records
-	 * @param layer the layer in which to search
-	 * @param types the different types to look for
-	 * @param limit the maximum amount of records to return (defaults to 100)
-	 * @param type the handler responsible for creating the return object
+	 * @param query the history query object
 	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
 	 * @throws IOException
-	 * @throws ValidLayerException 
-	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(GeoHash geoHash, String layer, List<String> types, int limit, Handler type) 
-						throws ClientProtocolException, IOException, ValidLayerException {
-		
-		if (layer == null || layer.equals(""))
-			throw new ValidLayerException("");
-				
-		String uri = mainURL + String.format("/records/%s/nearby/%s.json", layer, geoHash.toBase32());
-		
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("limit", Integer.toString(limit));
-		if (types != null && !types.isEmpty()) {			
-			params.put("types", SimpleGeoUtilities.commaSeparatedString(types));
-		}
-		
-		HttpGet request = new HttpGet(buildUrl(uri, params));
-		
-		return execute(request, getHandler(type));
+	public Object history(HistoryQuery query) throws ClientProtocolException, IOException{
+		return history(query, Handler.GEOJSON);
 	}
 
 	/**
-	 * Sends a nearby request to SimpleGeo using the lat, lon and radius. If
-	 * objects is not specfied, then all object types will be used in the query. 
-	 *
-	 * @param lat the latitude
-	 * @param lon the longitude
-	 * @param radius the radius of the search in km
-	 * @param layer the layer in which to search
-	 * @param types the different types to look for
-	 * @param limit the maximum amount of records to return (defaults to 100)
+	 * Return a reverse chronological list of where a record has been over time.
+	 * Currently only returns the last 10 places a record has been. The response
+	 * is a GeoJSON GeometryCollection containing a list of Point objects,
+	 * each with a created field containing the timestamp. 
+	 * 
+	 * This query supports pagination which means "next_cursor" will be set as a top-level key/value
+	 * pair if there are more data points to offer after the initial query limit has been reached.
+	 * You can use the value at "next_cursor" to get the remaining results of the query.
+	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
+	 * 
+	 * @param query the history query object
 	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
 	 * @throws IOException
-	 * @throws ValidLayerException 
-	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(double lat, double lon, double radius, String layer, List<String> types, int limit) 
-		throws ClientProtocolException, IOException, ValidLayerException {
-		return nearby(lat, lon, radius, layer, types, limit, Handler.GEOJSON);
-	}
-
-	
-	/**
-	 * Sends a nearby request to SimpleGeo using the lat, lon and radius. This method
-	 * also provides a way to set the Handler used in the Http response. If
-	 * objects is not specfied, then all object types will be used in the query. 
-	 *
-	 * @param lat the latitude
-	 * @param lon the longitude
-	 * @param radius the radius of the search in km
-	 * @param layer the layer in which to search
-	 * @param types the different types to look for
-	 * @param limit the maximum amount of records to return (defaults to 100)
-	 * @param type the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
-	 * then the return value will be the result of the response based on the handler used. Otherwise,
-	 * the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 * @throws ValidLayerException 
-	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
-	 */
-	public Object nearby(double lat, double lon, double radius, String layer, List<String> types, int limit, Handler type) 
-						throws ClientProtocolException, IOException, ValidLayerException {
+	public Object history(HistoryQuery query, Handler type) 
+		throws ClientProtocolException, IOException {
 		
-		if (layer == null || layer.equals(""))
-			throw new ValidLayerException("");
-
-		String uri = mainURL + String.format("/records/%s/nearby/%f,%f.json", layer, lat, lon);
+		if(type != Handler.GEOJSON)
+			throw new UnsupportedHandlerException(400, "The contains endpoint can only return GeoJSON objects.");
 		
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("limit", Integer.toString(limit));
-		params.put("radius", Double.toString(radius));
-		if (types != null && !types.isEmpty()) {			
-			params.put("types", SimpleGeoUtilities.commaSeparatedString(types));
-		}
-		
-		HttpGet request = new HttpGet(buildUrl(uri, params));
+		String uri = mainURL + query.getUri();
+		HttpGet request = new HttpGet(buildUrl(uri, query.getParams()));
 		
 		return execute(request, getHandler(type));
 	}
 	
+	/**
+	 * Sends a nearby request to SimpleGeo. 
+	 * 
+	 * This query supports pagination which means "next_cursor" will be set as a top-level key/value
+	 * pair if there are more data points to offer after the initial query limit has been reached.
+	 * You can use the value at "next_cursor" to get the remaining results of the query.
+	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
+	 * 
+	 * @param query the nearby query
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object nearby(NearbyQuery query) throws ClientProtocolException, IOException {
+		return nearby(query, Handler.GEOJSON);
+	}
+	
+	/**
+	 * Sends a nearby request to SimpleGeo.
+	 * 
+	 * This query supports pagination which means "next_cursor" will be set as a top-level key/value
+	 * pair if there are more data points to offer after the initial query limit has been reached.
+	 * You can use the value at "next_cursor" to get the remaining results of the query.
+	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
+	 * 
+	 * @param type the handler responsible for creating the return object 
+	 * @param query the nearby query
+	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * then the return value will be the result of the response based on the handler used. Otherwise,
+	 * the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object nearby(NearbyQuery query, Handler type) throws ClientProtocolException, IOException {
+		
+		String uri = mainURL + query.getUri();
+		HttpGet request = new HttpGet(buildUrl(uri, query.getParams()));
+		
+		return execute(request, getHandler(type));
+	}
+		
 	/**
 	 * Reverse geocodes a lat/lon pair.
 	 * 
@@ -858,6 +834,10 @@ public class LocationService {
 	}
 	
 	private String buildUrl(String url, Map<String, ?> parameters) {
+		
+		if(parameters == null)
+			return url;
+		
 		StringBuilder sb = new StringBuilder(url);
 		boolean first = true;
 		for (Entry<String, ?> entry : parameters.entrySet()) {

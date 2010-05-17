@@ -130,6 +130,13 @@ public class GeoJSONObject extends JSONObject {
 	}
 	
 	/**
+	 * @return true if the object is of type GeometryCollection; otherwise false
+	 */
+	public boolean isGeometryCollection() {
+		return isType("GeometryCollection");
+	}
+	
+	/**
 	 * @return true if the object is of type MultiPolygon; otherwise false
 	 */
 	public boolean isMultiPolygon() {
@@ -218,6 +225,23 @@ public class GeoJSONObject extends JSONObject {
 	 */
 	public void setGeometry(JSONObject geometry) throws JSONException {
 		this.put("geometry", geometry);
+	}
+
+	/**
+	 * @return @see <a href="http://geojson.org/geojson-spec.html#geometry-collection"</a>
+	 * @throws JSONException
+	 */
+	public JSONArray getGeometries() throws JSONException {
+		return this.getJSONArray("geometries");
+	}
+
+	/**
+	 * @param geometries
+	 * @throws JSONException
+	 * @see <a href="http://geojson.org/geojson-spec.html#geometry-collection"</a>
+	 */
+	public void setGeometries(JSONArray geometries) throws JSONException {
+		this.put("geometries", geometries);
 	}
 	
 	/**

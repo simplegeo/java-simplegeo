@@ -28,6 +28,9 @@ import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.service.LocationService;
 import com.simplegeo.client.service.LocationService.Handler;
+import com.simplegeo.client.service.query.GeohashNearbyQuery;
+import com.simplegeo.client.service.query.HistoryQuery;
+import com.simplegeo.client.service.query.LatLonNearbyQuery;
 import com.simplegeo.client.test.ModelHelperTest;
 
 public class LocationServiceTest extends ModelHelperTest {
@@ -72,7 +75,7 @@ public class LocationServiceTest extends ModelHelperTest {
 			;
 		}
 	}
-
+	
 	public void testRetrieveAndUpdateRecord() {
 		
 		LocationService locationService = LocationService.getInstance();
@@ -165,16 +168,27 @@ public class LocationServiceTest extends ModelHelperTest {
 		
 		try {
 			
-			List<IRecord> nearbyRecords = (List<IRecord>)locationService.nearby(geoHash, TestEnvironment.getLayer(), types, 100, Handler.RECORD);
+			GeohashNearbyQuery geoHashQuery = new GeohashNearbyQuery(geoHash, TestEnvironment.getLayer(), types, 2, null);
+			List<IRecord> nearbyRecords = (List<IRecord>)locationService.nearby(geoHashQuery, Handler.RECORD);
 			assertNotNull(nearbyRecords);
 			assertTrue(List.class.isInstance(nearbyRecords));
-			assertTrue(nearbyRecords.size() >= 2);
+			assertTrue(nearbyRecords.size() == 2);
 			
-			nearbyRecords = (List<IRecord>)locationService.nearby(10.0, 10.0, 10.0, TestEnvironment.getLayer(), types, 100, Handler.RECORD);
-			assertNotNull(nearbyRecords);
-			assertTrue(List.class.isInstance(nearbyRecords));			
-			assertTrue(nearbyRecords.size() >= 2);
-
+			LatLonNearbyQuery latLonQuery = new LatLonNearbyQuery(10.0, 10.0, 10.0, TestEnvironment.getLayer(), types, 2, null);
+			GeoJSONObject nearbyJSONObjects = (GeoJSONObject)locationService.nearby(latLonQuery, Handler.GEOJSON);
+			assertNotNull(nearbyJSONObjects);
+			assertTrue(GeoJSONObject.class.isInstance(nearbyJSONObjects));
+			int featureLength = nearbyJSONObjects.getFeatures().length();
+			assertTrue(featureLength == 2);
+			
+			String cursor = (String)nearbyJSONObjects.get("next_cursor");
+			assertNotNull(cursor);
+			
+			geoHashQuery.setCursor(cursor);
+			geoHashQuery.setLimit(100);
+			nearbyRecords = (List<IRecord>)locationService.nearby(geoHashQuery, Handler.RECORD);
+			assertFalse(nearbyRecords.size() == featureLength);
+			
 		} catch (ClientProtocolException e) {
 			assertFalse(e.getLocalizedMessage(), true);
 		} catch (IOException e) {
@@ -301,7 +315,6 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testBoundary() {
 		LocationService locationService = LocationService.getInstance();
-		
 		try {
 			
 			String featureId = "Province:Bauchi:s1zj73";
@@ -324,6 +337,60 @@ public class LocationServiceTest extends ModelHelperTest {
 
 	}
 	
+	public void testHistory() throws Exception{
+		LocationService locationService = LocationService.getInstance();
+
+		int lat = 0;
+		String recordId = defaultRecordList.get(0).getRecordId();
+
+		try {
+			
+			for(IRecord record : defaultRecordList) {
+				lat++;
+				DefaultRecord defaultRecord = (DefaultRecord)record;
+				defaultRecord.setRecordId(recordId);
+				defaultRecord.setCreated(defaultRecord.getCreated()+lat*100);
+				defaultRecord.setLatitude(lat);
+				locationService.update(defaultRecord);
+			}
+			
+			ModelHelperTest.waitForWrite();
+			
+		} catch (ClientProtocolException e) {
+			assertTrue(e.getLocalizedMessage(), false);
+		} catch (IOException e) {
+			assertTrue(e.getLocalizedMessage(), false);			
+		}
+		
+		try {
+			
+			HistoryQuery query = new HistoryQuery(recordId, TestEnvironment.getLayer(), 2);
+			GeoJSONObject jsonObject = (GeoJSONObject)locationService.history(query);
+			assertNotNull(jsonObject);
+			assertTrue(GeoJSONObject.class.isInstance(jsonObject));
+			assertTrue(jsonObject.isGeometryCollection());
+			
+			JSONArray geometries = jsonObject.getGeometries();
+			int length = geometries.length();
+			assertEquals(length, 2);
+
+			String cursor = (String)jsonObject.get("next_cursor");
+			assertTrue(cursor != null);
+			query.setCursor(cursor);
+			
+			jsonObject = (GeoJSONObject)locationService.history(query);
+			assertNotNull(jsonObject);
+			geometries = jsonObject.getGeometries();
+			assertEquals(length, 2);
+
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);			
+		}
+		
+	}
+		
 	public void testFutureRetrieval() {
 		
 		LocationService locationService = LocationService.getInstance();

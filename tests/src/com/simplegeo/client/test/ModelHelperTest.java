@@ -3,11 +3,9 @@
  */
 package com.simplegeo.client.test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -28,7 +26,7 @@ public class ModelHelperTest extends TestCase {
 	
 	private static final String TAG = ModelHelperTest.class.getName();
 	
-public void testTestsAreAlive() {
+	public void testTestsAreAlive() {
 	    assertTrue("Tests exist!", true);
 	}
 	
@@ -43,7 +41,7 @@ public void testTestsAreAlive() {
 	
 	public static void waitForWrite() {
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			System.out.println(TAG+"unable to sleep for 5 seconds");
 		}
@@ -83,7 +81,7 @@ public void testTestsAreAlive() {
 		
 		return bigGeoJSONRecord;
 	}
-	
+		
 	public boolean equals(IRecord recordOne, IRecord recordTwo) {
 
 		boolean areEqual = true;

@@ -71,7 +71,6 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 			logger.debug("unable to locate type key");
 			
 		}
-		
 	}
 
 	/**
@@ -80,7 +79,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	 * @param type
 	 */
 	public GeoJSONRecord(String recordId, String layer, String type) {
-		this(recordId, layer, type, System.currentTimeMillis(), 0);
+		this(recordId, layer, type, System.currentTimeMillis() / 1000, 0);
 	}
 		
 	public GeoJSONRecord(String type, String jsonString) throws JSONException {

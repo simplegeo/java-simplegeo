@@ -66,7 +66,7 @@ public class DefaultRecord implements IRecord {
 		this.latitude = latitude;
 		setProperties(new JSONObject());
 	
-		this.created = System.currentTimeMillis();
+		this.created = (long)(System.currentTimeMillis() / 1000);
 		this.expiration = 0;
 	}
 

@@ -11,6 +11,7 @@ import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.model.RecordType;
 import com.simplegeo.client.service.LocationService;
 import com.simplegeo.client.service.exceptions.ValidLayerException;
+import com.simplegeo.client.service.query.LatLonNearbyQuery;
 
 
 public class RecordExample {
@@ -69,7 +70,8 @@ public class RecordExample {
 		
 		GeoJSONObject geoJSON = null;
 		try {
-			geoJSON = (GeoJSONObject)LocationService.getInstance().nearby(lat, lon, 10.0, this.layer, null, 2);
+			LatLonNearbyQuery query  = new LatLonNearbyQuery(lat, lon, 10.0, this.layer, null, 2, null);
+			geoJSON = (GeoJSONObject)LocationService.getInstance().nearby(query);
 		} catch(ClientProtocolException e) {
 			e.printStackTrace();
 		} catch(IOException e) {

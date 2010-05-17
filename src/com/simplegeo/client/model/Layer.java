@@ -39,6 +39,8 @@ import ch.hsr.geohash.GeoHash;
 
 import com.simplegeo.client.service.LocationService;
 import com.simplegeo.client.service.exceptions.ValidLayerException;
+import com.simplegeo.client.service.query.GeohashNearbyQuery;
+import com.simplegeo.client.service.query.LatLonNearbyQuery;
 
 /**
  * A Layer object has the capability of retrieving and updating multiple records. 
@@ -178,7 +180,8 @@ public class Layer {
 				throws ClientProtocolException, IOException {
 		List<IRecord> nearby = null;
 		try {
-			nearby = (List<IRecord>)LocationService.getInstance().nearby(geoHash, name, types, limit);
+			GeohashNearbyQuery query = new GeohashNearbyQuery(geoHash, this.name, types, limit, null);
+			nearby = (List<IRecord>)LocationService.getInstance().nearby(query);
 		} catch (ValidLayerException e) {
 			e.printStackTrace();
 		}
@@ -201,7 +204,8 @@ public class Layer {
 				throws ClientProtocolException, IOException {
 		List<IRecord> nearby = null;
 		try {
-			nearby = (List<IRecord>)LocationService.getInstance().nearby(lat, lon, radius, name, types, limit);
+			LatLonNearbyQuery query = new LatLonNearbyQuery(lat, lon, radius, this.name, types, limit, null);
+			nearby = (List<IRecord>)LocationService.getInstance().nearby(query);
 		} catch (ValidLayerException e) {
 			e.printStackTrace();
 		}

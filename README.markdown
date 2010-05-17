@@ -1,4 +1,4 @@
-SGClient v1.2.0
+SGClient v1.2.1
 ================================================================================
 
 ABSTRACT:
@@ -30,6 +30,10 @@ and SECRETY_KEY.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 1.2.1
+- Added access to the Record history endpoint
+- Exposed pagination in the nearby and history queries
+
 Version 1.2.0
 - Added access to the new PushPin endpoints: contains, overlaps and boundary
 - Added access to the new SpotRank endpoint: density
