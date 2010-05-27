@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="build" name="simplegeo-client">
 	<property name="build.src" value="${basedir}/src" />
-	<property name="java.build.lib" value="${basedir}/libs/java" />
+	<property name="java.build.lib" value="${basedir}/libs/" />
 	<property name="build.out" value="${basedir}/bin" />
 	<property name="build.classes" value="${build.out}/classes" />
 	<property name="build.test.dir" value="${build.out}/test" />
@@ -100,39 +100,5 @@
 		<delete dir="${dist.dir}" />
 	</target>
 				
-	<target name="to-android" >
-		<replace dir="${basedir}" token="logger.debug(" value="Log.d(TAG, ">
-			<include name="**/*.java" />
-		</replace>
-		<replace dir="${basedir}" token="import org.apache.log4j.Logger;" value="//import org.apache.log4j.Logger;">
-			<include name="**/*.java" />
-		</replace>		
-		<replace dir="${basedir}" token="private static Logger" value="//private static Logger">
-			<include name="**/*.java" />
-		</replace>
-		<replace dir="${basedir}" token="//import android.util.Log;" value="import android.util.Log;">
-			<include name="**/*.java" />
-		</replace>
-		<replace dir="${basedir}" token=" TestCase" value=" AndroidTestCase">
-			<include name="**/*.java" />
-		</replace>
-		<replace dir="${basedir}" token="//import android.test" value="import android.test">
-			<include name="**/*.java" />
-		</replace>		
-		
-		<move failonerror="no" file=".android/AllTests.java" todir="tests/src/com/simplegeo/client/" />
-		<move failonerror="no" file=".android/default.properties" todir="./" />
-		<move failonerror="no" file=".android/gen" todir="./" />
-		<move failonerror="no" file=".android/local.properties" todir="./" />
-		<move failonerror="no" file=".android/res" todir=".android/" />
-		<move failonerror="no" file=".android/AndroidManifest.xml" todir="./" />
-		<move failonerror="no" file="build.xml" tofile=".android/java-build.xml" />
-		<move failonerror="no" file="conf" todir=".android" />		
-		<move failonerror="no" file=".android/android-build.xml" tofile="./build.xml" />
-		
-		<echo message="Simplegeo HttpClient has been converted for Android processing." />
-
-	</target>
-
 </project>
 

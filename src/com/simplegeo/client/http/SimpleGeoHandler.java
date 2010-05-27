@@ -28,12 +28,8 @@
  */
 package com.simplegeo.client.http;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-//import android.util.Log;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,8 +51,7 @@ import com.simplegeo.client.http.exceptions.NotAuthorizedException;
  */
 public class SimpleGeoHandler implements ResponseHandler<Object> {
 	
-	static private String TAG = SimpleGeoHandler.class.getCanonicalName();
-	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class);
+	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class.getName());
 	
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
@@ -71,7 +66,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	public Object handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 
-		logger.debug("recieved response " + response);
+		logger.info("recieved response " + response);
 
 		StatusLine statusLine = response.getStatusLine();
 		int statusCode = statusLine.getStatusCode();

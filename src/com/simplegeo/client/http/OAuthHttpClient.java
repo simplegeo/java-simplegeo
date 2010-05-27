@@ -36,17 +36,14 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
-//import android.util.Log;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 
 /**
  * A subclass of {@link org.apache.http.impl.client.DefaultHttpClient}
@@ -56,8 +53,7 @@ import org.apache.http.params.HttpProtocolParams;
  */
 public class OAuthHttpClient extends DefaultHttpClient {
 	
-	private static String TAG = OAuthHttpClient.class.getSimpleName();
-	private static Logger logger = Logger.getLogger(OAuthHttpClient.class);
+	private static Logger logger = Logger.getLogger(OAuthHttpClient.class.getName());
 	
 	private OAuthConsumer token = null;
 			
@@ -106,9 +102,9 @@ public class OAuthHttpClient extends DefaultHttpClient {
 			token  = new CommonsHttpOAuthConsumer(key, secret);
 			
 			if(token == null)
-				logger.debug(String.format("failure to create OAuth token %s,%s", key, secret));
+				logger.info(String.format("failure to create OAuth token %s,%s", key, secret));
 			else
-				logger.debug(String.format("token was created with %s,%s", key, secret));
+				logger.info(String.format("token was created with %s,%s", key, secret));
 		}
 		
 	}

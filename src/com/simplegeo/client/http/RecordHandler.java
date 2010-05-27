@@ -45,8 +45,6 @@ import com.simplegeo.client.model.GeoJSONObject;
  * @author Derek Smith
  */
 public class RecordHandler extends GeoJSONHandler {
-	
-	private static final String TAG = RecordHandler.class.getName();
 
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.http.GeoJSONHandler#handleResponse(org.apache.http.HttpResponse)

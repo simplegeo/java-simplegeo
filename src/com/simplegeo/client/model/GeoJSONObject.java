@@ -33,10 +33,10 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import org.json.JSONObject;
 
-//import android.util.Log;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 
 /**
@@ -55,8 +55,7 @@ import org.apache.log4j.Logger;
  */
 public class GeoJSONObject extends JSONObject {
 	
-	private static final String TAG = GeoJSONObject.class.getName();
-	private static Logger logger = Logger.getLogger(GeoJSONObject.class);
+	private static Logger logger = Logger.getLogger(GeoJSONObject.class.getName());
 	
 	/**
 	 * Initializes the GeoJSON object with the given JSON string
@@ -110,7 +109,7 @@ public class GeoJSONObject extends JSONObject {
 			
 		} catch (JSONException e) {
 			
-			logger.debug("unable to initialize properly");
+			logger.info("unable to initialize properly");
 		}
 
 	}

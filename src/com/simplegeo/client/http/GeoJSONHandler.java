@@ -31,8 +31,7 @@ package com.simplegeo.client.http;
 import java.io.EOFException;
 import java.io.IOException;
 
-//import android.util.Log;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -52,8 +51,7 @@ import com.simplegeo.client.model.GeoJSONRecord;
  */
 public class GeoJSONHandler extends SimpleGeoHandler {
 	
-	private static final String TAG = GeoJSONHandler.class.getName();
-	private static Logger logger = Logger.getLogger(GeoJSONHandler.class);
+	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.http.SimpleGeoHandler#handleResponse(org.apache.http.HttpResponse)
@@ -93,11 +91,11 @@ public class GeoJSONHandler extends SimpleGeoHandler {
         } catch (EOFException e) {
         	
         	// Do nothing becuase the entity was empty
-        	logger.debug(String.format("response was a success, but no content was returned (%s)", e.toString()));
+        	logger.info(String.format("response was a success, but no content was returned (%s)", e.toString()));
         	
 		} catch (JSONException e) {
 			
-			logger.debug(e.getMessage());
+			logger.info(e.getMessage());
 		}
         
 		return topObject;
