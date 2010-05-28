@@ -212,4 +212,12 @@ public class Layer {
 		return nearby;
 	}
 	
+	/**
+	 * Returns the name of this layer.
+	 * 
+	 * @return the name of the layer
+	 */
+	public String getName() {
+		return this.name;
+	}
 }
