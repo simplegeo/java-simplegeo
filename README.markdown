@@ -1,4 +1,4 @@
-SGClient v1.2.2
+simplegeo-java-client v1.2.3
 ================================================================================
 
 ABSTRACT:
@@ -9,6 +9,11 @@ synchronous and asynchronous calls are provided.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 1.2.3
+- Renamed the LocationService to SimpleGeoClient and placed it under
+a different pacakge
+- Added a LayerManager that can handle queries for multiple Layer object
+
 Version 1.2.2
 - Removed the android project artifacts
 

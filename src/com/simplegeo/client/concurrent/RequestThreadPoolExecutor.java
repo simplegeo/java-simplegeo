@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A simple subclass of {@link java.util.concurrent.ThreadPoolExecutor} that is used
- * mainly by {@link com.simplegeo.client.service.LocationService} to do threaded HttpRequests.
+ * mainly by {@link com.simplegeo.client.SimpleGeoClient} to do threaded HttpRequests.
  * 
  * @author Derek Smith
  */

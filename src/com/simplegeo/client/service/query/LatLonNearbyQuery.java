@@ -37,7 +37,7 @@ import com.simplegeo.client.service.exceptions.ValidLayerException;
  * A nearby query that uses latitude, longitude and radius as its search
  * parameters. 
  * 
- * @see com.simplegeo.client.service.query.NearbyQuery
+ * @see com.simplegeo.client.query.NearbyQuery
  * 
  * @author Derek Smith
  */
@@ -51,7 +51,7 @@ public class LatLonNearbyQuery extends NearbyQuery {
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param radius the radius of the search in km
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getLayer()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLayer()
 	 * @throws ValidLayerException
 	 */
 	public LatLonNearbyQuery(double lat, double lon, double radius, String layer) throws ValidLayerException {
@@ -62,10 +62,10 @@ public class LatLonNearbyQuery extends NearbyQuery {
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param radius the radius of the search in km
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getLayer()
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getTypes()
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getLimit()
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getCursor()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLayer()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getTypes()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLimit()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getCursor()
 	 * @throws ValidLayerException
 	 */
 	public LatLonNearbyQuery(double lat, double lon, double radius, String layer, List<String> types, int limit,

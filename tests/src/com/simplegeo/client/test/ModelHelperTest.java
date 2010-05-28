@@ -48,8 +48,8 @@ public class ModelHelperTest extends TestCase {
 	}
 	
 	public List<IRecord> getRandomDefaultRecordList(int length) throws Exception {
-		List<IRecord> list = new ArrayList<IRecord>(length);
 		
+		List<IRecord> list = new ArrayList<IRecord>(length);
 		for(int i = 0; i < length; i++) 
 			list.add(getRandomDefaultRecord());
 		

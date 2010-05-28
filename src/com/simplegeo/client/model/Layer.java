@@ -31,16 +31,19 @@ package com.simplegeo.client.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.client.service.LocationService;
+import com.simplegeo.client.SimpleGeoClient;
 import com.simplegeo.client.service.exceptions.ValidLayerException;
 import com.simplegeo.client.service.query.GeohashNearbyQuery;
 import com.simplegeo.client.service.query.LatLonNearbyQuery;
+import com.simplegeo.client.service.query.NearbyQuery;
 
 /**
  * A Layer object has the capability of retrieving and updating multiple records. 
@@ -52,7 +55,8 @@ import com.simplegeo.client.service.query.LatLonNearbyQuery;
 public class Layer {
 	
 	private String name = null;
-	private ArrayList<IRecord> records = null;
+	private List<IRecord> records = null;
+	private List<String> responseIds = null;
 	
 	/**
 	 * Initializes a new Layer object with the name.
@@ -62,12 +66,13 @@ public class Layer {
 	public Layer(String name) {
 		this.name = name;
 		this.records = new ArrayList<IRecord>();
+		this.responseIds = new ArrayList<String>();
 	}
 	
 	/**
 	 * @return all records that have been registered with the object
 	 */
-	public ArrayList<IRecord> getRecords() {
+	public List<IRecord> getRecords() {
 		return this.records;
 	}
 	
@@ -153,7 +158,7 @@ public class Layer {
 	 * @throws IOException
 	 */
 	public void update() throws ClientProtocolException, IOException {
-		LocationService.getInstance().update(records);
+		SimpleGeoClient.getInstance().update(records);
 	}
 	
 	/**
@@ -163,55 +168,31 @@ public class Layer {
 	 * @throws IOException
 	 */
 	public void retrieve() throws ClientProtocolException, IOException {
-		LocationService.getInstance().retrieve(records);
+		GeoJSONRecord updatedRecords = waitForRecords(SimpleGeoClient.getInstance().retrieve(records));
+
+		try {
+			if(updatedRecords != null && updatedRecords.getFeatures() != null)
+				this.records = (List<IRecord>)updatedRecords.getFeatures();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 		
 	/**
 	 * Returns a list of nearby records for a geohash.
 	 * 
-	 * @param geoHash the bounding box to search in
-	 * @param types the types of object to retrieve @see com.simplegeo.client.model.RecordTypes
-	 * @param limit the maximum value of records to retrieve
-	 * @return a list of nearby records 
+	 * @param query the nearby query
+	 * @return  
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public List<IRecord> nearby(GeoHash geoHash, List<String> types, int limit)
+	public GeoJSONRecord nearby(NearbyQuery query)
 				throws ClientProtocolException, IOException {
-		List<IRecord> nearby = null;
-		try {
-			GeohashNearbyQuery query = new GeohashNearbyQuery(geoHash, this.name, types, limit, null);
-			nearby = (List<IRecord>)LocationService.getInstance().nearby(query);
-		} catch (ValidLayerException e) {
-			e.printStackTrace();
-		}
-		return nearby;		
+		GeoJSONRecord nearby = null;
+		nearby = (GeoJSONRecord)SimpleGeoClient.getInstance().nearby(query);
+		return waitForRecords(nearby);		
 	}
-	
-	/**
-	 * Returns a list of nearby records for a give lat,long coordinate.
-	 * 
-	 * @param lat the latitude to use
-	 * @param lon the longitude to use
-	 * @param radius the radius to search in
-	 * @param types the types of objects to retrieve @see com.simplegeo.client.model.RecordTypes
-	 * @param limit the maximum value of records to retrieve
-	 * @return a list of nearby records
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	public List<IRecord> nearby(double lat, double lon, double radius, List<String> types, int limit) 
-				throws ClientProtocolException, IOException {
-		List<IRecord> nearby = null;
-		try {
-			LatLonNearbyQuery query = new LatLonNearbyQuery(lat, lon, radius, this.name, types, limit, null);
-			nearby = (List<IRecord>)LocationService.getInstance().nearby(query);
-		} catch (ValidLayerException e) {
-			e.printStackTrace();
-		}
-		return nearby;
-	}
-	
+		
 	/**
 	 * Returns the name of this layer.
 	 * 
@@ -219,5 +200,26 @@ public class Layer {
 	 */
 	public String getName() {
 		return this.name;
+	}
+	
+	/*
+	 * The SimpleGeoClient has the ability to return either FutureTasks
+	 * or Lists of records. We need to have a way to handle both return
+	 * objects.
+	 */
+	private GeoJSONRecord waitForRecords(Object returnObject) {
+		GeoJSONRecord records = null;
+		if(returnObject instanceof GeoJSONRecord)
+			records = (GeoJSONRecord)returnObject;
+		else if(returnObject instanceof FutureTask<?>)
+			try {
+				records = (GeoJSONRecord)((FutureTask<?>)returnObject).get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		
+		return records;
 	}
 }

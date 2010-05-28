@@ -51,10 +51,10 @@ public abstract class NearbyQuery implements IQuery {
 	private double end;
 
 	/**
-	 * @param layer @see com.simplegeo.client.service.query.NearbyQuery#getLayer()
-	 * @param types @see com.simplegeo.client.service.query.NearbyQuery#getTypes()
-	 * @param limit @see com.simplegeo.client.service.query.NearbyQuery#getLimit()
-	 * @param cursor @see com.simplegeo.client.service.query.IQuery#getCursor()
+	 * @param layer @see com.simplegeo.client.query.NearbyQuery#getLayer()
+	 * @param types @see com.simplegeo.client.query.NearbyQuery#getTypes()
+	 * @param limit @see com.simplegeo.client.query.NearbyQuery#getLimit()
+	 * @param cursor @see com.simplegeo.client.query.IQuery#getCursor()
 	 * @throws ValidLayerException
 	 */
 	public NearbyQuery(String layer, List<String> types, int limit, String cursor) throws ValidLayerException {
@@ -78,7 +78,7 @@ public abstract class NearbyQuery implements IQuery {
 	}
 	
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#getParams()
+	 * @see com.simplegeo.client.query.IQuery#getParams()
 	 */
 	public Map<String, String> getParams() {
 		Map<String, String> params = new HashMap<String, String>();
@@ -100,21 +100,21 @@ public abstract class NearbyQuery implements IQuery {
 	}
 	
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#getUri()
+	 * @see com.simplegeo.client.query.IQuery#getUri()
 	 */
 	public String getUri() {
 		return String.format("/records/%s/nearby", layer);
 	}
 	
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#getCursor()
+	 * @see com.simplegeo.client.query.IQuery#getCursor()
 	 */
 	public String getCursor() {
 		return cursor;
 	}
 
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#setCursor()
+	 * @see com.simplegeo.client.query.IQuery#setCursor()
 	 */
 	public void setCursor(String cursor) {
 		this.cursor = cursor;

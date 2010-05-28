@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.service;
+package com.simplegeo.client;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -88,7 +88,7 @@ import com.simplegeo.client.service.query.NearbyQuery;
  * Requests can be created and set on the same thread or they can be
  * used in a non-blocking fashion. The default behavior is to send the
  * request on the same thread the call was made. By setting 
- * {@link com.simplegeo.client.service.LocationService#futureTask} to true,
+ * {@link com.simplegeo.client.SimpleGeoClient#futureTask} to true,
  * requests will be built and sent on a thread chosen by
  * {@link com.simplegeo.client.concurrent.RequestThreadPoolExcecutor} and
  * a {@link java.util.concurrent.FutureTask} will be returned instead of
@@ -100,13 +100,13 @@ import com.simplegeo.client.service.query.NearbyQuery;
  * 
  * @author Derek Smith
  */
-public class LocationService {
+public class SimpleGeoClient {
 	
-	private static Logger logger = Logger.getLogger(LocationService.class.getName());
+	private static Logger logger = Logger.getLogger(SimpleGeoClient.class.getName());
 	
 	private static final String mainURL = "http://api.simplegeo.com/0.1";
 	
-	private static LocationService sharedLocationService = null;
+	private static SimpleGeoClient sharedLocationService = null;
 	
 	private OAuthHttpClient httpClient = null;
 	private RequestThreadPoolExecutor threadExecutor = null;
@@ -129,15 +129,15 @@ public class LocationService {
 	/**
 	 * @return the shared instance of this class
 	 */
-	static public LocationService getInstance() {
+	static public SimpleGeoClient getInstance() {
 		
 		if(sharedLocationService == null)
-			sharedLocationService = new LocationService();
+			sharedLocationService = new SimpleGeoClient();
 		
 		return sharedLocationService;
 	}
 	
-	private LocationService() {
+	private SimpleGeoClient() {
 		
 		// We want to make sure the client is threadsafe
 		HttpParams params = new BasicHttpParams();
@@ -147,7 +147,7 @@ public class LocationService {
 		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
 		
 		this.httpClient = new OAuthHttpClient(connManager, params);
-		this.threadExecutor = new RequestThreadPoolExecutor("LocationService");
+		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
 		
 		setHandler(Handler.JSON, new JSONHandler());
 		setHandler(Handler.RECORD, new RecordHandler());
@@ -186,7 +186,7 @@ public class LocationService {
 	
 	/**
 	 * @param type the type of handler to retrieved defined by 
-	 * {@link com.simplegeo.client.service.Handler}
+	 * {@link com.simplegeo.client.Handler}
 	 * @return the instance of {@link com.simplegeo.client.http.SimpleGeoHandler}
 	 * that is associated with the type
 	 */
@@ -219,7 +219,7 @@ public class LocationService {
 	 * successful. 
 	 * 
 	 * @param defaultRecord
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -242,7 +242,7 @@ public class LocationService {
 	 * be successful.
 	 * 
 	 * @param records
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -267,7 +267,7 @@ public class LocationService {
 	 * @param layer the name of the layer to find the records in
 	 * @param recordIds the ids of records to retrieve
 	 * @param handler the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -288,7 +288,7 @@ public class LocationService {
 	 * record if necessary.
 	 * 
 	 * @param record the record to update
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -304,7 +304,7 @@ public class LocationService {
 	 * them if ncessary.
 	 * 
 	 * @param records the records to update
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -320,7 +320,7 @@ public class LocationService {
 	 * in SimpleGeo, creating the record if necessary.
 	 * 
 	 * @param geoJSONObject the geojson object to send in the request
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -361,7 +361,7 @@ public class LocationService {
 	 * @param layer the layer to add the records to
 	 * @param geoJSONObject the GeoJSON object that contains a FeatureCollection
 	 * @param handler the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -387,7 +387,7 @@ public class LocationService {
 	 * The record must already exist in SimpleGeo in order for the request to be successful. 
 	 * 
 	 * @param record the record to delete
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -409,7 +409,7 @@ public class LocationService {
 	 * @param layer the name of the layer that holds the record.
 	 * @param recordId the id of the record.
 	 * @param handler the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -436,7 +436,7 @@ public class LocationService {
 	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
 	 * 
 	 * @param query the history query object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -458,7 +458,7 @@ public class LocationService {
 	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
 	 * 
 	 * @param query the history query object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -485,7 +485,7 @@ public class LocationService {
 	 * @see com.simpelgeo.com.client.service.query.IQuery#setCursor(String).
 	 * 
 	 * @param query the nearby query
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -506,7 +506,7 @@ public class LocationService {
 	 * 
 	 * @param type the handler responsible for creating the return object 
 	 * @param query the nearby query
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -526,7 +526,7 @@ public class LocationService {
 	 * 
 	 * @param lat the latitude
 	 * @param lon the longitude
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -548,7 +548,7 @@ public class LocationService {
 	 * @param hour an hour between 0 and 23, or something outside that range to query the whole day
 	 * @param lat the latitude
 	 * @param lon the longitude
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -567,7 +567,7 @@ public class LocationService {
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param type the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -648,7 +648,7 @@ public class LocationService {
 	 * </ul>
 	 * @param lat the latitude
 	 * @param lon the longitude
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -694,7 +694,7 @@ public class LocationService {
 	 * @param lat the latitude
 	 * @param lon the longitude
 	 * @param type the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -714,11 +714,11 @@ public class LocationService {
 	}
 	
 	/**
-	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.service.LocationService#contains}, 
+	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.SimpleGeoClient#contains}, 
 	 * along with the geometry of the feature in GeoJSON format in the geometry field.
 	 * 
 	 * @param featureId A string that uniquely identifies the feature in the SimpleGeo gazetteer.
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -733,12 +733,12 @@ public class LocationService {
 	}
 	
 	/**
-	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.service.LocationService#contains}, 
+	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.SimpleGeoClient#contains}, 
 	 * along with the geometry of the feature in GeoJSON format in the geometry field.
 	 * 
 	 * @param featureId A string that uniquely identifies the feature in the SimpleGeo gazetteer.
 	 * @param type the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -766,7 +766,7 @@ public class LocationService {
 	 * @param envelope the bounding box area
 	 * @param limit the amount of features to return. 
 	 * @param featureType the feature type to filter by
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException
@@ -792,7 +792,7 @@ public class LocationService {
 	 * @param limit the amount of features to return. 
 	 * @param featureType the feature type to filter by
 	 * @param type the handler responsible for creating the return object
-	 * @return if {@link com.simplegeo.client.service.LocationService#futureTask} is false
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false
 	 * then the return value will be the result of the response based on the handler used. Otherwise,
 	 * the return value will be a {@link java.util.concurrent.FutureTask}.
 	 * @throws ClientProtocolException

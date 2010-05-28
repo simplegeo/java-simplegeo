@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 
+import com.simplegeo.client.SimpleGeoClient;
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.model.RecordType;
-import com.simplegeo.client.service.LocationService;
 import com.simplegeo.client.service.exceptions.ValidLayerException;
 import com.simplegeo.client.service.query.LatLonNearbyQuery;
 
@@ -57,7 +57,7 @@ public class RecordExample {
 		
 		try {
 			
-			LocationService.getInstance().update(records);
+			SimpleGeoClient.getInstance().update(records);
 			
 		} catch(ClientProtocolException e) {
 			e.printStackTrace();
@@ -71,7 +71,7 @@ public class RecordExample {
 		GeoJSONObject geoJSON = null;
 		try {
 			LatLonNearbyQuery query  = new LatLonNearbyQuery(lat, lon, 10.0, this.layer, null, 2, null);
-			geoJSON = (GeoJSONObject)LocationService.getInstance().nearby(query);
+			geoJSON = (GeoJSONObject)SimpleGeoClient.getInstance().nearby(query);
 		} catch(ClientProtocolException e) {
 			e.printStackTrace();
 		} catch(IOException e) {
@@ -89,7 +89,7 @@ public class RecordExample {
 			throw new Exception("Please provide a valid key/secret pair");
 		
 		// Grab the shared instance
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		// Set the proper key/secret pair for signing OAuth requests
 		locationService.getHttpClient().setToken(key, secret);

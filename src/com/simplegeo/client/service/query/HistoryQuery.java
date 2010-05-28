@@ -44,10 +44,10 @@ public class HistoryQuery implements IQuery {
 	private int limit;
 	
 	/**
-	 * @param recordId @see com.simplegeo.client.service.query.HistoryQuery#getRecordId()
-	 * @param layer @see com.simplegeo.client.service.query.HistoryQuery#getLayer()
-	 * @param limit @see com.simplegeo.client.service.query.HistoryQuery#getLimit()
-	 * @param cursor @see com.simplegeo.client.service.query.IQuery#getCursor()
+	 * @param recordId @see com.simplegeo.client.query.HistoryQuery#getRecordId()
+	 * @param layer @see com.simplegeo.client.query.HistoryQuery#getLayer()
+	 * @param limit @see com.simplegeo.client.query.HistoryQuery#getLimit()
+	 * @param cursor @see com.simplegeo.client.query.IQuery#getCursor()
 	 */
 	public HistoryQuery(String recordId, String layer, int limit, String cursor) {
 		this.recordId = recordId;
@@ -57,8 +57,8 @@ public class HistoryQuery implements IQuery {
 	}
 	
 	/**
-	 * @param recordId @see com.simplegeo.client.service.query.HistoryQuery#getRecordId()
-	 * @param layer @see com.simplegeo.client.service.query.HistoryQuery#getLayer()
+	 * @param recordId @see com.simplegeo.client.query.HistoryQuery#getRecordId()
+	 * @param layer @see com.simplegeo.client.query.HistoryQuery#getLayer()
 	 * @param layer
 	 */
 	public HistoryQuery(String recordId, String layer, int limit) {
@@ -66,14 +66,14 @@ public class HistoryQuery implements IQuery {
 	}
 	
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#getCursor()
+	 * @see com.simplegeo.client.query.IQuery#getCursor()
 	 */
 	public String getCursor() {
 		return cursor;
 	}
 
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#getParams()
+	 * @see com.simplegeo.client.query.IQuery#getParams()
 	 */
 	public Map<String, String> getParams() {
 		Map<String, String> params =  new HashMap<String, String>();
@@ -87,7 +87,7 @@ public class HistoryQuery implements IQuery {
 	}
 
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#getUri()
+	 * @see com.simplegeo.client.query.IQuery#getUri()
 	 */
 	public String getUri() {
 		return String.format("/records/%s/%s/history.json", this.layer, this.recordId);
@@ -122,7 +122,7 @@ public class HistoryQuery implements IQuery {
 	}
 
 	/**
-	 * @see com.simplegeo.client.service.query.IQuery#setCursor(java.lang.String)
+	 * @see com.simplegeo.client.query.IQuery#setCursor(java.lang.String)
 	 */
 	public void setCursor(String cursor) {
 		this.cursor = cursor;

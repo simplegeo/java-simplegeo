@@ -17,7 +17,9 @@ import org.json.JSONObject;
 
 import ch.hsr.geohash.GeoHash;
 
+import com.simplegeo.client.SimpleGeoClient;
 import com.simplegeo.client.test.TestEnvironment;
+import com.simplegeo.client.SimpleGeoClient.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
@@ -26,8 +28,6 @@ import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
-import com.simplegeo.client.service.LocationService;
-import com.simplegeo.client.service.LocationService.Handler;
 import com.simplegeo.client.service.query.GeohashNearbyQuery;
 import com.simplegeo.client.service.query.HistoryQuery;
 import com.simplegeo.client.service.query.LatLonNearbyQuery;
@@ -42,7 +42,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void setUp() throws Exception {
 		
-		LocationService.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
+		SimpleGeoClient.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 		
 		defaultRecord = getRandomDefaultRecord();
 		defaultRecord.setObjectProperty("name", "derek");
@@ -57,7 +57,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void tearDown() {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		locationService.futureTask = false;
 		defaultRecordList.add(defaultRecord);
 		
@@ -78,7 +78,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testRetrieveAndUpdateRecord() {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		try {
 			
@@ -129,7 +129,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testNearby() throws Exception {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		DefaultRecord record = (DefaultRecord)defaultRecordList.get(0);
 		record.setLatitude(10.0);
@@ -199,7 +199,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testDeleteRecord() {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		try {
 			
@@ -236,7 +236,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testReverseGeocode() {
 
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		try {
 			
@@ -255,7 +255,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testDensity() {
 
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		try {
 			Object o = locationService.density(Calendar.WEDNESDAY, 12, 40.01729499086, -105.2775999994);
@@ -276,7 +276,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testContains() {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		try {
 			double lat = 40.017294990861913;
@@ -296,7 +296,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	
 	public void testOverlaps() {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		
 		try {
 			
@@ -314,7 +314,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	}
 	
 	public void testBoundary() {
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		try {
 			
 			String featureId = "Province:Bauchi:s1zj73";
@@ -338,7 +338,7 @@ public class LocationServiceTest extends ModelHelperTest {
 	}
 	
 	public void testHistory() throws Exception{
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 
 		int lat = 0;
 		String recordId = defaultRecordList.get(0).getRecordId();
@@ -363,7 +363,7 @@ public class LocationServiceTest extends ModelHelperTest {
 		}
 		
 		try {
-			
+			ModelHelperTest.waitForWrite();
 			HistoryQuery query = new HistoryQuery(recordId, TestEnvironment.getLayer(), 2);
 			GeoJSONObject jsonObject = (GeoJSONObject)locationService.history(query);
 			assertNotNull(jsonObject);
@@ -381,6 +381,7 @@ public class LocationServiceTest extends ModelHelperTest {
 			jsonObject = (GeoJSONObject)locationService.history(query);
 			assertNotNull(jsonObject);
 			geometries = jsonObject.getGeometries();
+			length = geometries.length();
 			assertEquals(length, 2);
 
 		} catch (ClientProtocolException e) {
@@ -393,7 +394,7 @@ public class LocationServiceTest extends ModelHelperTest {
 		
 	public void testFutureRetrieval() {
 		
-		LocationService locationService = LocationService.getInstance();
+		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
 		locationService.futureTask = true;
 		
 		try {

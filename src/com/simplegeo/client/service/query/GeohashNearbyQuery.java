@@ -37,7 +37,7 @@ import ch.hsr.geohash.GeoHash;
 /**
  * A nearby query that uses a geohash as its search parameters.
  * 
- * @see com.simplegeo.client.service.query.NearbyQuery
+ * @see com.simplegeo.client.query.NearbyQuery
  * 
  * @author Derek Smith
  */
@@ -47,7 +47,7 @@ public class GeohashNearbyQuery extends NearbyQuery {
 	
 	/**
 	 * @param geohash the area to search for records
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getLayer()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLayer()
 	 * @throws ValidLayerException
 	 */
 	public GeohashNearbyQuery(GeoHash geohash, String layer) throws ValidLayerException {
@@ -56,10 +56,10 @@ public class GeohashNearbyQuery extends NearbyQuery {
 	
 	/**
 	 * @param geohash the area to search for records
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getLayer()
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getTypes()
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getLimit()
-	 * @param @see com.simplegeo.client.service.query.NearbyQuery#getCursor()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLayer()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getTypes()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLimit()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getCursor()
 	 * @throws ValidLayerException
 	 */
 	public GeohashNearbyQuery(GeoHash geohash, String layer, List<String> types, int limit, String cursor) throws ValidLayerException {
