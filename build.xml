@@ -38,7 +38,7 @@
 		</javac>
 	</target>
 	
-	<target name="jar" depends="clean,build">
+	<target name="jar" depends="build">
 		<mkdir dir="${build.classes}/META-INF" />
 		<jar jarfile="${build.out}/${final.name}.jar" basedir="${build.classes}" />
 	</target>
