@@ -10,8 +10,8 @@ import java.util.List;
 import org.apache.http.client.ClientProtocolException;
 
 import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.service.query.LatLonNearbyQuery;
-import com.simplegeo.client.service.query.NearbyQuery;
+import com.simplegeo.client.query.LatLonNearbyQuery;
+import com.simplegeo.client.query.NearbyQuery;
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.test.ModelHelperTest;
 

@@ -77,8 +77,8 @@ import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
-import com.simplegeo.client.service.query.HistoryQuery;
-import com.simplegeo.client.service.query.NearbyQuery;
+import com.simplegeo.client.query.HistoryQuery;
+import com.simplegeo.client.query.NearbyQuery;
 
 /**
  * Interfaces with the SimpleGeo API. Requests are created through 

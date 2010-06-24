@@ -36,7 +36,7 @@ import java.util.List;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
-import com.simplegeo.client.service.query.NearbyQuery;
+import com.simplegeo.client.query.NearbyQuery;
 
 /**
  * A place to execute queries for multiple layers.

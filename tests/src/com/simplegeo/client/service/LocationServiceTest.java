@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import ch.hsr.geohash.GeoHash;
 
 import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.SimpleGeoClient.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.http.SimpleGeoHandler;
@@ -28,10 +27,11 @@ import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
-import com.simplegeo.client.service.query.GeohashNearbyQuery;
-import com.simplegeo.client.service.query.HistoryQuery;
-import com.simplegeo.client.service.query.LatLonNearbyQuery;
+import com.simplegeo.client.query.GeohashNearbyQuery;
+import com.simplegeo.client.query.HistoryQuery;
+import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.test.ModelHelperTest;
+import com.simplegeo.client.test.TestEnvironment;
 
 public class LocationServiceTest extends ModelHelperTest {
 	

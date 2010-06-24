@@ -26,12 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.service.query;
+package com.simplegeo.client.query;
 
 import java.util.List;
 import java.util.Map;
 
-import com.simplegeo.client.service.exceptions.ValidLayerException;
+import com.simplegeo.client.exceptions.ValidLayerException;
 
 /**
  * A nearby query that uses latitude, longitude and radius as its search

@@ -26,12 +26,62 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.service.exceptions;
+package com.simplegeo.client.query;
 
-public class ValidLayerException extends Exception {
+import java.util.List;
 
-	public ValidLayerException(String string) {
-		super(string);
+import com.simplegeo.client.exceptions.ValidLayerException;
+
+import ch.hsr.geohash.GeoHash;
+
+/**
+ * A nearby query that uses a geohash as its search parameters.
+ * 
+ * @see com.simplegeo.client.query.NearbyQuery
+ * 
+ * @author Derek Smith
+ */
+public class GeohashNearbyQuery extends NearbyQuery {
+
+	private GeoHash geohash;
+	
+	/**
+	 * @param geohash the area to search for records
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLayer()
+	 * @throws ValidLayerException
+	 */
+	public GeohashNearbyQuery(GeoHash geohash, String layer) throws ValidLayerException {
+		this(geohash, layer, null, -1, null);
+	}
+	
+	/**
+	 * @param geohash the area to search for records
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLayer()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getTypes()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getLimit()
+	 * @param @see com.simplegeo.client.query.NearbyQuery#getCursor()
+	 * @throws ValidLayerException
+	 */
+	public GeohashNearbyQuery(GeoHash geohash, String layer, List<String> types, int limit, String cursor) throws ValidLayerException {
+		super(layer, types, limit, cursor);
+		this.geohash = geohash;
+	}
+	
+	public String getUri() {
+		return String.format("%s/%s.json", super.getUri(), this.geohash.toBase32());
 	}
 
+	/**
+	 * @return the geohash
+	 */
+	public GeoHash getGeohash() {
+		return geohash;
+	}
+
+	/**
+	 * @param geohash the geohash to set
+	 */
+	public void setGeohash(GeoHash geohash) {
+		this.geohash = geohash;
+	}
 }

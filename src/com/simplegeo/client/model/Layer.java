@@ -40,10 +40,10 @@ import org.json.JSONException;
 import ch.hsr.geohash.GeoHash;
 
 import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.service.exceptions.ValidLayerException;
-import com.simplegeo.client.service.query.GeohashNearbyQuery;
-import com.simplegeo.client.service.query.LatLonNearbyQuery;
-import com.simplegeo.client.service.query.NearbyQuery;
+import com.simplegeo.client.exceptions.ValidLayerException;
+import com.simplegeo.client.query.GeohashNearbyQuery;
+import com.simplegeo.client.query.LatLonNearbyQuery;
+import com.simplegeo.client.query.NearbyQuery;
 
 /**
  * A Layer object has the capability of retrieving and updating multiple records. 
