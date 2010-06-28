@@ -6,8 +6,8 @@ import org.apache.http.client.ClientProtocolException;
 
 import com.simplegeo.client.SimpleGeoClient;
 import com.simplegeo.client.exceptions.ValidLayerException;
+import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.model.DefaultRecord;
-import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.model.RecordType;

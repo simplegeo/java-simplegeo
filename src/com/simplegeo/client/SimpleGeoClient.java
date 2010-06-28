@@ -65,6 +65,7 @@ import org.json.JSONObject;
 
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
+import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.http.GeoJSONHandler;
 import com.simplegeo.client.http.JSONHandler;
 import com.simplegeo.client.http.OAuthHttpClient;
@@ -74,7 +75,6 @@ import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.UnsupportedHandlerException;
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.Envelope;
-import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.query.HistoryQuery;
@@ -316,7 +316,7 @@ public class SimpleGeoClient {
 	}
 
 	/**
-	 * Uses the {@link com.simplegeo.client.model.GeoJSONObject} to update records 
+	 * Uses the {@link com.simplegeo.client.geojson.GeoJSONObject} to update records 
 	 * in SimpleGeo, creating the record if necessary.
 	 * 
 	 * @param geoJSONObject the geojson object to send in the request
@@ -355,7 +355,7 @@ public class SimpleGeoClient {
 	}
 	
 	/**
-	 * Uses the {@link com.simplegeo.client.model.GeoJSONObject} and layer name
+	 * Uses the {@link com.simplegeo.client.geojson.GeoJSONObject} and layer name
 	 * to update records in SimpleGeo, creating the record if necessary.
 	 * 
 	 * @param layer the layer to add the records to

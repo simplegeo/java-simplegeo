@@ -40,11 +40,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.simplegeo.client.model.GeoJSONObject;
+import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 
 /**
- * A response handler used for creating {@link com.simplegeo.client.model.GeoJSONObject}s
+ * A response handler used for creating {@link com.simplegeo.client.geojson.GeoJSONObject}s
  * from a given payload.
  * 
  * @author Derek Smith

@@ -31,6 +31,8 @@ package com.simplegeo.client.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.simplegeo.client.geojson.GeoJSONObject;
+
 import java.util.logging.Logger;
 
 /**

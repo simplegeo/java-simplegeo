@@ -28,6 +28,9 @@
  */
 package com.simplegeo.client.model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 /**
  * An object that represents a bounding box for a given area
  * by the latitude and longitude lines that surround it.
@@ -40,6 +43,19 @@ public class Envelope {
 	private double west;
 	private double north;
 	private double east;
+	
+	public static Envelope fromJSON(JSONArray jsonArray) throws JSONException {
+		Envelope envelope = null;
+		if(jsonArray.length() == 4) {
+			envelope = new Envelope(jsonArray.getDouble(0),
+					jsonArray.getDouble(1),
+					jsonArray.getDouble(2),
+					jsonArray.getDouble(3)
+					);
+		}
+		
+		return envelope;
+	}
 
 	/**
 	 * Creates a new Envelope object with the given latitude and longitude

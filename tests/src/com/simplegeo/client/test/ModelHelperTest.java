@@ -13,8 +13,8 @@ import junit.framework.*;
 //import android.test.AndroidTestCase;
 
 import com.simplegeo.client.test.TestEnvironment;
+import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.model.DefaultRecord;
-import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 

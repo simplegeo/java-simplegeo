@@ -35,8 +35,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
 import com.simplegeo.client.encoder.GeoJSONEncoder;
+import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.model.DefaultRecord;
-import com.simplegeo.client.model.GeoJSONObject;
 
 /**
  * A handler used to create {@link com.simplegeo.client.model.DefaultRecord}s

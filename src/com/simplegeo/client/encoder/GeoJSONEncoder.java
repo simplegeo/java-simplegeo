@@ -38,8 +38,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.model.DefaultRecord;
-import com.simplegeo.client.model.GeoJSONObject;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 
@@ -94,13 +94,13 @@ public class GeoJSONEncoder {
 	}
 
 	/**
-	 * Converts a {@link com.simplegeo.client.model.GeoJSONObject} into an Array of 
+	 * Converts a {@link com.simplegeo.client.geojson.GeoJSONObject} into an Array of 
 	 * {@link com.simplegeo.client.model.DefaultRecord}. If
 	 * a parse exception is thrown, the return value will be null. An array 
 	 * is returned instead of a single object due to the fact that a single 
 	 * GeoJSON object has the capacity to maintain a collection. 
 	 * 
-	 * @param geoJSONObject the {@link com.simplegeo.client.model.GeoJSONObject} to convert
+	 * @param geoJSONObject the {@link com.simplegeo.client.geojson.GeoJSONObject} to convert
 	 * @return a newly constructed list of {@link com.simplegeo.client.model.DefaultRecord}
 	 */
 	public static List<DefaultRecord> getRecords(GeoJSONObject geoJSONObject) {
@@ -141,11 +141,11 @@ public class GeoJSONEncoder {
 
 	/**
 	 * Converts a {@link com.simplegeo.client.model.IRecord} into a 
-	 * {@link com.simplegeo.client.model.GeoJSONObject}. If
+	 * {@link com.simplegeo.client.geojson.GeoJSONObject}. If
 	 * a parse exception is thrown, the return value will be null.
 	 * 
 	 * @param record the {@link com.simplegeo.client.model.IRecord} to convert
-	 * @return a newly constructed {@link com.simplegeo.client.model.GeoJSONObject}
+	 * @return a newly constructed {@link com.simplegeo.client.geojson.GeoJSONObject}
 	 */
 	public static GeoJSONRecord getGeoJSONRecord(IRecord record) {
 
