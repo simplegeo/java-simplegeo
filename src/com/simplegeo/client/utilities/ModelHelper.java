@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.test;
+package com.simplegeo.client.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,29 +35,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import junit.framework.*;
-//import android.test.AndroidTestCase;
 
-import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 
 /**
+ * A simple class that can create random records. This is mainly used for testing
+ * purposes.
+ * 
  * @author Derek Smith
- *
  */
-public class ModelHelperTest extends TestCase {
+public class ModelHelper extends TestCase {
 	
-	private static final String TAG = ModelHelperTest.class.getName();
-	
-	public void testTestsAreAlive() {
-	    assertTrue("Tests exist!", true);
-	}
-	
-	public DefaultRecord getRandomDefaultRecord() throws Exception {
+	private static final String TAG = ModelHelper.class.getName();
 		
-		DefaultRecord record = new DefaultRecord(getRandomRecordId(), TestEnvironment.getLayer(), "object");
+	public static DefaultRecord getRandomDefaultRecord() {
+		
+		DefaultRecord record = new DefaultRecord(getRandomRecordId(), "random_layer", "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
@@ -66,31 +62,31 @@ public class ModelHelperTest extends TestCase {
 	
 	public static void waitForWrite() {
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			System.out.println(TAG+"unable to sleep for 5 seconds");
 		}
 	}
 	
-	public List<IRecord> getRandomDefaultRecordList(int length) throws Exception {
+	public static List<IRecord> getRandomDefaultRecordList(int length) throws Exception {
 		
 		List<IRecord> list = new ArrayList<IRecord>(length);
 		for(int i = 0; i < length; i++) 
-			list.add(getRandomDefaultRecord());
+			list.add(ModelHelper.getRandomDefaultRecord());
 		
 		return list;
 	}
 	
-	public GeoJSONRecord getRandomGeoJSONRecord() throws Exception {
+	public static GeoJSONRecord getRandomGeoJSONRecord() throws Exception {
 		
-		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), TestEnvironment.getLayer(), "object");
+		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), "random_layer", "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
 		return record;
 	}
 	
-	public GeoJSONRecord getRandomGeoJSONRecordList(int length) throws Exception {
+	public static GeoJSONRecord getRandomGeoJSONRecordList(int length) throws Exception {
 		
 		GeoJSONRecord bigGeoJSONRecord = new GeoJSONRecord("FeatureCollection");
 		
@@ -107,7 +103,7 @@ public class ModelHelperTest extends TestCase {
 		return bigGeoJSONRecord;
 	}
 		
-	public boolean equals(IRecord recordOne, IRecord recordTwo) {
+	public static boolean equals(IRecord recordOne, IRecord recordTwo) {
 
 		boolean areEqual = true;
 		areEqual &= roundDouble(recordOne.getLatitude()) == roundDouble(recordTwo.getLatitude());
@@ -119,7 +115,7 @@ public class ModelHelperTest extends TestCase {
 		return areEqual;
 	}
 	
-	public boolean equals(List<IRecord> recordsOne, List<IRecord> recordsTwo) {
+	public static boolean equals(List<IRecord> recordsOne, List<IRecord> recordsTwo) {
 		
 		int length = recordsOne.size();
 		boolean areEqual = length == recordsTwo.size();
@@ -129,7 +125,7 @@ public class ModelHelperTest extends TestCase {
 		return areEqual;
 	}
 	
-	public boolean equals(List<IRecord> records, GeoJSONObject geoJSONObject) {
+	public static boolean equals(List<IRecord> records, GeoJSONObject geoJSONObject) {
 		
 		int recordSize = records.size();
 		try {
@@ -164,19 +160,19 @@ public class ModelHelperTest extends TestCase {
 		return false;
 	}
 
-	private String getRandomRecordId() {
-		return String.format("testing-%d", (int)(Math.random() * 10000.0));
+	public static String getRandomRecordId() {
+		return String.format("testing-%d", (int)(Math.random() * 1000000.0));
 	}
 	
-	private double getRandomLatitude() {
+	public static double getRandomLatitude() {
 		return Math.random() * 90.0 * (((int)Math.random() * 2) == 0 ? (-1.0) : (1.0));
 	}
 	
-	private double getRandomLongitude() {
+	public static double getRandomLongitude() {
 		return Math.random() * 180.0 * (((int)Math.random() * 2) == 0 ? (-1.0) : (1.0));
 	}
 	
-	private double roundDouble(double d) {
+	public static double roundDouble(double d) {
 		int c = 10;
 		int temp=(int)((d*Math.pow(10,c)));
 		return (((double)temp)/Math.pow(10,c));

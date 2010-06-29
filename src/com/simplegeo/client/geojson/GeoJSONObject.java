@@ -76,6 +76,7 @@ public class GeoJSONObject extends JSONObject {
 	 * @see <a href="http://geojson.org/geojson-spec.html#feature-objects"</a>
 	 */
 	public GeoJSONObject(String type) {
+		super();
 		setupStructure(type);
 	}
 	
@@ -83,6 +84,7 @@ public class GeoJSONObject extends JSONObject {
 	 * Initializes a new object of type Feature.
 	 */
 	public GeoJSONObject() {
+		super();
 		setupStructure("Feature");
 	}
 	
@@ -90,7 +92,7 @@ public class GeoJSONObject extends JSONObject {
 		
 		try {
 			
-			this.put("type",type);
+			this.put("type", type);
 			
 			if(type.equals("Feature")) {
 				

@@ -1,5 +1,30 @@
 /**
- * Copyright 2010 SimpleGeo. All rights reserved.
+ * Copyright (c) 2009-2010, SimpleGeo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, 
+ * this list of conditions and the following disclaimer. Redistributions 
+ * in binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution.
+ * 
+ * Neither the name of the SimpleGeo nor the names of its contributors may
+ * be used to endorse or promote products derived from this software 
+ * without specific prior written permission.
+ *  
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.simplegeo.client;
 
@@ -10,6 +35,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import junit.framework.TestCase;
+
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,8 +44,6 @@ import org.json.JSONObject;
 
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.SimpleGeoClient.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
@@ -31,9 +56,10 @@ import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.query.GeohashNearbyQuery;
 import com.simplegeo.client.query.HistoryQuery;
 import com.simplegeo.client.query.LatLonNearbyQuery;
-import com.simplegeo.client.test.ModelHelperTest;
+import com.simplegeo.client.test.TestEnvironment;
+import com.simplegeo.client.utilities.ModelHelper;
 
-public class SimpleGeoClientTest extends ModelHelperTest {
+public class SimpleGeoClientTest extends TestCase {
 	
 	private DefaultRecord defaultRecord;
 	private GeoJSONRecord feature;
@@ -44,14 +70,14 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 		
 		SimpleGeoClient.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 		
-		defaultRecord = getRandomDefaultRecord();
+		defaultRecord = ModelHelper.getRandomDefaultRecord();
 		defaultRecord.setObjectProperty("name", "derek");
 		
-		feature = getRandomGeoJSONRecord();
+		feature = ModelHelper.getRandomGeoJSONRecord();
 		feature.setObjectProperty("mickey", "mouse");
 		
-		defaultRecordList = getRandomDefaultRecordList(10);
-		featureCollection = getRandomGeoJSONRecordList(10);
+		defaultRecordList = ModelHelper.getRandomDefaultRecordList(10);
+		featureCollection = ModelHelper.getRandomGeoJSONRecordList(10);
 		
 	}
 	
@@ -85,19 +111,19 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 			// null means that the object was successful
 			Object nothing = locationService.update(defaultRecord);
 			assertNull("Should return a null value", nothing);
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			
 			nothing = locationService.update((GeoJSONObject)feature);
 			assertNull("Should return a null value", nothing);
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			
 			IRecord retrievedRecord = (DefaultRecord)locationService.retrieve(defaultRecord);
 			assertTrue(DefaultRecord.class.isInstance(retrievedRecord));
-			assertTrue(equals(retrievedRecord, defaultRecord));
+			assertTrue(ModelHelper.equals(retrievedRecord, defaultRecord));
 			
 			retrievedRecord = (GeoJSONRecord)locationService.retrieve(feature);
 			assertTrue("Should be an instance of GeoJSONRecord", GeoJSONRecord.class.isInstance(retrievedRecord));
-			assertTrue("The two records should be equal", equals(retrievedRecord, feature));
+			assertTrue("The two records should be equal", ModelHelper.equals(retrievedRecord, feature));
 			
 			nothing = locationService.update(defaultRecordList);
 			assertNull("Should return a null value", nothing);
@@ -149,10 +175,10 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 		try {
 			
 			locationService.update(defaultRecordList);
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			
 			locationService.update((IRecord)featureCollection);
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			
 		} catch (ClientProtocolException e) {
 			assertTrue(e.getLocalizedMessage(), false);
@@ -205,21 +231,20 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 			
 			Object nothing = locationService.update(defaultRecord);
 			assertNull("A null value should be returned", nothing);
-			SimpleGeoClientTest.waitForWrite();
+			ModelHelper.waitForWrite();
 				
 			IRecord r = (IRecord)locationService.retrieve(defaultRecord);
 			assertNotNull("The record should be retrievable", r);
-			assertTrue("The records should be equal", equals(defaultRecord, r));
+			assertTrue("The records should be equal", ModelHelper.equals(defaultRecord, r));
 				
 			locationService.delete(defaultRecord);
 			
 			nothing = locationService.update((GeoJSONObject)feature);
 			assertNull("A null value should be returned", nothing);
-			SimpleGeoClientTest.waitForWrite();
 			
 			r = (IRecord)locationService.retrieve(feature);
 			assertNotNull("The record should be retrievable", r);
-			assertTrue("The records should be equal", equals(feature, r));
+			assertTrue("The records should be equal", ModelHelper.equals(feature, r));
 			
 			locationService.delete(feature);
 			
@@ -354,7 +379,7 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 				locationService.update(defaultRecord);
 			}
 			
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			
 		} catch (ClientProtocolException e) {
 			assertTrue(e.getLocalizedMessage(), false);
@@ -363,7 +388,7 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 		}
 		
 		try {
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			HistoryQuery query = new HistoryQuery(recordId, TestEnvironment.getLayer(), 2);
 			GeoJSONObject jsonObject = (GeoJSONObject)locationService.history(query);
 			assertNotNull(jsonObject);
@@ -409,7 +434,7 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 			IRecord returnedRecord = (IRecord)updateTaskOne.get();
 			assertNull(returnedRecord);
 		
-			SimpleGeoClientTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			
 			FutureTask<Object> retrieveTaskOne = (FutureTask<Object>)locationService.retrieve(defaultRecord);
 			assertTrue(FutureTask.class.isInstance(retrieveTaskOne));
@@ -421,12 +446,12 @@ public class SimpleGeoClientTest extends ModelHelperTest {
 			returnedRecord = ((List<IRecord>)retrieveTaskOne.get()).get(0);
 			assertNotNull(returnedRecord);
 			assertTrue(DefaultRecord.class.isInstance(returnedRecord));
-			assertTrue(equals(returnedRecord, defaultRecord));
+			assertTrue(ModelHelper.equals(returnedRecord, defaultRecord));
 			
 			returnedRecord = (IRecord)retrieveTaskTwo.get();
 			assertNotNull(returnedRecord);
 			assertTrue(GeoJSONRecord.class.isInstance(returnedRecord));
-			assertTrue(equals(returnedRecord, feature));
+			assertTrue(ModelHelper.equals(returnedRecord, feature));
 			
 		} catch (ClientProtocolException e) {
 			assertFalse(e.getLocalizedMessage(), true);

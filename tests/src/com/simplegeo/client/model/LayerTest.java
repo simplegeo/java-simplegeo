@@ -29,8 +29,9 @@
 package com.simplegeo.client.model;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -38,14 +39,14 @@ import com.simplegeo.client.SimpleGeoClient;
 import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.query.NearbyQuery;
 import com.simplegeo.client.test.TestEnvironment;
-import com.simplegeo.client.test.ModelHelperTest;
+import com.simplegeo.client.utilities.ModelHelper;
 
 
 /**
  * @author Derek Smith
  *
  */
-public class LayerTest extends ModelHelperTest {
+public class LayerTest extends TestCase {
 
 	private Layer testingLayer;
 	
@@ -81,7 +82,7 @@ public class LayerTest extends ModelHelperTest {
 		double longitude = 27.0;
 		NearbyQuery query = new LatLonNearbyQuery(latitude, longitude, 1.0, testingLayer.getName());
 		for(int i = 0; i < 10; i++) {
-			DefaultRecord record = getRandomDefaultRecord();
+			DefaultRecord record = ModelHelper.getRandomDefaultRecord();
 			record.setLatitude(latitude);
 			record.setLongitude(longitude);
 			testingLayer.add(record);
@@ -90,7 +91,7 @@ public class LayerTest extends ModelHelperTest {
 		try {
 			
 			testingLayer.update();
-			ModelHelperTest.waitForWrite();
+			ModelHelper.waitForWrite();
 			GeoJSONRecord geojson = (GeoJSONRecord)testingLayer.nearby(query);
 			assertNotNull(geojson);
 			assertTrue(geojson.getFeatures().length() >= 10);

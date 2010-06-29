@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.simplegeo.client.exceptions.ValidLayerException;
+import com.simplegeo.client.http.exceptions.ValidLayerException;
 import com.simplegeo.client.utilities.SimpleGeoUtilities;
 
 /**

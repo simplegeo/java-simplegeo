@@ -30,7 +30,7 @@ package com.simplegeo.client.query;
 
 import java.util.List;
 
-import com.simplegeo.client.exceptions.ValidLayerException;
+import com.simplegeo.client.http.exceptions.ValidLayerException;
 
 import ch.hsr.geohash.GeoHash;
 

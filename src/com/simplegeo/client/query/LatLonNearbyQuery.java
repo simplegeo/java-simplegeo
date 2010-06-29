@@ -31,7 +31,7 @@ package com.simplegeo.client.query;
 import java.util.List;
 import java.util.Map;
 
-import com.simplegeo.client.exceptions.ValidLayerException;
+import com.simplegeo.client.http.exceptions.ValidLayerException;
 
 /**
  * A nearby query that uses latitude, longitude and radius as its search

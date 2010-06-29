@@ -31,6 +31,8 @@ package com.simplegeo.client.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.simplegeo.client.types.Point;
+
 /**
  * The default implementation of a {@link com.simplegeo.client.model.IRecord}
  * 
@@ -304,6 +306,10 @@ public class DefaultRecord implements IRecord {
 		} catch (JSONException e) {
 			
 		}
+	}
+	
+	public Point getOrigin() {
+		return new Point(this.latitude, this.longitude);
 	}
 
 	/* (non-Javadoc)

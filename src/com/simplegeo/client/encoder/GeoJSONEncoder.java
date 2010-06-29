@@ -212,7 +212,7 @@ public class GeoJSONEncoder {
 					features.put(jsonObject);
 			}
 
-			geoJSONObject.put("features", geoJSONObject);
+			geoJSONObject.setFeatures(features);
 
 		} catch (JSONException e) {
 

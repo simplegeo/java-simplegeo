@@ -40,7 +40,7 @@ import org.json.JSONException;
 import ch.hsr.geohash.GeoHash;
 
 import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.exceptions.ValidLayerException;
+import com.simplegeo.client.http.exceptions.ValidLayerException;
 import com.simplegeo.client.query.GeohashNearbyQuery;
 import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.query.NearbyQuery;

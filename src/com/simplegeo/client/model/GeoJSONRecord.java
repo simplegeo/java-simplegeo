@@ -51,7 +51,7 @@ public class GeoJSONRecord extends GeoJSONObject implements IRecord {
 	 * @param expiration
 	 */
 	public GeoJSONRecord(String recordId, String layer, String type, long created, long expiration) {
-		
+		super();
 		setProperties(new JSONObject());
 		
 		setRecordId(recordId);
