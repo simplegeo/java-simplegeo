@@ -1,7 +1,7 @@
 /**
  * Copyright 2010 SimpleGeo. All rights reserved.
  */
-package com.simplegeo.client.service;
+package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import ch.hsr.geohash.GeoHash;
 
 import com.simplegeo.client.SimpleGeoClient;
+import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.SimpleGeoClient.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
@@ -31,9 +32,8 @@ import com.simplegeo.client.query.GeohashNearbyQuery;
 import com.simplegeo.client.query.HistoryQuery;
 import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.test.ModelHelperTest;
-import com.simplegeo.client.test.TestEnvironment;
 
-public class LocationServiceTest extends ModelHelperTest {
+public class SimpleGeoClientTest extends ModelHelperTest {
 	
 	private DefaultRecord defaultRecord;
 	private GeoJSONRecord feature;
@@ -205,7 +205,7 @@ public class LocationServiceTest extends ModelHelperTest {
 			
 			Object nothing = locationService.update(defaultRecord);
 			assertNull("A null value should be returned", nothing);
-			LocationServiceTest.waitForWrite();
+			SimpleGeoClientTest.waitForWrite();
 				
 			IRecord r = (IRecord)locationService.retrieve(defaultRecord);
 			assertNotNull("The record should be retrievable", r);
@@ -215,7 +215,7 @@ public class LocationServiceTest extends ModelHelperTest {
 			
 			nothing = locationService.update((GeoJSONObject)feature);
 			assertNull("A null value should be returned", nothing);
-			LocationServiceTest.waitForWrite();
+			SimpleGeoClientTest.waitForWrite();
 			
 			r = (IRecord)locationService.retrieve(feature);
 			assertNotNull("The record should be retrievable", r);
@@ -409,7 +409,7 @@ public class LocationServiceTest extends ModelHelperTest {
 			IRecord returnedRecord = (IRecord)updateTaskOne.get();
 			assertNull(returnedRecord);
 		
-			LocationServiceTest.waitForWrite();
+			SimpleGeoClientTest.waitForWrite();
 			
 			FutureTask<Object> retrieveTaskOne = (FutureTask<Object>)locationService.retrieve(defaultRecord);
 			assertTrue(FutureTask.class.isInstance(retrieveTaskOne));

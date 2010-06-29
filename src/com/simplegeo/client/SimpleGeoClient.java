@@ -655,11 +655,8 @@ public class SimpleGeoClient {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object contains(double lat, double lon)
-	throws ClientProtocolException, IOException {
-		
+	public Object contains(double lat, double lon) throws ClientProtocolException, IOException {
 		return contains(lat, lon, Handler.JSON);
-		
 	}
 	
 	/**
@@ -703,7 +700,6 @@ public class SimpleGeoClient {
 	 */
 	public Object contains(double lat, double lon, Handler type)
 	throws ClientProtocolException, IOException {
-		
 		if(type != Handler.JSON)
 			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON objects.");
 
