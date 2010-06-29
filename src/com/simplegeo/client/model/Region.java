@@ -28,6 +28,10 @@
  */
 package com.simplegeo.client.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +41,20 @@ public class Region {
 	private String name;
 	private String type;
 	private String id;
+	
+	public static List<Region> getRegions(JSONArray jsonArray) {
+		List<Region> regions = new ArrayList<Region>();
+		for(int i = 0; i < jsonArray.length(); i++) {
+			try {
+				JSONObject region = jsonArray.getJSONObject(i);
+				regions.add(Region.getRegion(region));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return regions;
+	}
 	
 	public static Region getRegion(JSONObject jsonObject) throws JSONException {
 		Region region = null;
@@ -48,6 +66,22 @@ public class Region {
 		}
 		
 		return region;
+	}
+	
+	public static List<Region> difference(List<Region> regionSetOne, List<Region> regionSetTwo) {		
+		List<Region> difference = new ArrayList<Region>();
+		if(regionSetOne == null || regionSetOne.isEmpty())
+			return difference;
+		
+		if(regionSetTwo == null || regionSetTwo.isEmpty())
+			return regionSetOne;
+			
+		for(Region regionOne : regionSetOne) {
+			if(!regionOne.contained(regionSetTwo))
+				difference.add(regionOne);
+		}
+			
+		return difference;
 	}
 	
 	public Region(String name, String type, String id, Envelope envelope) {
@@ -111,5 +145,29 @@ public class Region {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String toString() {
+		return String.format("<Region: %s, %s>", this.id, this.type);
+	}
+	
+	public boolean contained(List<Region> regions) {
+		if(regions == null || regions.isEmpty())
+			return false;
+		
+		for(Region region : regions)
+			if(equals(region))
+				return true;
+		
+		return false;
+	}
+	
+	@Override
+	public boolean equals(Object region) {
+		if(region instanceof Region) {
+			return ((Region)region).getId().equals(this.id);
+		}
+		
+		return false;
 	}
 }
