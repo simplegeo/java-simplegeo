@@ -18,7 +18,7 @@ public class OAuthURLConnection {
 	public OAuthURLConnection(URL uri) {
 		this.uri = uri;	
 	}
-
+/*
 	public void performGet()
 	{
 		HttpURLConnection hpConn;
@@ -30,4 +30,5 @@ public class OAuthURLConnection {
 			e.printStackTrace();
 		}
 	}
+*/
 }
