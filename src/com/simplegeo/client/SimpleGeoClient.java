@@ -51,8 +51,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
 import com.simplegeo.client.http.OAuthClientIfc;
