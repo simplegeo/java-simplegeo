@@ -50,6 +50,7 @@ public class Layer {
 	
 	private String name = null;
 	private List<IRecord> records = null;
+	@SuppressWarnings("unused")
 	private List<String> responseIds = null;
 	
 	/**
@@ -159,6 +160,7 @@ public class Layer {
 	 * 
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public void retrieve() throws IOException {
 		GeoJSONRecord updatedRecords = waitForRecords(SimpleGeoClient.getInstance().retrieve(records));
 

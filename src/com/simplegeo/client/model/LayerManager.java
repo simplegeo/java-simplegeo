@@ -118,6 +118,7 @@ public class LayerManager {
 	 * @param query the nearby query
 	 * @return 
 	 */
+	@SuppressWarnings("unchecked")
 	public List<IRecord> nearby(NearbyQuery query) {
 		List<IRecord> records = new ArrayList<IRecord>();
 		for(Layer layer : layers)

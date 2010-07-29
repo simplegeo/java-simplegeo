@@ -80,6 +80,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 		
 		HttpEntity entity = response.getEntity();
 
+		@SuppressWarnings("unused")
 		HttpResponse validResponse = null;
 		switch(statusCode) {
 		

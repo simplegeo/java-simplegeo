@@ -165,6 +165,7 @@ public class GeoJSONEncoder {
 			
 			JSONObject gjrp = geoJSONRecord.getProperties();
 			
+			@SuppressWarnings("unchecked")
 			Iterator<String> keys = (Iterator<String>)(gjrp.keys());
 			while (keys.hasNext())
 			{

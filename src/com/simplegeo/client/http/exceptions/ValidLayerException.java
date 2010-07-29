@@ -30,6 +30,11 @@ package com.simplegeo.client.http.exceptions;
 
 public class ValidLayerException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3256654766900362800L;
+
 	public ValidLayerException(String string) {
 		super(string);
 	}
