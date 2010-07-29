@@ -32,12 +32,9 @@ package com.simplegeo.client;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
-
-import com.simplegeo.client.SimpleGeoClient.Handler;
 import com.simplegeo.client.geojson.GeoJSONObject;
-import com.simplegeo.client.http.OAuthHttpClient;
-import com.simplegeo.client.http.SimpleGeoHandler;
+import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
+import com.simplegeo.client.http.OAuthClientIfc;
 import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.query.HistoryQuery;
@@ -69,6 +66,11 @@ import com.simplegeo.client.query.NearbyQuery;
 public interface SimpleGeoClientIfc {
 	
 	/**
+	 * Enums that are used to differentiate between different handlers.
+	 */
+	static public enum Handler { JSON, GEOJSON, RECORD, SIMPLEGEO }
+	
+	/**
 	 * Retrieves information from SimpleGeo about the 
 	 * {@link com.simplegeo.client.model.IRecord}. The record
 	 * must already exist in SimpleGeo in order for the request to be
@@ -78,10 +80,9 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public Object retrieve(IRecord defaultRecord) throws ClientProtocolException, IOException;	
+	public Object retrieve(IRecord defaultRecord) throws IOException;	
 					
 	/**
 	 * Retrieves information from SimpleGeo about all of the 
@@ -93,11 +94,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object retrieve(List<IRecord> records) throws ClientProtocolException, IOException;
+	public Object retrieve(List<IRecord> records) throws IOException;
 	
 	/**
 	 * Updates the {@link com.simplegeo.client.model.IRecord} in SimpleGeo, creating the
@@ -107,11 +107,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object update(IRecord record) throws ClientProtocolException, IOException;
+	public Object update(IRecord record) throws IOException;
 	
 	/**
 	 * Updates the list of {@link com.simplegeo.client.model.IRecord} in SimpleGeo, creating
@@ -121,11 +120,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object update(List<IRecord> records) throws ClientProtocolException, IOException;
+	public Object update(List<IRecord> records) throws IOException;
 
 	/**
 	 * Uses the {@link com.simplegeo.client.geojson.GeoJSONObject} to update records 
@@ -135,11 +133,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object update(GeoJSONObject geoJSONObject) throws ClientProtocolException, IOException;
+	public Object update(GeoJSONObject geoJSONObject) throws IOException;
 	
 	/**
 	 * Uses the {@link com.simplegeo.client.geojson.GeoJSONObject} and layer name
@@ -151,12 +148,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoHandler handler) 
-	throws ClientProtocolException, IOException;
+	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoJSONHandlerIfc handler) 
+	throws IOException;
 	
 	/**
 	 * Deletes the {@link com.simplegeo.client.model.IRecord} from SimpleGeo.
@@ -166,11 +162,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object delete(IRecord record) throws ClientProtocolException, IOException;
+	public Object delete(IRecord record) throws IOException;
 	
 	/**
 	 * Deletes the record form SimpleGeo. The record must already exist in SimpleGeo in
@@ -182,12 +177,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object delete(String layer, String recordId, SimpleGeoHandler handler) 
-		throws ClientProtocolException, IOException;
+	public Object delete(String layer, String recordId, SimpleGeoJSONHandlerIfc handler) 
+		throws IOException;
 	
 	/**
 	 * Return a reverse chronological list of where a record has been over time.
@@ -204,10 +198,9 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public Object history(HistoryQuery query) throws ClientProtocolException, IOException;
+	public Object history(HistoryQuery query) throws IOException;
 
 	/**
 	 * Return a reverse chronological list of where a record has been over time.
@@ -224,11 +217,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
 	public Object history(HistoryQuery query, Handler type) 
-		throws ClientProtocolException, IOException;
+		throws IOException;
 	
 	/**
 	 * Sends a nearby request to SimpleGeo. 
@@ -242,11 +234,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(NearbyQuery query) throws ClientProtocolException, IOException;
+	public Object nearby(NearbyQuery query) throws IOException;
 	
 	/**
 	 * Sends a nearby request to SimpleGeo.
@@ -261,11 +252,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object nearby(NearbyQuery query, Handler type) throws ClientProtocolException, IOException;
+	public Object nearby(NearbyQuery query, Handler type) throws IOException;
 		
 	/**
 	 * Reverse geocodes a lat/lon pair.
@@ -275,12 +265,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object reverseGeocode(double lat, double lon)
-			throws ClientProtocolException, IOException;
+			throws IOException;
 	
 	/**
 	 * 
@@ -291,12 +280,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object density(int day, int hour, double lat, double lon)
-	throws ClientProtocolException, IOException;
+	throws IOException;
 	
 	/**
 	 * 
@@ -308,12 +296,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object density(int day, int hour, double lat, double lon, Handler type)
-			throws ClientProtocolException, IOException;
+			throws IOException;
 	
 	/**
 	 * Does a "pushpin" query through a series of polygon layers and identifies the "cone" of
@@ -349,11 +336,10 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	public Object contains(double lat, double lon) throws ClientProtocolException, IOException;
+	public Object contains(double lat, double lon) throws IOException;
 	
 	/**
 	 * Does a "pushpin" query through a series of polygon layers and identifies the "cone" of
@@ -390,12 +376,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object contains(double lat, double lon, Handler type)
-	throws ClientProtocolException, IOException;
+	throws IOException;
 	
 	/**
 	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.SimpleGeoClient#contains}, 
@@ -405,12 +390,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object boundaries(String featureId)
-	throws ClientProtocolException, IOException;
+	throws IOException;
 	
 	/**
 	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.SimpleGeoClient#contains}, 
@@ -421,12 +405,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object boundaries(String featureId, Handler type)
-	throws ClientProtocolException, IOException;
+	throws IOException;
 	
 	/**
 	 * Queries a series of polygon layers and identifies the "cone" of administrative and
@@ -443,12 +426,11 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType) 
-	throws ClientProtocolException, IOException;
+	throws IOException;
 	
 	/**
 	 * Queries a series of polygon layers and identifies the "cone" of administrative and
@@ -466,16 +448,34 @@ public interface SimpleGeoClientIfc {
 	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
 	 * doesn't support asynchronous execution), then the return value will be the result of the response 
 	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType, Handler type)
-	throws ClientProtocolException, IOException;
+	throws IOException;
 	
 	/**
 	 * @return the Http client used to execute all requests
 	 */
-	public OAuthHttpClient getHttpClient();
+	public OAuthClientIfc getHttpClient();
 	
+	/**
+	 * @return true if this client supports future tasks.
+	 */
+	public boolean supportsFutureTasks ();	
+
+	/**
+	 * @param futureTask true if we want to run this client in future task mode.  If the client doesn't support
+	 *        future tasks, the parameter will be ignored.
+	 * 
+	 */
+	public void setFutureTask (boolean futureTask); 
+	
+
+	/**
+	 * @return true if this client is set up for asynchronous execution.
+	 */
+	public boolean getFutureTask (); 
+	
+
 }

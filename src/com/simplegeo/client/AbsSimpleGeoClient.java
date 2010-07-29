@@ -44,11 +44,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
-import com.simplegeo.client.http.GeoJSONHandler;
-import com.simplegeo.client.http.JSONHandler;
-import com.simplegeo.client.http.RecordHandler;
+import com.simplegeo.client.handler.GeoJSONHandler;
+import com.simplegeo.client.handler.JSONHandler;
+import com.simplegeo.client.handler.RecordHandler;
+import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.UnsupportedHandlerException;
@@ -69,7 +72,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	
 	public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
 	
-	protected static Logger logger = Logger.getLogger(SimpleGeoClient.class.getName());
+	protected static Logger logger = Logger.getLogger(AbsSimpleGeoClient.class.getName());
 	
 	protected static final String mainURL = "http://api.simplegeo.com/0.1";
 	
@@ -78,13 +81,12 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	protected RecordHandler recordHandler = null;
 	protected GeoJSONHandler geoJSONHandler = null;
 	protected JSONHandler jsonHandler = null;
-	protected SimpleGeoHandler simpleGeoHandler = null;
 	
 	/**
 	 * Tells the service whether to make the Http call on the same thread.  Note: if the underlying
 	 * client doesn't handle future tasks, this flag will be ignored.
 	 */
-	public boolean futureTask = false; 
+	protected boolean futureTask = false; 
 		
 	protected AbsSimpleGeoClient() {
 		
@@ -102,10 +104,9 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	 * differently.
 	 * 
 	 * @param type the Handler type to override
-	 * @param handler the handler must be a subclass of SimpleGeoHandler to
-	 * ensure that a valid response was recieved
+	 * @param handler the handler must implement SimpleGeoJSONHandlerIfc.
 	 */
-	public void setHandler(Handler type, SimpleGeoHandler handler) {
+	public void setHandler(Handler type, SimpleGeoJSONHandlerIfc handler) {
 		
 		switch(type) {
 			case GEOJSON:
@@ -125,12 +126,12 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	/**
 	 * @param type the type of handler to retrieved defined by 
 	 * {@link com.simplegeo.client.Handler}
-	 * @return the instance of {@link com.simplegeo.client.http.SimpleGeoHandler}
+	 * @return the instance of {@link com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc}
 	 * that is associated with the type
 	 */
-	public SimpleGeoHandler getHandler(Handler type) {
+	public SimpleGeoJSONHandlerIfc getHandler(Handler type) {
 		
-		SimpleGeoHandler handler = null;
+		SimpleGeoJSONHandlerIfc handler = null;
 		switch(type) {
 			
 			case GEOJSON:
@@ -198,7 +199,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	private Object retrieve(String layer, String recordIds, SimpleGeoHandler handler) throws IOException {
+	private Object retrieve(String layer, String recordIds, SimpleGeoJSONHandlerIfc handler) throws IOException {
 		
 		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordIds);
 		
@@ -252,9 +253,9 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#update(java.lang.String, com.simplegeo.client.geojson.GeoJSONObject, com.simplegeo.client.http.SimpleGeoHandler)
+	 * @see com.simplegeo.client.SimpleGeoClientIfc#update(java.lang.String, com.simplegeo.client.geojson.GeoJSONObject, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
 	 */
-	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoHandler handler) 
+	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoJSONHandlerIfc handler) 
 	throws IOException {
 	
 		String uri = mainURL + String.format("/records/%s.json", layer);
@@ -279,9 +280,9 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#delete(java.lang.String, java.lang.String, com.simplegeo.client.http.SimpleGeoHandler)
+	 * @see com.simplegeo.client.SimpleGeoClientIfc#delete(java.lang.String, java.lang.String, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
 	 */
-	public Object delete(String layer, String recordId, SimpleGeoHandler handler) 
+	public Object delete(String layer, String recordId, SimpleGeoJSONHandlerIfc handler) 
 		throws IOException {
 		
 		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordId);
@@ -659,9 +660,9 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 		return record;
 	}
 
-	private SimpleGeoHandler getHandler(Object record) {
+	private SimpleGeoJSONHandlerIfc getHandler(Object record) {
 		
-		SimpleGeoHandler handler = geoJSONHandler;
+		SimpleGeoJSONHandlerIfc handler = geoJSONHandler;
 		if(DefaultRecord.class.isInstance(record))
 			handler = recordHandler; 
 		
@@ -675,10 +676,35 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 		
 	}
 	
-	protected abstract Object executeGet (String uri, SimpleGeoHandler handler) throws IOException;
-	
-	protected abstract Object executePost (String uri, String jsonPayload, SimpleGeoHandler handler) throws IOException;
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.SimpleGeoClientIfc#supportsFutureTasks()
+	 */
+	public boolean supportsFutureTasks() {
+		// 
+		// By default, future tasks aren't supported.
+		//
+		return false;
+	}
 
-	protected abstract Object executeDelete (String uri, SimpleGeoHandler handler) throws IOException;
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.SimpleGeoClientIfc#setFutureTask(boolean)
+	 */
+	public void setFutureTask(boolean futureTask) {
+		this.futureTask = futureTask;		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.SimpleGeoClientIfc#getFutureTask()
+	 */
+	public boolean getFutureTask() {
+		return futureTask;	
+	}
+
+	protected abstract Object executeGet (String uri, SimpleGeoJSONHandlerIfc handler) throws IOException;
+	
+	protected abstract Object executePost (String uri, String jsonPayload, SimpleGeoJSONHandlerIfc handler) throws IOException;
+
+	protected abstract Object executeDelete (String uri, SimpleGeoJSONHandlerIfc handler) throws IOException;
 
 }
