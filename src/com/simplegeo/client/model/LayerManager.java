@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import com.simplegeo.client.query.NearbyQuery;
@@ -94,8 +93,6 @@ public class LayerManager {
 		for(Layer layer : layers)
 			try {
 				layer.update();
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -109,8 +106,6 @@ public class LayerManager {
 		for(Layer layer : layers)
 			try {
 				layer.retrieve();
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -128,8 +123,6 @@ public class LayerManager {
 		for(Layer layer : layers)
 			try {
 				records.addAll((Collection<? extends IRecord>)layer.nearby(query).getFeatures());
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

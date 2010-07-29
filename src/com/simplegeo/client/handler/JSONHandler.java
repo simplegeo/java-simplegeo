@@ -26,49 +26,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.http;
+package com.simplegeo.client.handler;
 
-import java.io.EOFException;
-import java.io.IOException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.util.EntityUtils;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A response handler that converts the payload into a JSONObject.
  * 
  * @author Derek Smith
  */
-public class JSONHandler extends SimpleGeoHandler {
+public class JSONHandler implements SimpleGeoJSONHandlerIfc {
 
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.http.SimpleGeoHandler#handleResponse(org.apache.http.HttpResponse)
-	 */
-	public Object handleResponse(HttpResponse response)
-			throws ClientProtocolException, IOException {
-		
-		response = (HttpResponse)super.handleResponse(response);
-				
+	
+	public Object parseResponse(String response) {
 		JSONArray topObject = null;
         try {
 
-        	String jsonString = EntityUtils.toString(response.getEntity());
+        	String jsonString = response;
         	if(jsonString != null && jsonString.length() > 1)
         		topObject = new JSONArray(jsonString);
         	
-        } catch (EOFException e) {
-        	
-        	// Do nothing becuase the entity was empty
-        	logger.info(String.format("response was a success, but no content was returned (%s)", e.toString()));
-        	
-		} catch (JSONException e) {
+        } catch (JSONException e) {
 			
 			logger.info(e.getMessage());
 		}

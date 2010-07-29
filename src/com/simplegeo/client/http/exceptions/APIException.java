@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 
 /**
  * An exception class that can be built from the components of
@@ -46,7 +45,7 @@ import org.apache.http.client.ClientProtocolException;
  * @author Derek Smith
  */
 @SuppressWarnings("serial")
-public class APIException extends ClientProtocolException {
+public class APIException extends IOException { 
 
 	private static Logger logger = Logger.getLogger(APIException.class.getName());
 	

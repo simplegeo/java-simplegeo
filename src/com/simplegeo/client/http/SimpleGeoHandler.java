@@ -36,10 +36,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.util.EntityUtils;
 
-
-
-import com.simplegeo.client.encoder.GeoJSONEncoder;
+import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.NoSuchRecordException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
@@ -53,12 +52,20 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	
 	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class.getName());
 	
+	private SimpleGeoJSONHandlerIfc handler;
+	
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
 	public static final int PUT_SUCCESS = 202;
 	public static final int BAD_REQUEST = 400;
 	public static final int NO_SUCH = 404;
 	public static final int NOT_AUTHORIZED = 401;
+	
+	public SimpleGeoHandler (SimpleGeoJSONHandlerIfc handler)
+	{
+		super();
+		this.handler = handler;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
@@ -90,7 +97,13 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 				throw APIException.createException(entity, statusLine);
 		
 		}
-	
-		return validResponse;
+		
+		//
+		// Extract the string
+		// 
+		String jsonString = null;
+		jsonString = EntityUtils.toString(response.getEntity());	
+		
+		return handler.parseResponse(jsonString);
 	}
 }

@@ -51,7 +51,7 @@ import org.apache.http.params.HttpParams;
  * 
  * @author Derek Smith
  */
-public class OAuthHttpClient extends DefaultHttpClient {
+public class OAuthHttpClient extends DefaultHttpClient implements OAuthClientIfc {
 	
 	private static Logger logger = Logger.getLogger(OAuthHttpClient.class.getName());
 	

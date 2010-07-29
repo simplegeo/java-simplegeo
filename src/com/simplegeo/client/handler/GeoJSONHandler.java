@@ -26,16 +26,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.http;
-
-import java.io.EOFException;
-import java.io.IOException;
+package com.simplegeo.client.handler;
 
 import java.util.logging.Logger;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,23 +43,39 @@ import com.simplegeo.client.model.GeoJSONRecord;
  * 
  * @author Derek Smith
  */
-public class GeoJSONHandler extends SimpleGeoHandler {
+public class GeoJSONHandler implements SimpleGeoJSONHandlerIfc {
 	
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.http.SimpleGeoHandler#handleResponse(org.apache.http.HttpResponse)
-	 */
-	public Object handleResponse(HttpResponse response)
-			throws ClientProtocolException, IOException {
+	private String getLayerForGeoJSONRecord(JSONObject record) {
 		
-		response = (HttpResponse)super.handleResponse(response);
-				
+		String layer = "";
+		JSONObject layerDict = (JSONObject)record.opt("layerLink");
+		if(layerDict != null) {
+			
+			
+			// THIS IS SOOOO BAD
+			String hRef = (String)layerDict.opt("href");
+			String[] substrings = hRef.split("/");
+			int length = substrings.length;
+			if(substrings.length > 0) {
+				layer = substrings[length - 1];
+				layer = layer.replaceAll(".json", "");
+			}
+			
+		}
+		
+		return layer;
+		
+	}
+
+	
+	public Object parseResponse(String response) {
 		GeoJSONObject topObject = null;
         try {
         	
         	// We need to do a little massaging of the data here
-        	String jsonString = EntityUtils.toString(response.getEntity());
+        	String jsonString = response;
         	if(jsonString != null && jsonString.length() > 1) {
         		
         		topObject = new GeoJSONRecord("Feature", jsonString);
@@ -88,38 +98,11 @@ public class GeoJSONHandler extends SimpleGeoHandler {
         		}
         	}
         	
-        } catch (EOFException e) {
-        	
-        	// Do nothing becuase the entity was empty
-        	logger.info(String.format("response was a success, but no content was returned (%s)", e.toString()));
-        	
-		} catch (JSONException e) {
+        } catch (JSONException e) {
 			
 			logger.info(e.getMessage());
 		}
         
 		return topObject;
-	}
-
-	private String getLayerForGeoJSONRecord(JSONObject record) {
-		
-		String layer = "";
-		JSONObject layerDict = (JSONObject)record.opt("layerLink");
-		if(layerDict != null) {
-			
-			
-			// THIS IS SOOOO BAD
-			String hRef = (String)layerDict.opt("href");
-			String[] substrings = hRef.split("/");
-			int length = substrings.length;
-			if(substrings.length > 0) {
-				layer = substrings[length - 1];
-				layer = layer.replaceAll(".json", "");
-			}
-			
-		}
-		
-		return layer;
-		
 	}
 }

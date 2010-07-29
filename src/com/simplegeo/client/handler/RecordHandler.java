@@ -26,13 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.simplegeo.client.http;
+package com.simplegeo.client.handler;
 
-import java.io.IOException;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
@@ -46,13 +42,10 @@ import com.simplegeo.client.model.DefaultRecord;
  */
 public class RecordHandler extends GeoJSONHandler {
 
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.http.GeoJSONHandler#handleResponse(org.apache.http.HttpResponse)
-	 */
-	public Object handleResponse(HttpResponse response)
-			throws ClientProtocolException, IOException {
+	public Object parseResponse(String response)
+	{
 		
-		GeoJSONObject geoJSONObject = (GeoJSONObject)super.handleResponse(response);
+		GeoJSONObject geoJSONObject = (GeoJSONObject)super.parseResponse(response);
 		
 		List<DefaultRecord> defaultRecords = null;
 		

@@ -34,15 +34,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
-import ch.hsr.geohash.GeoHash;
-
 import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.http.exceptions.ValidLayerException;
-import com.simplegeo.client.query.GeohashNearbyQuery;
-import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.query.NearbyQuery;
 
 /**
@@ -154,20 +148,18 @@ public class Layer {
 	/**
 	 * Updates all records that are registered with the Layer object.
 	 * 
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public void update() throws ClientProtocolException, IOException {
+	public void update() throws IOException {
 		SimpleGeoClient.getInstance().update(records);
 	}
 	
 	/**
 	 * Retrieves all records that are registered witht the Layer object.
 	 * 
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public void retrieve() throws ClientProtocolException, IOException {
+	public void retrieve() throws IOException {
 		GeoJSONRecord updatedRecords = waitForRecords(SimpleGeoClient.getInstance().retrieve(records));
 
 		try {
@@ -183,11 +175,10 @@ public class Layer {
 	 * 
 	 * @param query the nearby query
 	 * @return  
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
 	public GeoJSONRecord nearby(NearbyQuery query)
-				throws ClientProtocolException, IOException {
+				throws IOException {
 		GeoJSONRecord nearby = null;
 		nearby = (GeoJSONRecord)SimpleGeoClient.getInstance().nearby(query);
 		return waitForRecords(nearby);		

@@ -53,7 +53,7 @@ public class ModelHelper extends TestCase {
 		
 	public static DefaultRecord getRandomDefaultRecord() {
 		
-		DefaultRecord record = new DefaultRecord(getRandomRecordId(), "random_layer", "object");
+		DefaultRecord record = new DefaultRecord(getRandomRecordId(), "com.vortex001.testlayer2", "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
@@ -79,7 +79,7 @@ public class ModelHelper extends TestCase {
 	
 	public static GeoJSONRecord getRandomGeoJSONRecord() throws Exception {
 		
-		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), "random_layer", "object");
+		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), "com.vortex001.testlayer2", "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
