@@ -2,9 +2,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
-
 import com.simplegeo.client.SimpleGeoClient;
+import com.simplegeo.client.SimpleGeoClientIfc;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.http.exceptions.ValidLayerException;
 import com.simplegeo.client.model.DefaultRecord;
@@ -34,14 +33,14 @@ public class RecordExample {
 	public RecordExample() {
 
 		// We can either create a GeoJSON object or use a DefaultRecord
-		DefaultRecord record = new DefaultRecord("r-12345", layer, RecordType.AUDIO.toString());
+		DefaultRecord record = new DefaultRecord("r-88888", layer, RecordType.AUDIO.toString());
 		record.setLatitude(lat);
 		record.setLongitude(lon);
 		this.record = record;
 		
 		// Using a GeoJSONRecord gives us the behavior of a GeoJSONObject but 
 		// conforms to the IRecord interface
-		GeoJSONRecord geoJSON = new GeoJSONRecord("r-23456", layer, RecordType.VIDEO.toString());
+		GeoJSONRecord geoJSON = new GeoJSONRecord("r-99999", layer, RecordType.VIDEO.toString());
 		geoJSON.setLatitude(lat);
 		geoJSON.setLongitude(lon);
 		this.geoJSON = geoJSON;
@@ -59,8 +58,6 @@ public class RecordExample {
 			
 			SimpleGeoClient.getInstance().update(records);
 			
-		} catch(ClientProtocolException e) {
-			e.printStackTrace();
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -72,8 +69,6 @@ public class RecordExample {
 		try {
 			LatLonNearbyQuery query  = new LatLonNearbyQuery(lat, lon, 10.0, this.layer, null, 2, null);
 			geoJSON = (GeoJSONObject)SimpleGeoClient.getInstance().nearby(query);
-		} catch(ClientProtocolException e) {
-			e.printStackTrace();
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch (ValidLayerException e) {
@@ -89,7 +84,7 @@ public class RecordExample {
 			throw new Exception("Please provide a valid key/secret pair");
 		
 		// Grab the shared instance
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = SimpleGeoClient.getInstance();
 		
 		// Set the proper key/secret pair for signing OAuth requests
 		locationService.getHttpClient().setToken(key, secret);
