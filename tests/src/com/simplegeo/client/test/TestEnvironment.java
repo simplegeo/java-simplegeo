@@ -28,12 +28,18 @@
  */
 package com.simplegeo.client.test;
 
+import com.simplegeo.client.SimpleGeoClient;
+import com.simplegeo.client.SimpleGeoClientIfc;
+import com.simplegeo.client.urlconn.SimpleGeoURLConnClient;
+
 public class TestEnvironment {
 
        private static final String TESTING_LAYER =  "com.testing.my";
        
        private static final String ACCESS_KEY = "my-key";
        private static final String SECRET_KEY = "my-secret";
+       
+       private static boolean useHTTPClient = true;
        
        public static String getKey() throws Exception {
     	   if(ACCESS_KEY.equals("my-key"))
@@ -58,5 +64,12 @@ public class TestEnvironment {
     	   return TESTING_LAYER;
        }
 
+       public static SimpleGeoClientIfc getClient()
+       {
+    	   if (useHTTPClient)
+    		   return SimpleGeoClient.getInstance();
+    	   else
+    		   return SimpleGeoURLConnClient.getInstance();
+       }
 }
 

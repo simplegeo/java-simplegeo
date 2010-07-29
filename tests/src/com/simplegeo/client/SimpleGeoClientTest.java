@@ -44,7 +44,7 @@ import org.json.JSONObject;
 
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.client.SimpleGeoClient.Handler;
+import com.simplegeo.client.SimpleGeoClientIfc.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.http.SimpleGeoHandler;
@@ -68,7 +68,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void setUp() throws Exception {
 		
-		SimpleGeoClient.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
+		TestEnvironment.getClient().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 		
 		defaultRecord = ModelHelper.getRandomDefaultRecord();
 		defaultRecord.setObjectProperty("name", "derek");
@@ -83,8 +83,8 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void tearDown() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
-		locationService.futureTask = false;
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
+		locationService.setFutureTask(false);
 		defaultRecordList.add(defaultRecord);
 		
 		List<IRecord> records = new ArrayList<IRecord>();
@@ -104,7 +104,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testRetrieveAndUpdateRecord() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		try {
 			
@@ -155,7 +155,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testNearby() throws Exception {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		DefaultRecord record = (DefaultRecord)defaultRecordList.get(0);
 		record.setLatitude(10.0);
@@ -225,7 +225,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testDeleteRecord() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		try {
 			
@@ -261,7 +261,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testReverseGeocode() {
 
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		try {
 			
@@ -280,7 +280,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testDensity() {
 
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		try {
 			Object o = locationService.density(Calendar.WEDNESDAY, 12, 40.01729499086, -105.2775999994);
@@ -301,7 +301,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testContains() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		try {
 			double lat = 40.017294990861913;
@@ -321,7 +321,7 @@ public class SimpleGeoClientTest extends TestCase {
 	
 	public void testOverlaps() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		
 		try {
 			
@@ -339,7 +339,7 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testBoundary() {
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		try {
 			
 			String featureId = "Province:Bauchi:s1zj73";
@@ -363,7 +363,7 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testHistory() throws Exception{
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 
 		int lat = 0;
 		String recordId = defaultRecordList.get(0).getRecordId();
@@ -419,48 +419,66 @@ public class SimpleGeoClientTest extends TestCase {
 		
 	public void testFutureRetrieval() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
-		locationService.futureTask = true;
-		
-		try {
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
+		locationService.setFutureTask(true);
+		if (locationService.supportsFutureTasks())
+		{
+			try {
+				FutureTask<Object> updateTaskOne = (FutureTask<Object>)locationService.update(defaultRecord);
+				assertTrue(FutureTask.class.isInstance(updateTaskOne));
+				FutureTask<Object> updateTaskTwo = (FutureTask<Object>)locationService.update((GeoJSONObject)feature);
+				assertTrue(FutureTask.class.isInstance(updateTaskTwo));
+				
+				while(!updateTaskOne.isDone() && !updateTaskTwo.isDone());
+				
+				IRecord returnedRecord = (IRecord)updateTaskOne.get();
+				assertNull(returnedRecord);
 			
-			FutureTask<Object> updateTaskOne = (FutureTask<Object>)locationService.update(defaultRecord);
-			assertTrue(FutureTask.class.isInstance(updateTaskOne));
-			FutureTask<Object> updateTaskTwo = (FutureTask<Object>)locationService.update((GeoJSONObject)feature);
-			assertTrue(FutureTask.class.isInstance(updateTaskTwo));
-			
-			while(!updateTaskOne.isDone() && !updateTaskTwo.isDone());
-			
-			IRecord returnedRecord = (IRecord)updateTaskOne.get();
-			assertNull(returnedRecord);
-		
-			ModelHelper.waitForWrite();
-			
-			FutureTask<Object> retrieveTaskOne = (FutureTask<Object>)locationService.retrieve(defaultRecord);
-			assertTrue(FutureTask.class.isInstance(retrieveTaskOne));
-			FutureTask<Object> retrieveTaskTwo = (FutureTask<Object>)locationService.retrieve(feature);
-			assertTrue(FutureTask.class.isInstance(retrieveTaskTwo));
-			
-			while(!retrieveTaskOne.isDone() && !retrieveTaskTwo.isDone());
-			
-			returnedRecord = ((List<IRecord>)retrieveTaskOne.get()).get(0);
-			assertNotNull(returnedRecord);
-			assertTrue(DefaultRecord.class.isInstance(returnedRecord));
-			assertTrue(ModelHelper.equals(returnedRecord, defaultRecord));
-			
-			returnedRecord = (IRecord)retrieveTaskTwo.get();
-			assertNotNull(returnedRecord);
-			assertTrue(GeoJSONRecord.class.isInstance(returnedRecord));
-			assertTrue(ModelHelper.equals(returnedRecord, feature));
-			
-		} catch (ClientProtocolException e) {
-			assertFalse(e.getLocalizedMessage(), true);
-		} catch (IOException e) {
-			assertFalse(e.getLocalizedMessage(), true);
-		} catch (InterruptedException e) {
-			assertFalse(e.getLocalizedMessage(), true);
-		} catch (ExecutionException e) {
-			assertFalse(e.getLocalizedMessage(), true);
+				ModelHelper.waitForWrite();
+				
+				FutureTask<Object> retrieveTaskOne = (FutureTask<Object>)locationService.retrieve(defaultRecord);
+				assertTrue(FutureTask.class.isInstance(retrieveTaskOne));
+				FutureTask<Object> retrieveTaskTwo = (FutureTask<Object>)locationService.retrieve(feature);
+				assertTrue(FutureTask.class.isInstance(retrieveTaskTwo));
+				
+				while(!retrieveTaskOne.isDone() && !retrieveTaskTwo.isDone());
+				
+				returnedRecord = ((List<IRecord>)retrieveTaskOne.get()).get(0);
+				assertNotNull(returnedRecord);
+				assertTrue(DefaultRecord.class.isInstance(returnedRecord));
+				assertTrue(ModelHelper.equals(returnedRecord, defaultRecord));
+				
+				returnedRecord = (IRecord)retrieveTaskTwo.get();
+				assertNotNull(returnedRecord);
+				assertTrue(GeoJSONRecord.class.isInstance(returnedRecord));
+				assertTrue(ModelHelper.equals(returnedRecord, feature));
+				
+			} catch (ClientProtocolException e) {
+				assertFalse(e.getLocalizedMessage(), true);
+			} catch (IOException e) {
+				assertFalse(e.getLocalizedMessage(), true);
+			} catch (InterruptedException e) {
+				assertFalse(e.getLocalizedMessage(), true);
+			} catch (ExecutionException e) {
+				assertFalse(e.getLocalizedMessage(), true);
+			}
+		}
+		else {
+			//
+			// Make sure that we don't get a future task back
+			//
+			Object retrieveTaskOne;
+			try {
+				Object updateTaskOne = locationService.update(defaultRecord);
+				assertFalse(FutureTask.class.isInstance(updateTaskOne));
+				
+				ModelHelper.waitForWrite();
+
+				retrieveTaskOne = locationService.retrieve(defaultRecord);
+				assertFalse(FutureTask.class.isInstance(retrieveTaskOne));
+			} catch (IOException e) {
+				assertFalse(e.getLocalizedMessage(), true);
+			}
 		}
 	}
 }

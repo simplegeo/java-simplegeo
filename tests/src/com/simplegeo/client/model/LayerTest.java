@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
 
-import com.simplegeo.client.SimpleGeoClient;
+import com.simplegeo.client.SimpleGeoClientIfc;
 import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.query.NearbyQuery;
 import com.simplegeo.client.test.TestEnvironment;
@@ -52,15 +52,16 @@ public class LayerTest extends TestCase {
 	
 	public void setUp() throws Exception {
 		
-		SimpleGeoClient.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
+		TestEnvironment.getClient().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 		testingLayer = new Layer(TestEnvironment.getLayer());
 		
 	}
 
 	public void tearDown() {
 		
-		SimpleGeoClient locationService = SimpleGeoClient.getInstance();
-		locationService.futureTask = false;
+		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
+		if (locationService.supportsFutureTasks())
+			locationService.setFutureTask(false);
 		
 		List<IRecord> records = testingLayer.getRecords();
 		
@@ -88,8 +89,7 @@ public class LayerTest extends TestCase {
 			testingLayer.add(record);
 		}
 		
-		try {
-			
+		try {			
 			testingLayer.update();
 			ModelHelper.waitForWrite();
 			GeoJSONRecord geojson = (GeoJSONRecord)testingLayer.nearby(query);
