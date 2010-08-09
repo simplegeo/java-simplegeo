@@ -52,14 +52,19 @@ public class ModelHelper extends TestCase {
 	private static final String TAG = ModelHelper.class.getName();
 		
 	public static DefaultRecord getRandomDefaultRecord() {
+
+		return getRandomDefaultRecord("random_layer");
+	}
+
+	public static DefaultRecord getRandomDefaultRecord(String layer) {
 		
-		DefaultRecord record = new DefaultRecord(getRandomRecordId(), "random_layer", "object");
+		DefaultRecord record = new DefaultRecord(getRandomRecordId(), layer, "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
 		return record;
 	}
-	
+
 	public static void waitForWrite() {
 		try {
 			Thread.sleep(5000);
@@ -70,16 +75,26 @@ public class ModelHelper extends TestCase {
 	
 	public static List<IRecord> getRandomDefaultRecordList(int length) throws Exception {
 		
+		return getRandomDefaultRecordList("random_layer", length);
+	}
+	
+	public static List<IRecord> getRandomDefaultRecordList(String layer, int length) throws Exception {
+		
 		List<IRecord> list = new ArrayList<IRecord>(length);
 		for(int i = 0; i < length; i++) 
-			list.add(ModelHelper.getRandomDefaultRecord());
+			list.add(ModelHelper.getRandomDefaultRecord(layer));
 		
 		return list;
 	}
 	
 	public static GeoJSONRecord getRandomGeoJSONRecord() throws Exception {
 		
-		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), "random_layer", "object");
+		return getRandomGeoJSONRecord("random_layer");
+	}
+	
+	public static GeoJSONRecord getRandomGeoJSONRecord(String layer) throws Exception {
+		
+		GeoJSONRecord record = new GeoJSONRecord(getRandomRecordId(), layer, "object");
 		record.setLatitude(getRandomLatitude());
 		record.setLongitude(getRandomLongitude());
 		
@@ -87,6 +102,11 @@ public class ModelHelper extends TestCase {
 	}
 	
 	public static GeoJSONRecord getRandomGeoJSONRecordList(int length) throws Exception {
+				
+		return getRandomGeoJSONRecordList("random_layer", length);
+	}
+	
+	public static GeoJSONRecord getRandomGeoJSONRecordList(String layer, int length) throws Exception {
 		
 		GeoJSONRecord bigGeoJSONRecord = new GeoJSONRecord("FeatureCollection");
 		
@@ -129,12 +149,9 @@ public class ModelHelper extends TestCase {
 		
 		int recordSize = records.size();
 		try {
-			
 			if(geoJSONObject.getType().equals("FeatureCollection")) {
-			
 				JSONArray features = geoJSONObject.getJSONArray("features");
 				if(features != null) {
-					
 					int featuresSize = features.length();
 					if(featuresSize == recordSize) {
 						
@@ -148,11 +165,8 @@ public class ModelHelper extends TestCase {
 						
 						return true;
 					}
-					
 				}
-				
 			}
-			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

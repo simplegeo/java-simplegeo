@@ -50,12 +50,10 @@ import com.simplegeo.client.utilities.ModelHelper;
 public class LayerTest extends TestCase {
 
 	private Layer testingLayer;
-	
 	public void setUp() throws Exception {
 		
 		SimpleGeoClient.getInstance().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 		testingLayer = new Layer(TestEnvironment.getLayer());
-		
 	}
 
 	public void tearDown() {
@@ -65,7 +63,6 @@ public class LayerTest extends TestCase {
 			client.setFutureTask(false);
 		
 		List<IRecord> records = testingLayer.getRecords();
-		
 		try {
 			
 			for(IRecord record : records)
@@ -84,7 +81,7 @@ public class LayerTest extends TestCase {
 		double longitude = 27.0;
 		NearbyQuery query = new LatLonNearbyQuery(latitude, longitude, 1.0, testingLayer.getName());
 		for(int i = 0; i < 10; i++) {
-			DefaultRecord record = ModelHelper.getRandomDefaultRecord();
+			DefaultRecord record = ModelHelper.getRandomDefaultRecord(TestEnvironment.getLayer());
 			record.setLatitude(latitude);
 			record.setLongitude(longitude);
 			testingLayer.add(record);

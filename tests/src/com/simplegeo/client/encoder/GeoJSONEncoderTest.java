@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.GeoJSONRecord;
+import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.utilities.ModelHelper;
 
 /**
@@ -20,7 +21,8 @@ public class GeoJSONEncoderTest extends TestCase {
 
 	public void testRecordToGeoJSON() throws Exception {
 		
-		DefaultRecord record = ModelHelper.getRandomDefaultRecord();
+		String layer = TestEnvironment.getLayer();
+		DefaultRecord record = ModelHelper.getRandomDefaultRecord(layer);
 		record.getProperties().put("name", "derek");
 		
 		GeoJSONRecord jsonRecord = GeoJSONEncoder.getGeoJSONRecord(record);
@@ -32,8 +34,9 @@ public class GeoJSONEncoderTest extends TestCase {
 	}
 	
 	public void testGeoJSONToRecord() throws Exception {
+		String layer = TestEnvironment.getLayer();
 
-		GeoJSONRecord jsonRecord = ModelHelper.getRandomGeoJSONRecord();
+		GeoJSONRecord jsonRecord = ModelHelper.getRandomGeoJSONRecord(layer);
 		jsonRecord.setObjectProperty("name", "derek");
 				
 		DefaultRecord record = GeoJSONEncoder.getRecord(jsonRecord);
@@ -47,10 +50,10 @@ public class GeoJSONEncoderTest extends TestCase {
 	
 	public void testMultiGeoJSONToRecords() throws Exception {
 		
-		GeoJSONRecord bigGeoJSONRecord = ModelHelper.getRandomGeoJSONRecordList(10);
-		
+		String layer = TestEnvironment.getLayer();
+
+		GeoJSONRecord bigGeoJSONRecord = ModelHelper.getRandomGeoJSONRecordList(layer, 10);
 		List<DefaultRecord> defaultRecords = GeoJSONEncoder.getRecords(bigGeoJSONRecord);
-		
 		
 	}
 	

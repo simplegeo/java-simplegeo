@@ -70,14 +70,16 @@ public class SimpleGeoClientTest extends TestCase {
 	public void setUp() throws Exception {
 		
 		setupClient();
-		defaultRecord = ModelHelper.getRandomDefaultRecord();
+		String layer = TestEnvironment.getLayer();
+
+		defaultRecord = ModelHelper.getRandomDefaultRecord(layer);
 		defaultRecord.setObjectProperty("name", "derek");
 		
-		feature = ModelHelper.getRandomGeoJSONRecord();
+		feature = ModelHelper.getRandomGeoJSONRecord(layer);
 		feature.setObjectProperty("mickey", "mouse");
 		
-		defaultRecordList = ModelHelper.getRandomDefaultRecordList(10);
-		featureCollection = ModelHelper.getRandomGeoJSONRecordList(10);
+		defaultRecordList = ModelHelper.getRandomDefaultRecordList(layer, 10);
+		featureCollection = ModelHelper.getRandomGeoJSONRecordList(layer, 10);
 		
 	}
 	
