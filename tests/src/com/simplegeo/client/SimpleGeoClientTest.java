@@ -250,7 +250,6 @@ public class SimpleGeoClientTest extends TestCase {
 		} catch (IOException e) {
 			assertTrue(e.getMessage(), false);
 		}
-		
 	}
 	
 	public void testReverseGeocode() {

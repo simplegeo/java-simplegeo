@@ -125,8 +125,6 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 		      wr.close ();
 		}
 		
-	
-		
 		switch(conn.getResponseCode()) {
 			case GET_SUCCESS:
 			case PUT_SUCCESS:
