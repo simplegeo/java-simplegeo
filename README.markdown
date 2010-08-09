@@ -1,4 +1,4 @@
-simplegeo-java-client v1.2.3
+simplegeo-java-client v1.2.4
 ================================================================================
 
 ABSTRACT:
@@ -9,6 +9,10 @@ synchronous and asynchronous calls are provided.
 
 CHANGES FROM PREVIOUS VERSIONS:
 --------------------------------------------------------------------------------
+Version 1.2.4
+- Merged mefogle's fork that refactors the SimpleGeoClient into an interface and
+abstract class which allows the client to run within Google App Engine.
+
 Version 1.2.3
 - Renamed the LocationService to SimpleGeoClient and placed it under
 a different pacakge
