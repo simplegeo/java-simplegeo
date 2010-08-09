@@ -63,7 +63,7 @@ import com.simplegeo.client.query.NearbyQuery;
  * @author Derek Smith (refactored by Mark Fogle)
  */
 
-public interface SimpleGeoClientIfc {
+public interface ISimpleGeoClient {
 	
 	/**
 	 * Enums that are used to differentiate between different handlers.
