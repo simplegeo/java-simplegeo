@@ -66,15 +66,15 @@ import com.simplegeo.client.query.NearbyQuery;
  * @author Derek Smith (refactored by Mark Fogle)
  */
 
-public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
+public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	
 	public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
 	
-	protected static Logger logger = Logger.getLogger(AbsSimpleGeoClient.class.getName());
+	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
 	
 	protected static final String mainURL = "http://api.simplegeo.com/0.1";
 	
-	protected static SimpleGeoClientIfc sharedLocationService = null;
+	protected static ISimpleGeoClient sharedLocationService = null;
 	
 	protected RecordHandler recordHandler = null;
 	protected GeoJSONHandler geoJSONHandler = null;
@@ -86,7 +86,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	 */
 	protected boolean futureTask = false; 
 		
-	protected AbsSimpleGeoClient() {
+	protected AbstractSimpleGeoClient() {
 		
 		setHandler(Handler.JSON, new JSONHandler());
 		setHandler(Handler.RECORD, new RecordHandler());
@@ -150,7 +150,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 		
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#retrieve(com.simplegeo.client.model.IRecord)
+	 * @see com.simplegeo.client.ISimpleGeoClient#retrieve(com.simplegeo.client.model.IRecord)
 	 */
 	public Object retrieve(IRecord defaultRecord) throws IOException {
 		
@@ -170,7 +170,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}	
 					
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#retrieve(java.util.List)
+	 * @see com.simplegeo.client.ISimpleGeoClient#retrieve(java.util.List)
 	 */
 	public Object retrieve(List<IRecord> records) throws IOException {
 		
@@ -207,21 +207,21 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 		
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#update(com.simplegeo.client.model.IRecord)
+	 * @see com.simplegeo.client.ISimpleGeoClient#update(com.simplegeo.client.model.IRecord)
 	 */
 	public Object update(IRecord record) throws IOException {		
 		return update(getGeoJSONObject(record));
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#update(java.util.List)
+	 * @see com.simplegeo.client.ISimpleGeoClient#update(java.util.List)
 	 */
 	public Object update(List<IRecord> records) throws IOException {		
 		return update(getGeoJSONObject(records));
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#update(com.simplegeo.client.geojson.GeoJSONObject)
+	 * @see com.simplegeo.client.ISimpleGeoClient#update(com.simplegeo.client.geojson.GeoJSONObject)
 	 */
 	public Object update(GeoJSONObject geoJSONObject) throws IOException {
 		
@@ -251,7 +251,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#update(java.lang.String, com.simplegeo.client.geojson.GeoJSONObject, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
+	 * @see com.simplegeo.client.ISimpleGeoClient#update(java.lang.String, com.simplegeo.client.geojson.GeoJSONObject, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
 	 */
 	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoJSONHandlerIfc handler) 
 	throws IOException {
@@ -267,7 +267,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#delete(com.simplegeo.client.model.IRecord)
+	 * @see com.simplegeo.client.ISimpleGeoClient#delete(com.simplegeo.client.model.IRecord)
 	 */
 	public Object delete(IRecord record) throws IOException {
 		
@@ -278,7 +278,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#delete(java.lang.String, java.lang.String, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
+	 * @see com.simplegeo.client.ISimpleGeoClient#delete(java.lang.String, java.lang.String, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
 	 */
 	public Object delete(String layer, String recordId, SimpleGeoJSONHandlerIfc handler) 
 		throws IOException {
@@ -290,14 +290,14 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#history(com.simplegeo.client.query.HistoryQuery)
+	 * @see com.simplegeo.client.ISimpleGeoClient#history(com.simplegeo.client.query.HistoryQuery)
 	 */
 	public Object history(HistoryQuery query) throws IOException{
 		return history(query, Handler.GEOJSON);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#history(com.simplegeo.client.query.HistoryQuery, com.simplegeo.client.SimpleGeoClientIfc.Handler)
+	 * @see com.simplegeo.client.ISimpleGeoClient#history(com.simplegeo.client.query.HistoryQuery, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object history(HistoryQuery query, Handler type) 
 		throws IOException {
@@ -311,14 +311,14 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#nearby(com.simplegeo.client.query.NearbyQuery)
+	 * @see com.simplegeo.client.ISimpleGeoClient#nearby(com.simplegeo.client.query.NearbyQuery)
 	 */
 	public Object nearby(NearbyQuery query) throws IOException {
 		return nearby(query, Handler.GEOJSON);
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#nearby(com.simplegeo.client.query.NearbyQuery, com.simplegeo.client.SimpleGeoClientIfc.Handler)
+	 * @see com.simplegeo.client.ISimpleGeoClient#nearby(com.simplegeo.client.query.NearbyQuery, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object nearby(NearbyQuery query, Handler type) throws IOException {
 		
@@ -328,7 +328,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 		
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#reverseGeocode(double, double)
+	 * @see com.simplegeo.client.ISimpleGeoClient#reverseGeocode(double, double)
 	 */
 	public Object reverseGeocode(double lat, double lon)
 			throws IOException {
@@ -339,7 +339,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#density(int, int, double, double)
+	 * @see com.simplegeo.client.ISimpleGeoClient#density(int, int, double, double)
 	 */
 	public Object density(int day, int hour, double lat, double lon)
 	throws IOException {
@@ -347,7 +347,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#density(int, int, double, double, com.simplegeo.client.SimpleGeoClientIfc.Handler)
+	 * @see com.simplegeo.client.ISimpleGeoClient#density(int, int, double, double, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object density(int day, int hour, double lat, double lon, Handler type)
 			throws IOException {
@@ -392,14 +392,14 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#contains(double, double)
+	 * @see com.simplegeo.client.ISimpleGeoClient#contains(double, double)
 	 */
 	public Object contains(double lat, double lon) throws IOException {
 		return contains(lat, lon, Handler.JSON);
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#contains(double, double, com.simplegeo.client.SimpleGeoClientIfc.Handler)
+	 * @see com.simplegeo.client.ISimpleGeoClient#contains(double, double, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object contains(double lat, double lon, Handler type)
 	throws IOException {
@@ -412,7 +412,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#boundaries(java.lang.String)
+	 * @see com.simplegeo.client.ISimpleGeoClient#boundaries(java.lang.String)
 	 */
 	public Object boundaries(String featureId)
 	throws IOException {
@@ -422,7 +422,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#boundaries(java.lang.String, com.simplegeo.client.SimpleGeoClientIfc.Handler)
+	 * @see com.simplegeo.client.ISimpleGeoClient#boundaries(java.lang.String, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object boundaries(String featureId, Handler type)
 	throws IOException {
@@ -433,7 +433,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#overlaps(com.simplegeo.client.model.Envelope, int, java.lang.String)
+	 * @see com.simplegeo.client.ISimpleGeoClient#overlaps(com.simplegeo.client.model.Envelope, int, java.lang.String)
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType) 
 	throws IOException {
@@ -442,7 +442,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#overlaps(com.simplegeo.client.model.Envelope, int, java.lang.String, com.simplegeo.client.SimpleGeoClientIfc.Handler)
+	 * @see com.simplegeo.client.ISimpleGeoClient#overlaps(com.simplegeo.client.model.Envelope, int, java.lang.String, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType, Handler type)
 	throws IOException {
@@ -675,7 +675,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#supportsFutureTasks()
+	 * @see com.simplegeo.client.ISimpleGeoClient#supportsFutureTasks()
 	 */
 	public boolean supportsFutureTasks() {
 		// 
@@ -685,7 +685,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#setFutureTask(boolean)
+	 * @see com.simplegeo.client.ISimpleGeoClient#setFutureTask(boolean)
 	 */
 	public void setFutureTask(boolean futureTask) {
 		this.futureTask = futureTask;		
@@ -693,7 +693,7 @@ public abstract class AbsSimpleGeoClient implements SimpleGeoClientIfc {
 
 
 	/* (non-Javadoc)
-	 * @see com.simplegeo.client.SimpleGeoClientIfc#getFutureTask()
+	 * @see com.simplegeo.client.ISimpleGeoClient#getFutureTask()
 	 */
 	public boolean getFutureTask() {
 		return futureTask;	
