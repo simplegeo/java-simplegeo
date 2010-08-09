@@ -112,7 +112,7 @@ public class ModelHelper extends TestCase {
 		
 		JSONArray list = new JSONArray();
 		for(int i = 0; i < length; i++) 
-			list.put(getRandomGeoJSONRecord());
+			list.put(getRandomGeoJSONRecord(layer));
 		
 		try {
 			bigGeoJSONRecord.putOpt("features", list);
