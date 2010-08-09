@@ -44,7 +44,7 @@ import org.json.JSONObject;
 
 import ch.hsr.geohash.GeoHash;
 
-import com.simplegeo.client.SimpleGeoClientIfc.Handler;
+import com.simplegeo.client.ISimpleGeoClient.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.http.SimpleGeoHandler;
@@ -65,11 +65,11 @@ public class SimpleGeoClientTest extends TestCase {
 	private GeoJSONRecord feature;
 	private List<IRecord> defaultRecordList;
 	private GeoJSONObject featureCollection;
+	protected ISimpleGeoClient client;
 	
 	public void setUp() throws Exception {
 		
-		TestEnvironment.getClient().getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
-		
+		setupClient();
 		defaultRecord = ModelHelper.getRandomDefaultRecord();
 		defaultRecord.setObjectProperty("name", "derek");
 		
@@ -81,10 +81,13 @@ public class SimpleGeoClientTest extends TestCase {
 		
 	}
 	
+	private void setupClient() throws Exception {
+		client = SimpleGeoClient.getInstance();
+		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
+	}
+	
 	public void tearDown() {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		locationService.setFutureTask(false);
+		client.setFutureTask(false);
 		defaultRecordList.add(defaultRecord);
 		
 		List<IRecord> records = new ArrayList<IRecord>();
@@ -95,7 +98,7 @@ public class SimpleGeoClientTest extends TestCase {
 		try {
 			
 			for(IRecord record : records)
-				locationService.delete(record);
+				client.delete(record);
 			
 		} catch (Exception e) {
 			;
@@ -103,31 +106,28 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testRetrieveAndUpdateRecord() {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		try {
 			
 			// null means that the object was successful
-			Object nothing = locationService.update(defaultRecord);
+			Object nothing = client.update(defaultRecord);
 			assertNull("Should return a null value", nothing);
 			ModelHelper.waitForWrite();
 			
-			nothing = locationService.update((GeoJSONObject)feature);
+			nothing = client.update((GeoJSONObject)feature);
 			assertNull("Should return a null value", nothing);
 			ModelHelper.waitForWrite();
 			
-			IRecord retrievedRecord = (DefaultRecord)locationService.retrieve(defaultRecord);
+			IRecord retrievedRecord = (DefaultRecord)client.retrieve(defaultRecord);
 			assertTrue(DefaultRecord.class.isInstance(retrievedRecord));
 			assertTrue(ModelHelper.equals(retrievedRecord, defaultRecord));
 			
-			retrievedRecord = (GeoJSONRecord)locationService.retrieve(feature);
+			retrievedRecord = (GeoJSONRecord)client.retrieve(feature);
 			assertTrue("Should be an instance of GeoJSONRecord", GeoJSONRecord.class.isInstance(retrievedRecord));
 			assertTrue("The two records should be equal", ModelHelper.equals(retrievedRecord, feature));
 			
-			nothing = locationService.update(defaultRecordList);
+			nothing = client.update(defaultRecordList);
 			assertNull("Should return a null value", nothing);
-			nothing = locationService.update(featureCollection);
+			nothing = client.update(featureCollection);
 			assertNull("Should return a null value", nothing);
 						
 		} catch (ClientProtocolException e) {
@@ -139,7 +139,7 @@ public class SimpleGeoClientTest extends TestCase {
 		defaultRecord.setRecordId("not-here-102939484");
 		
 		try {
-			locationService.retrieve(defaultRecord);
+			client.retrieve(defaultRecord);
 			assertTrue(false);
 		} catch (APIException e) {
 			assertEquals(e.statusCode, SimpleGeoHandler.NO_SUCH);
@@ -154,30 +154,27 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testNearby() throws Exception {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		DefaultRecord record = (DefaultRecord)defaultRecordList.get(0);
 		record.setLatitude(10.0);
 		record.setLongitude(10.0);
-		locationService.update(record);
+		client.update(record);
 		
 		record = (DefaultRecord)defaultRecordList.get(1);
 		record.setLatitude(10.0);
 		record.setLongitude(10.0);
-		locationService.update(record);
+		client.update(record);
 		
 		record = (DefaultRecord)defaultRecordList.get(2);
 		record.setLatitude(10.0);
 		record.setLongitude(10.0);
-		locationService.update(record);
+		client.update(record);
 		
 		try {
 			
-			locationService.update(defaultRecordList);
+			client.update(defaultRecordList);
 			ModelHelper.waitForWrite();
 			
-			locationService.update((IRecord)featureCollection);
+			client.update((IRecord)featureCollection);
 			ModelHelper.waitForWrite();
 			
 		} catch (ClientProtocolException e) {
@@ -195,13 +192,13 @@ public class SimpleGeoClientTest extends TestCase {
 		try {
 			
 			GeohashNearbyQuery geoHashQuery = new GeohashNearbyQuery(geoHash, TestEnvironment.getLayer(), types, 2, null);
-			List<IRecord> nearbyRecords = (List<IRecord>)locationService.nearby(geoHashQuery, Handler.RECORD);
+			List<IRecord> nearbyRecords = (List<IRecord>)client.nearby(geoHashQuery, Handler.RECORD);
 			assertNotNull(nearbyRecords);
 			assertTrue(List.class.isInstance(nearbyRecords));
 			assertTrue(nearbyRecords.size() == 2);
 			
 			LatLonNearbyQuery latLonQuery = new LatLonNearbyQuery(10.0, 10.0, 10.0, TestEnvironment.getLayer(), types, 2, null);
-			GeoJSONObject nearbyJSONObjects = (GeoJSONObject)locationService.nearby(latLonQuery, Handler.GEOJSON);
+			GeoJSONObject nearbyJSONObjects = (GeoJSONObject)client.nearby(latLonQuery, Handler.GEOJSON);
 			assertNotNull(nearbyJSONObjects);
 			assertTrue(GeoJSONObject.class.isInstance(nearbyJSONObjects));
 			int featureLength = nearbyJSONObjects.getFeatures().length();
@@ -212,7 +209,7 @@ public class SimpleGeoClientTest extends TestCase {
 			
 			geoHashQuery.setCursor(cursor);
 			geoHashQuery.setLimit(100);
-			nearbyRecords = (List<IRecord>)locationService.nearby(geoHashQuery, Handler.RECORD);
+			nearbyRecords = (List<IRecord>)client.nearby(geoHashQuery, Handler.RECORD);
 			assertFalse(nearbyRecords.size() == featureLength);
 			
 		} catch (ClientProtocolException e) {
@@ -224,29 +221,26 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testDeleteRecord() {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		try {
 			
-			Object nothing = locationService.update(defaultRecord);
+			Object nothing = client.update(defaultRecord);
 			assertNull("A null value should be returned", nothing);
 			ModelHelper.waitForWrite();
 				
-			IRecord r = (IRecord)locationService.retrieve(defaultRecord);
+			IRecord r = (IRecord)client.retrieve(defaultRecord);
 			assertNotNull("The record should be retrievable", r);
 			assertTrue("The records should be equal", ModelHelper.equals(defaultRecord, r));
 				
-			locationService.delete(defaultRecord);
+			client.delete(defaultRecord);
 			
-			nothing = locationService.update((GeoJSONObject)feature);
+			nothing = client.update((GeoJSONObject)feature);
 			assertNull("A null value should be returned", nothing);
 			
-			r = (IRecord)locationService.retrieve(feature);
+			r = (IRecord)client.retrieve(feature);
 			assertNotNull("The record should be retrievable", r);
 			assertTrue("The records should be equal", ModelHelper.equals(feature, r));
 			
-			locationService.delete(feature);
+			client.delete(feature);
 			
 
 		} catch (ClientProtocolException e) {
@@ -257,15 +251,10 @@ public class SimpleGeoClientTest extends TestCase {
 		
 	}
 	
-	
-	
 	public void testReverseGeocode() {
-
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		try {
 			
-			GeoJSONObject jsonObject = (GeoJSONObject)locationService.reverseGeocode(40.01729499086, -105.2775999994);
+			GeoJSONObject jsonObject = (GeoJSONObject)client.reverseGeocode(40.01729499086, -105.2775999994);
 			assertTrue(jsonObject.getProperties().length() > 8);
 			assertTrue(jsonObject.getProperties().get("country").equals("US"));
 			
@@ -279,11 +268,8 @@ public class SimpleGeoClientTest extends TestCase {
 	} 
 	
 	public void testDensity() {
-
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		try {
-			Object o = locationService.density(Calendar.WEDNESDAY, 12, 40.01729499086, -105.2775999994);
+			Object o = client.density(Calendar.WEDNESDAY, 12, 40.01729499086, -105.2775999994);
 			GeoJSONObject jsonObject = (GeoJSONObject)o;
 			
 			assertTrue(jsonObject.getGeometry().getJSONArray("coordinates").length()>3);
@@ -300,14 +286,11 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testContains() {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		try {
 			double lat = 40.017294990861913;
 			double lon = -105.27759999949176;
 			
-			JSONArray jsonArray = (JSONArray)locationService.contains(lat, lon);
+			JSONArray jsonArray = (JSONArray)client.contains(lat, lon);
 			assertNotNull(jsonArray);
 			assertTrue(jsonArray.length() == 9);
 			
@@ -320,13 +303,10 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testOverlaps() {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		
 		try {
 			
 			Envelope envelope = new Envelope(40.0, -90.0, 50.0, -80.0);
-			JSONArray jsonArray = (JSONArray)locationService.overlaps(envelope, 2, null);
+			JSONArray jsonArray = (JSONArray)client.overlaps(envelope, 2, null);
 			assertNotNull(jsonArray);
 			assertTrue(jsonArray.length() == 2);
 			
@@ -339,13 +319,12 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testBoundary() {
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
 		try {
 			
 			String featureId = "Province:Bauchi:s1zj73";
 		    String name = "Bauchi";
 		    
-		    GeoJSONObject geoJSON = (GeoJSONObject)locationService.boundaries(featureId);
+		    GeoJSONObject geoJSON = (GeoJSONObject)client.boundaries(featureId);
 		    assertTrue(geoJSON.isFeature());
 		    JSONObject properties = geoJSON.getProperties();
 		    assertTrue(properties.getString("id").equals(featureId));
@@ -363,8 +342,6 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 	
 	public void testHistory() throws Exception{
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-
 		int lat = 0;
 		String recordId = defaultRecordList.get(0).getRecordId();
 
@@ -376,7 +353,7 @@ public class SimpleGeoClientTest extends TestCase {
 				defaultRecord.setRecordId(recordId);
 				defaultRecord.setCreated(defaultRecord.getCreated()+lat*100);
 				defaultRecord.setLatitude(lat);
-				locationService.update(defaultRecord);
+				client.update(defaultRecord);
 			}
 			
 			ModelHelper.waitForWrite();
@@ -390,7 +367,7 @@ public class SimpleGeoClientTest extends TestCase {
 		try {
 			ModelHelper.waitForWrite();
 			HistoryQuery query = new HistoryQuery(recordId, TestEnvironment.getLayer(), 2);
-			GeoJSONObject jsonObject = (GeoJSONObject)locationService.history(query);
+			GeoJSONObject jsonObject = (GeoJSONObject)client.history(query);
 			assertNotNull(jsonObject);
 			assertTrue(GeoJSONObject.class.isInstance(jsonObject));
 			assertTrue(jsonObject.isGeometryCollection());
@@ -403,7 +380,7 @@ public class SimpleGeoClientTest extends TestCase {
 			assertTrue(cursor != null);
 			query.setCursor(cursor);
 			
-			jsonObject = (GeoJSONObject)locationService.history(query);
+			jsonObject = (GeoJSONObject)client.history(query);
 			assertNotNull(jsonObject);
 			geometries = jsonObject.getGeometries();
 			length = geometries.length();
@@ -418,15 +395,13 @@ public class SimpleGeoClientTest extends TestCase {
 	}
 		
 	public void testFutureRetrieval() {
-		
-		SimpleGeoClientIfc locationService = TestEnvironment.getClient();
-		locationService.setFutureTask(true);
-		if (locationService.supportsFutureTasks())
+		client.setFutureTask(true);
+		if (client.supportsFutureTasks())
 		{
 			try {
-				FutureTask<Object> updateTaskOne = (FutureTask<Object>)locationService.update(defaultRecord);
+				FutureTask<Object> updateTaskOne = (FutureTask<Object>)client.update(defaultRecord);
 				assertTrue(FutureTask.class.isInstance(updateTaskOne));
-				FutureTask<Object> updateTaskTwo = (FutureTask<Object>)locationService.update((GeoJSONObject)feature);
+				FutureTask<Object> updateTaskTwo = (FutureTask<Object>)client.update((GeoJSONObject)feature);
 				assertTrue(FutureTask.class.isInstance(updateTaskTwo));
 				
 				while(!updateTaskOne.isDone() && !updateTaskTwo.isDone());
@@ -436,9 +411,9 @@ public class SimpleGeoClientTest extends TestCase {
 			
 				ModelHelper.waitForWrite();
 				
-				FutureTask<Object> retrieveTaskOne = (FutureTask<Object>)locationService.retrieve(defaultRecord);
+				FutureTask<Object> retrieveTaskOne = (FutureTask<Object>)client.retrieve(defaultRecord);
 				assertTrue(FutureTask.class.isInstance(retrieveTaskOne));
-				FutureTask<Object> retrieveTaskTwo = (FutureTask<Object>)locationService.retrieve(feature);
+				FutureTask<Object> retrieveTaskTwo = (FutureTask<Object>)client.retrieve(feature);
 				assertTrue(FutureTask.class.isInstance(retrieveTaskTwo));
 				
 				while(!retrieveTaskOne.isDone() && !retrieveTaskTwo.isDone());
@@ -469,12 +444,12 @@ public class SimpleGeoClientTest extends TestCase {
 			//
 			Object retrieveTaskOne;
 			try {
-				Object updateTaskOne = locationService.update(defaultRecord);
+				Object updateTaskOne = client.update(defaultRecord);
 				assertFalse(FutureTask.class.isInstance(updateTaskOne));
 				
 				ModelHelper.waitForWrite();
 
-				retrieveTaskOne = locationService.retrieve(defaultRecord);
+				retrieveTaskOne = client.retrieve(defaultRecord);
 				assertFalse(FutureTask.class.isInstance(retrieveTaskOne));
 			} catch (IOException e) {
 				assertFalse(e.getLocalizedMessage(), true);

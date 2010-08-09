@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.simplegeo.client.SimpleGeoClient;
-import com.simplegeo.client.SimpleGeoClientIfc;
+import com.simplegeo.client.ISimpleGeoClient;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.http.exceptions.ValidLayerException;
 import com.simplegeo.client.model.DefaultRecord;
@@ -84,10 +84,10 @@ public class RecordExample {
 			throw new Exception("Please provide a valid key/secret pair");
 		
 		// Grab the shared instance
-		SimpleGeoClientIfc locationService = SimpleGeoClient.getInstance();
+		ISimpleGeoClient client = SimpleGeoClient.getInstance();
 		
 		// Set the proper key/secret pair for signing OAuth requests
-		locationService.getHttpClient().setToken(key, secret);
+		client.getHttpClient().setToken(key, secret);
 		
 		RecordExample sendRecord = new RecordExample();
 		sendRecord.sendRecords();
