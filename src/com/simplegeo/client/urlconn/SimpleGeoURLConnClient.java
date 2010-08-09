@@ -41,8 +41,8 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
-import com.simplegeo.client.AbsSimpleGeoClient;
-import com.simplegeo.client.SimpleGeoClientIfc;
+import com.simplegeo.client.AbstractSimpleGeoClient;
+import com.simplegeo.client.ISimpleGeoClient;
 import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
 import com.simplegeo.client.http.OAuthClientIfc;
 import com.simplegeo.client.http.exceptions.APIException;
@@ -51,13 +51,13 @@ import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 
 /**
  * A wrapper around a URLConnection designed to hide the of the request generation from the rest of the
- * REST code.  This enables all of the REST logic to be implemented in AbsSimpleGeoClient and the derived
+ * REST code.  This enables all of the REST logic to be implemented in AbstractSimpleGeoClient and the derived
  * class is responsible only for the transport.
  * 
  * @author Mark Fogle
  */
 
-public class SimpleGeoURLConnClient extends AbsSimpleGeoClient {
+public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 	
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
@@ -71,7 +71,7 @@ public class SimpleGeoURLConnClient extends AbsSimpleGeoClient {
 	/**
 	 * @return the shared instance of this class
 	 */
-	static public SimpleGeoClientIfc getInstance() {
+	static public ISimpleGeoClient getInstance() {
 		
 		if(sharedLocationService == null)
 			sharedLocationService = new SimpleGeoURLConnClient();
@@ -127,8 +127,7 @@ public class SimpleGeoURLConnClient extends AbsSimpleGeoClient {
 		
 	
 		
-			switch(conn.getResponseCode()) {
-			
+		switch(conn.getResponseCode()) {
 			case GET_SUCCESS:
 			case PUT_SUCCESS:
 				//
@@ -144,17 +143,18 @@ public class SimpleGeoURLConnClient extends AbsSimpleGeoClient {
 			default:
 				throw new APIException (conn.getResponseCode(), null);
 		
-		}		
+		}
+
 		//Get Response	
-		InputStream is = conn.getInputStream();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		String line;
+		InputStream inputStream = conn.getInputStream();
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		String line = null;
 		StringBuffer response = new StringBuffer(); 
-		while((line = rd.readLine()) != null) {
+		while((line = bufferedReader.readLine()) != null) {
 		  response.append(line);
 		  response.append('\r');
 		}
-		rd.close();
+		bufferedReader.close();
   
 	    return handler.parseResponse(response.toString());
 		

@@ -77,7 +77,7 @@ import com.simplegeo.client.http.SimpleGeoHandler;
  * 
  * @author Derek Smith
  */
-public class SimpleGeoClient extends AbsSimpleGeoClient {
+public class SimpleGeoClient extends AbstractSimpleGeoClient {
 	
 	private RequestThreadPoolExecutor threadExecutor = null;
 	
