@@ -53,7 +53,7 @@ import org.apache.http.params.HttpProtocolParams;
 
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
-import com.simplegeo.client.http.OAuthClientIfc;
+import com.simplegeo.client.http.IOAuthClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 
@@ -117,7 +117,7 @@ public class SimpleGeoClient extends AbstractSimpleGeoClient {
 	/**
 	 * @return the Http client used to execute all requests
 	 */
-	public OAuthClientIfc getHttpClient() {
+	public IOAuthClient getHttpClient() {
 		return this.httpClient;
 	}
 	

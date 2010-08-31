@@ -31,7 +31,7 @@ package com.simplegeo.client.urlconn;
 
 import java.util.logging.Logger;
 
-import com.simplegeo.client.http.OAuthClientIfc;
+import com.simplegeo.client.http.IOAuthClient;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
@@ -46,7 +46,7 @@ import oauth.signpost.exception.OAuthMessageSignerException;
  * @author Mark Fogle
  */
 
-public class OAuthURLConnection implements OAuthClientIfc {
+public class OAuthURLConnection implements IOAuthClient {
 	
 	
 	private static Logger logger = Logger.getLogger(OAuthURLConnection.class.getName());

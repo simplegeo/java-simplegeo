@@ -34,7 +34,7 @@ import java.util.List;
 
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
-import com.simplegeo.client.http.OAuthClientIfc;
+import com.simplegeo.client.http.IOAuthClient;
 import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.query.HistoryQuery;
@@ -58,7 +58,7 @@ import com.simplegeo.client.query.NearbyQuery;
  * 
  * In order to properly authenticate requests, an OAuth token is required.
  * This property is set by calling 
- * {@link com.simplegeo.client.OAuthClientIfc#setToken(String, String)}.
+ * {@link com.simplegeo.client.IOAuthClient#setToken(String, String)}.
  * 
  * @author Derek Smith (refactored by Mark Fogle)
  */
@@ -457,7 +457,7 @@ public interface ISimpleGeoClient {
 	/**
 	 * @return the Http client used to execute all requests
 	 */
-	public OAuthClientIfc getHttpClient();
+	public IOAuthClient getHttpClient();
 	
 	/**
 	 * @return true if this client supports future tasks.

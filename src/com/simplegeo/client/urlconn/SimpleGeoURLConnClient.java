@@ -44,7 +44,7 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import com.simplegeo.client.AbstractSimpleGeoClient;
 import com.simplegeo.client.ISimpleGeoClient;
 import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
-import com.simplegeo.client.http.OAuthClientIfc;
+import com.simplegeo.client.http.IOAuthClient;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.NoSuchRecordException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
@@ -89,7 +89,7 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 	/**
 	 * @return the Http client used to execute all requests
 	 */
-	public OAuthClientIfc getHttpClient() {
+	public IOAuthClient getHttpClient() {
 		return this.urlConn;
 	}
 	
