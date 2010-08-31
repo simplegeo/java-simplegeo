@@ -29,6 +29,7 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
@@ -97,7 +98,6 @@ public class SimpleGeoClient extends AbstractSimpleGeoClient {
 	}
 	
 	private SimpleGeoClient() {
-		
 		super();
 
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
@@ -111,7 +111,6 @@ public class SimpleGeoClient extends AbstractSimpleGeoClient {
 		
 		this.httpClient = new OAuthHttpClient(connManager, params);
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
-		
 	}
 
 	/**
@@ -173,7 +172,7 @@ public class SimpleGeoClient extends AbstractSimpleGeoClient {
 	@Override
 	protected Object executeGet(String uri, SimpleGeoJSONHandlerIfc handler)
 			throws IOException {
-		return execute (new HttpGet(uri), new SimpleGeoHandler (handler));
+		return execute(new HttpGet(uri), new SimpleGeoHandler(handler));
 	}
 
 	@Override
@@ -181,7 +180,6 @@ public class SimpleGeoClient extends AbstractSimpleGeoClient {
 			SimpleGeoJSONHandlerIfc handler) throws IOException {
 		
 		HttpPost post = new HttpPost(uri);
-		
 		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 			
 		return execute(post, new SimpleGeoHandler (handler));
@@ -191,7 +189,7 @@ public class SimpleGeoClient extends AbstractSimpleGeoClient {
 	protected Object executeDelete(String uri, SimpleGeoJSONHandlerIfc handler)
 			throws IOException {
 
-		return execute (new HttpDelete(uri), new SimpleGeoHandler (handler));
+		return execute(new HttpDelete(uri), new SimpleGeoHandler (handler));
 	}
 
 	@Override

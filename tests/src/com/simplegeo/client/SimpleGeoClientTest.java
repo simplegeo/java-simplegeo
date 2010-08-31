@@ -154,6 +154,28 @@ public class SimpleGeoClientTest extends TestCase {
 		}
 		
 	}
+
+	public void testRetrieveAndUpdateRecordWithSpaceInId() {
+		try {
+			
+			// null means that the object was successful
+			DefaultRecord randomRecord = ModelHelper.getRandomDefaultRecord(defaultRecord.getLayer());
+			randomRecord.setRecordId("space space");
+			Object nothing = client.update(randomRecord);
+			assertNull("Should return a null value", nothing);
+			ModelHelper.waitForWrite();
+						
+			IRecord retrievedRecord = (DefaultRecord)client.retrieve(randomRecord);
+			assertTrue(DefaultRecord.class.isInstance(retrievedRecord));
+			assertTrue(ModelHelper.equals(retrievedRecord, randomRecord));
+												
+		} catch (ClientProtocolException e) {
+			assertTrue(e.getLocalizedMessage(), false);
+		} catch (IOException e) {
+			assertTrue(e.getLocalizedMessage(), false);
+		}		
+	}
+
 	
 	public void testNearby() throws Exception {
 		DefaultRecord record = (DefaultRecord)defaultRecordList.get(0);

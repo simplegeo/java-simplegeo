@@ -28,6 +28,7 @@
  */
 package com.simplegeo.client.query;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class LatLonNearbyQuery extends NearbyQuery {
 		this.radius = radius;
 	}
 	
-	public String getUri() {
+	public String getUri() throws UnsupportedEncodingException {
 		return String.format("%s/%f,%f.json", super.getUri(), lat, lon);
 	}
 

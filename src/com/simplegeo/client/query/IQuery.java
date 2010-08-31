@@ -28,6 +28,7 @@
  */
 package com.simplegeo.client.query;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -42,8 +43,9 @@ public interface IQuery {
 
 	/**
 	 * @return the URI associated with this query
+	 * @throws UnsupportedEncodingException 
 	 */
-	public String getUri();
+	public String getUri() throws UnsupportedEncodingException;
 	
 	/**
 	 * @return the HTTP params that are associated

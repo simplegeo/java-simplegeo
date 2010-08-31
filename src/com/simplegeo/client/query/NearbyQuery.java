@@ -28,6 +28,8 @@
  */
 package com.simplegeo.client.query;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,10 +102,11 @@ public abstract class NearbyQuery implements IQuery {
 	}
 	
 	/**
+	 * @throws UnsupportedEncodingException 
 	 * @see com.simplegeo.client.query.IQuery#getUri()
 	 */
-	public String getUri() {
-		return String.format("/records/%s/nearby", layer);
+	public String getUri() throws UnsupportedEncodingException {
+		return String.format("/records/%s/nearby", URLEncoder.encode(layer, "UTF-8"));
 	}
 	
 	/**

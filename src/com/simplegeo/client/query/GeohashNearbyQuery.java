@@ -28,6 +28,7 @@
  */
 package com.simplegeo.client.query;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.simplegeo.client.http.exceptions.ValidLayerException;
@@ -67,7 +68,7 @@ public class GeohashNearbyQuery extends NearbyQuery {
 		this.geohash = geohash;
 	}
 	
-	public String getUri() {
+	public String getUri() throws UnsupportedEncodingException {
 		return String.format("%s/%s.json", super.getUri(), this.geohash.toBase32());
 	}
 

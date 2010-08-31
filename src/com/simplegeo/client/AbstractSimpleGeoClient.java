@@ -175,7 +175,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	public Object retrieve(List<IRecord> records) throws IOException {
 		
 		if(!records.isEmpty()) {
-			
 			IRecord firstRecord = records.get(0);
 			return retrieve(getLayer(records), getRecordIds(records), getHandler(firstRecord));
 		}
@@ -197,13 +196,10 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 * @throws IOException
 	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
 	 */
-	private Object retrieve(String layer, String recordIds, SimpleGeoJSONHandlerIfc handler) throws IOException {
+	private Object retrieve(String layer, String recordIds, SimpleGeoJSONHandlerIfc handler) throws IOException {		
+		logger.info(String.format("retrieving %s from %s", layer, recordIds));
 		
-		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordIds);
-		
-		logger.info( String.format("retrieving %s from %s", layer, recordIds));
-		
-		return executeGet (uri, handler);
+		return executeGet(getURI(String.format("/records/%s/%s.json", URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordIds, "UTF-8"))), handler);
 	}
 		
 	/* (non-Javadoc)
@@ -231,7 +227,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 			record = new GeoJSONRecord("FeatureCollection");
 			
 			try {
-				
 				JSONArray features = new JSONArray();
 				features.put(geoJSONObject);
 				record.setFeatures(features);
@@ -240,11 +235,8 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 				e.printStackTrace();
 			}
 			
-		} else {
-			
+		} else
 			record = geoJSONObject;
-			
-		}
 		
 		return update(getLayer(record), getGeoJSONObject(record), getHandler(record));
 		
@@ -253,16 +245,12 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.ISimpleGeoClient#update(java.lang.String, com.simplegeo.client.geojson.GeoJSONObject, com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc)
 	 */
-	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoJSONHandlerIfc handler) 
-	throws IOException {
-	
-		String uri = mainURL + String.format("/records/%s.json", layer);
+	public Object update(String layer, GeoJSONObject geoJSONObject, SimpleGeoJSONHandlerIfc handler)  throws IOException {
 		
 		String jsonString = geoJSONObject.toString();
-		
 		logger.info(String.format("updating %s", jsonString));
 		
-		return executePost (uri, jsonString, handler);
+		return executePost(getURI(String.format("/records/%s.json", URLEncoder.encode(layer, "UTF-8"))), jsonString, handler);
 	}
 	
 
@@ -282,11 +270,9 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 */
 	public Object delete(String layer, String recordId, SimpleGeoJSONHandlerIfc handler) 
 		throws IOException {
-		
-		String uri = mainURL + String.format("/records/%s/%s.json", layer, recordId);
 		logger.info(String.format("deleting %s at %s", layer, recordId));
 		
-		return executeDelete (uri, handler);
+		return executeDelete(getURI(String.format("/records/%s/%s.json", URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8"))), handler);
 	}
 	
 	/* (non-Javadoc)
@@ -305,9 +291,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		if(type != Handler.GEOJSON)
 			throw new UnsupportedHandlerException(400, "The contains endpoint can only return GeoJSON objects.");
 		
-		String uri = mainURL + query.getUri();
-		
-		return executeGet (buildUrl(uri, query.getParams()), getHandler(type));
+		return executeGet(buildUrl(getURI(query.getUri()), query.getParams()), getHandler(type));
 	}
 	
 	/* (non-Javadoc)
@@ -321,10 +305,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 * @see com.simplegeo.client.ISimpleGeoClient#nearby(com.simplegeo.client.query.NearbyQuery, com.simplegeo.client.ISimpleGeoClient.Handler)
 	 */
 	public Object nearby(NearbyQuery query, Handler type) throws IOException {
-		
-		String uri = mainURL + query.getUri();
-		
-		return executeGet (buildUrl(uri, query.getParams()), getHandler(type));
+		return executeGet(buildUrl(getURI(query.getUri()), query.getParams()), getHandler(type));
 	}
 		
 	/* (non-Javadoc)
@@ -333,9 +314,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	public Object reverseGeocode(double lat, double lon)
 			throws IOException {
 		
-		String uri = mainURL + String.format("/nearby/address/%f,%f.json", lat, lon);
-		
-		return executeGet (uri, getHandler(Handler.GEOJSON));
+		return executeGet(getURI(String.format("/nearby/address/%f,%f.json", lat, lon)), getHandler(Handler.GEOJSON));
 	}
 	
 	/* (non-Javadoc)
@@ -378,7 +357,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 			break;
 		}
 		
-		String uri = mainURL;
+		String uri = "";
 		if (hour >=0 && hour <= 23)
 		{
 			uri += String.format("/density/%s/%d/%f,%f.json", dayname, hour, lat, lon);
@@ -388,7 +367,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 			uri += String.format("/density/%s/%f,%f.json", dayname, lat, lon);
 		}
 		
-		return executeGet (uri, getHandler(Handler.GEOJSON));
+		return executeGet(getURI(uri), getHandler(Handler.GEOJSON));
 	}
 	
 	/* (non-Javadoc)
@@ -405,10 +384,8 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	throws IOException {
 		if(type != Handler.JSON)
 			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON objects.");
-
-		String uri = mainURL + String.format("/contains/%f,%f.json", lat, lon);
 		
-		return executeGet (uri, getHandler(type));
+		return executeGet(getURI(String.format("/contains/%f,%f.json", lat, lon)), getHandler(type));
 	}
 	
 	/* (non-Javadoc)
@@ -427,9 +404,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	public Object boundaries(String featureId, Handler type)
 	throws IOException {
 		
-		String uri = mainURL + String.format("/boundary/%s.json", featureId);
-		
-		return executeGet (uri, getHandler(type));
+		return executeGet(getURI(String.format("/boundary/%s.json", featureId)), getHandler(type));
 	}
 	
 	/* (non-Javadoc)
@@ -450,8 +425,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		if(type != Handler.JSON)
 			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON objects.");
 		
-		String uri = mainURL + String.format("/overlaps/%s.json", envelope.toString());
-		
 		Map<String, String> params = new HashMap<String, String>();
 		
 		if (limit > 0)
@@ -460,7 +433,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		if (featureType != null) 			
 			params.put("type", featureType);
 		
-		return executeGet (buildUrl(uri, params), getHandler(type));
+		return executeGet(buildUrl(getURI(String.format("/overlaps/%s.json", envelope.toString())), params), getHandler(type));
 	}
 	
 	private String buildUrl(String url, Map<String, ?> parameters) {
@@ -581,16 +554,13 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	private String getRecordIds(List<? extends Object> objects) {
 	
 		String recordIds = null;
-		
 		for(Object object : objects) {
-			
 			String recordId = getRecordId(object);
 			
 			if(recordIds == null)
 				recordIds = recordId;
 			else
 				recordIds += "," + recordId;
-			
 		}
 		
 		return recordIds;
@@ -659,7 +629,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	}
 
 	private SimpleGeoJSONHandlerIfc getHandler(Object record) {
-		
 		SimpleGeoJSONHandlerIfc handler = geoJSONHandler;
 		if(DefaultRecord.class.isInstance(record))
 			handler = recordHandler; 
@@ -671,7 +640,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		
 		e.printStackTrace();
 		throw new APIException(SimpleGeoHandler.NOT_AUTHORIZED, e.getMessage());
-		
 	}
 	
 	/* (non-Javadoc)
@@ -698,11 +666,15 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	public boolean getFutureTask() {
 		return futureTask;	
 	}
-
-	protected abstract Object executeGet (String uri, SimpleGeoJSONHandlerIfc handler) throws IOException;
 	
-	protected abstract Object executePost (String uri, String jsonPayload, SimpleGeoJSONHandlerIfc handler) throws IOException;
+	private String getURI(String string) {
+		return mainURL + string;
+	}
 
-	protected abstract Object executeDelete (String uri, SimpleGeoJSONHandlerIfc handler) throws IOException;
+	protected abstract Object executeGet(String uri, SimpleGeoJSONHandlerIfc handler) throws IOException;
+	
+	protected abstract Object executePost(String uri, String jsonPayload, SimpleGeoJSONHandlerIfc handler) throws IOException;
+
+	protected abstract Object executeDelete(String uri, SimpleGeoJSONHandlerIfc handler) throws IOException;
 
 }

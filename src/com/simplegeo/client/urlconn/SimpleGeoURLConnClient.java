@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -98,9 +99,8 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 		
 		logger.info(String.format("sending %s", request.toString()));
 		
-		URL url = new URL (uri);
-		
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		URL url = new URL(uri);
+		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 		conn.setRequestMethod(request);
 		conn.setDoInput(true);
 		try {
@@ -155,13 +155,12 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 		bufferedReader.close();
   
 	    return handler.parseResponse(response.toString());
-		
 	}
 	
 	@Override
 	protected Object executeGet(String uri, SimpleGeoJSONHandlerIfc handler)
 			throws IOException {
-		return execute (uri, "GET", null, handler);
+		return execute(uri, "GET", null, handler);
 	}
 
 	@Override
