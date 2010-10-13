@@ -44,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.simplegeo.client.ISimpleGeoClient.Handler;
 import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.handler.GeoJSONHandler;
@@ -411,9 +412,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 */
 	public Object boundaries(String featureId)
 	throws IOException {
-		
 		return boundaries(featureId, Handler.GEOJSON);
-		
 	}
 	
 	/* (non-Javadoc)
@@ -421,7 +420,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 */
 	public Object boundaries(String featureId, Handler type)
 	throws IOException {
-		
 		return executeGet(getURI(String.format("/boundary/%s.json", featureId)), getHandler(type));
 	}
 	
@@ -430,7 +428,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType) 
 	throws IOException {
-		
 		return overlaps(envelope, limit, featureType, Handler.JSON);
 	}
 	
@@ -452,6 +449,27 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 			params.put("type", featureType);
 		
 		return executeGet(buildUrl(getURI(String.format("/overlaps/%s.json", envelope.toString())), params), getHandler(type));
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.ISimpleGeoClient#locate(java.lang.String)
+	 */
+	public Object locate(String ipAddress) 
+	throws IOException {
+		return locate(ipAddress, Handler.GEOJSON);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.simplegeo.client.ISimpleGeoClient#locate(java.lang.String, com.simplegeo.client.ISimpleGeoClient.Handler)
+	 */
+	public Object locate(String ipAddress, Handler type)
+	throws IOException {
+		
+		if(type == Handler.RECORD)
+			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON and GeoJSON objects.");
+		
+		return executeGet(buildUrl(getURI(String.format("/locate/%s.json", ipAddress)), null), getHandler(type));
 	}
 	
 	private String buildUrl(String url, Map<String, ?> parameters) {

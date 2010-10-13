@@ -29,7 +29,6 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;

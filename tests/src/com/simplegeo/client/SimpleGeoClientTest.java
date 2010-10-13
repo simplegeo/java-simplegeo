@@ -441,6 +441,22 @@ public class SimpleGeoClientTest extends TestCase {
 		}
 		
 	}
+	public void testLocate() {
+		try {
+
+			GeoJSONObject geoJSON = (GeoJSONObject)client.locate("173.164.32.245");
+			assertTrue(geoJSON.isFeature());
+			assertEquals(geoJSON.getLatitude(), 39.7437);
+			assertEquals(geoJSON.getLongitude(), -104.9793);
+			
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (JSONException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		}
+	}
 		
 	public void testFutureRetrieval() {
 		client.setFutureTask(true);

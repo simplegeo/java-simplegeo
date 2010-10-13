@@ -424,6 +424,33 @@ public interface ISimpleGeoClient {
 	throws IOException;
 	
 	/**
+	 * Returns the lat,lon associated with the ip address.
+	 * 
+	 * @param ipAddress
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
+	 * doesn't support asynchronous execution), then the return value will be the result of the response 
+	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object locate(String ipAddress)
+	throws IOException;
+	
+	/**
+	 * Returns the lat,lon associated with the ip address.
+	 * 
+	 * @param ipAddress
+	 * @param type the handler responsible for creating the return object
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
+	 * doesn't support asynchronous execution), then the return value will be the result of the response 
+	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object locate(String ipAddress, Handler type)
+	throws IOException;
+	
+	/**
 	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.SimpleGeoClient#contains}, 
 	 * along with the geometry of the feature in GeoJSON format in the geometry field.
 	 * 
