@@ -49,12 +49,14 @@ import com.simplegeo.client.encoder.GeoJSONEncoder;
 import com.simplegeo.client.geojson.GeoJSONObject;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
+import com.simplegeo.client.http.exceptions.ValidLayerException;
 import com.simplegeo.client.model.DefaultRecord;
 import com.simplegeo.client.model.Envelope;
 import com.simplegeo.client.model.GeoJSONRecord;
 import com.simplegeo.client.model.IRecord;
 import com.simplegeo.client.query.GeohashNearbyQuery;
 import com.simplegeo.client.query.HistoryQuery;
+import com.simplegeo.client.query.IPAddressQuery;
 import com.simplegeo.client.query.LatLonNearbyQuery;
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.utilities.ModelHelper;
@@ -339,6 +341,25 @@ public class SimpleGeoClientTest extends TestCase {
 			assertFalse(e.getLocalizedMessage(), true);
 		}
 
+	}
+	
+	public void testNearbyIPAddress() throws ValidLayerException {
+		
+		try {
+			String ipAddress = "173.164.32.245";
+			IPAddressQuery query = new IPAddressQuery(ipAddress, "com.simplegeo.us.business");
+			GeoJSONObject geoJSON = (GeoJSONObject)client.nearby(query);
+			assertTrue(geoJSON.isFeatureCollection());
+			geoJSON = new GeoJSONObject("Feature", geoJSON.getFeatures().getJSONObject(0).toString());
+			assertTrue(geoJSON.getProperties().getString("city").equals("Denver"));
+			
+		} catch (ClientProtocolException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (IOException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		} catch (JSONException e) {
+			assertFalse(e.getLocalizedMessage(), true);
+		}
 	}
 	
 	public void testBoundary() {
