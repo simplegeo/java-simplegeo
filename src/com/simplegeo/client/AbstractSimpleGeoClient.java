@@ -387,6 +387,24 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		
 		return executeGet(getURI(String.format("/contains/%f,%f.json", lat, lon)), getHandler(type));
 	}
+
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.ISimpleGeoClient#contains(string)
+	 */
+	public Object contains(String ipAddress) throws IOException {
+		return contains(ipAddress, Handler.JSON);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.simplegeo.client.ISimpleGeoClient#contains(string, com.simplegeo.client.ISimpleGeoClient.Handler)
+	 */
+	public Object contains(String ipAddress, Handler type)
+	throws IOException {
+		if(type != Handler.JSON)
+			throw new UnsupportedHandlerException(400, "The contains endpoint can only return JSON objects.");
+		
+		return executeGet(getURI(String.format("/contains/%s.json", ipAddress)), getHandler(type));
+	}	
 	
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.ISimpleGeoClient#boundaries(java.lang.String)

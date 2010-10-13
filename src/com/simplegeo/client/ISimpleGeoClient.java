@@ -383,6 +383,33 @@ public interface ISimpleGeoClient {
 	throws IOException;
 	
 	/**
+	 * see {@link com.simplegeo.client.ISimpleGeoClient#contains(String)}
+	 * 
+	 * @param ipAddress the ip address that will be translated into a lat,lon
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
+	 * doesn't support asynchronous execution), then the return value will be the result of the response 
+	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object contains(String ipAddress) 
+	throws IOException;
+
+	/**
+	 * see {@link com.simplegeo.client.ISimpleGeoClient#contains(String)}
+	 * 
+	 * @param ipAddress the ip address that will be translated into a lat,lon
+	 * @param type the handler responsible for creating the return object
+	 * @return if {@link com.simplegeo.client.SimpleGeoClient#futureTask} is false (or the client 
+	 * doesn't support asynchronous execution), then the return value will be the result of the response 
+	 * based on the handler used. Otherwise, the return value will be a {@link java.util.concurrent.FutureTask}.
+	 * @throws IOException
+	 * @see <a href="http://help.simplegeo.com/faqs/api-documentation/endpoints"</a>
+	 */
+	public Object contains(String ipAddress, Handler type)
+	throws IOException;
+	
+	/**
 	 * Returns a feature object from the SimpleGeo gazetteer, {@link com.simplegeo.client.SimpleGeoClient#contains}, 
 	 * along with the geometry of the feature in GeoJSON format in the geometry field.
 	 * 
@@ -453,7 +480,7 @@ public interface ISimpleGeoClient {
 	 */
 	public Object overlaps(Envelope envelope, int limit, String featureType, Handler type)
 	throws IOException;
-	
+		
 	/**
 	 * @return the Http client used to execute all requests
 	 */

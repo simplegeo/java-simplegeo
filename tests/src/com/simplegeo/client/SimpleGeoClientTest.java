@@ -319,6 +319,10 @@ public class SimpleGeoClientTest extends TestCase {
 			assertNotNull(jsonArray);
 			assertTrue(jsonArray.length() == 9);
 			
+			jsonArray = (JSONArray)client.contains("173.164.32.245");
+			assertNotNull(jsonArray);
+			assertTrue(jsonArray.length() == 9);			
+			
 		} catch (ClientProtocolException e) {
 			assertFalse(e.getLocalizedMessage(), true);
 		} catch (IOException e) {
