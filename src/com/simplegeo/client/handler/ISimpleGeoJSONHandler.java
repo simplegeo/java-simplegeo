@@ -36,7 +36,7 @@ package com.simplegeo.client.handler;
  * @author Mark Fogle
  */
 
-public interface SimpleGeoJSONHandlerIfc {
+public interface ISimpleGeoJSONHandler {
 	
 	/**
 	 * @param response

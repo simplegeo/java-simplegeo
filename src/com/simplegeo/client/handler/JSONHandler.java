@@ -37,25 +37,13 @@ import org.json.JSONException;
  * 
  * @author Derek Smith
  */
-public class JSONHandler implements SimpleGeoJSONHandlerIfc {
+public class JSONHandler implements ISimpleGeoJSONHandler {
 
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 
 	
 	public Object parseResponse(String response) {
-		JSONArray topObject = null;
-        try {
-
-        	String jsonString = response;
-        	if(jsonString != null && jsonString.length() > 1)
-        		topObject = new JSONArray(jsonString);
-        	
-        } catch (JSONException e) {
-			
-			logger.info(e.getMessage());
-		}
-        
-		return topObject;
+		return new Object();
 	}
 
 }

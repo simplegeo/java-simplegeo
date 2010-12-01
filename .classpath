@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="tests/src"/>
-	<classpathentry kind="src" path="examples/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/signpost-commonshttp4-1.2.jar"/>
 	<classpathentry kind="lib" path="libs/signpost-core-1.2.jar"/>

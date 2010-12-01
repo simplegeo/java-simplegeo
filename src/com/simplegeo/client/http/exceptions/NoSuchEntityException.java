@@ -35,9 +35,9 @@ package com.simplegeo.client.http.exceptions;
  * @author Derek Smith
  */
 @SuppressWarnings("serial")
-public class NoSuchRecordException extends APIException {
+public class NoSuchEntityException extends APIException {
 
-	public NoSuchRecordException(int statusCode, String reason) {
+	public NoSuchEntityException(int statusCode, String reason) {
 		super(statusCode, reason);
 	}
 

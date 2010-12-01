@@ -38,9 +38,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
-import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
+import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.http.exceptions.APIException;
-import com.simplegeo.client.http.exceptions.NoSuchRecordException;
+import com.simplegeo.client.http.exceptions.NoSuchEntityException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 
 /**
@@ -52,7 +52,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	
 	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class.getName());
 	
-	private SimpleGeoJSONHandlerIfc handler;
+	private ISimpleGeoJSONHandler handler;
 	
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
@@ -61,7 +61,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	public static final int NO_SUCH = 404;
 	public static final int NOT_AUTHORIZED = 401;
 	
-	public SimpleGeoHandler (SimpleGeoJSONHandlerIfc handler)
+	public SimpleGeoHandler (ISimpleGeoJSONHandler handler)
 	{
 		super();
 		this.handler = handler;
@@ -91,7 +91,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 			case BAD_REQUEST:
 				throw APIException.createException(entity, statusLine);
 			case NO_SUCH:
-				throw NoSuchRecordException.createException(entity, statusLine);
+				throw NoSuchEntityException.createException(entity, statusLine);
 			case NOT_AUTHORIZED:
 				throw NotAuthorizedException.createException(entity, statusLine);
 			default:

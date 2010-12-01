@@ -44,10 +44,10 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 
 import com.simplegeo.client.AbstractSimpleGeoClient;
 import com.simplegeo.client.ISimpleGeoClient;
-import com.simplegeo.client.handler.SimpleGeoJSONHandlerIfc;
+import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.http.IOAuthClient;
 import com.simplegeo.client.http.exceptions.APIException;
-import com.simplegeo.client.http.exceptions.NoSuchRecordException;
+import com.simplegeo.client.http.exceptions.NoSuchEntityException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
 
 /**
@@ -94,7 +94,7 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 		return this.urlConn;
 	}
 	
-	protected Object execute(String uri, String request, String payload, SimpleGeoJSONHandlerIfc handler)
+	protected Object execute(String uri, String request, String payload, ISimpleGeoJSONHandler handler)
 									throws IOException {
 		
 		logger.info(String.format("sending %s", request.toString()));
@@ -135,7 +135,7 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 			case BAD_REQUEST:
 				throw new APIException (conn.getResponseCode(), null);
 			case NO_SUCH:
-				throw new NoSuchRecordException(conn.getResponseCode(), null);
+				throw new NoSuchEntityException(conn.getResponseCode(), null);
 			case NOT_AUTHORIZED:
 				throw new NotAuthorizedException (conn.getResponseCode(), null);
 			default:
@@ -158,20 +158,20 @@ public class SimpleGeoURLConnClient extends AbstractSimpleGeoClient {
 	}
 	
 	@Override
-	protected Object executeGet(String uri, SimpleGeoJSONHandlerIfc handler)
+	protected Object executeGet(String uri, ISimpleGeoJSONHandler handler)
 			throws IOException {
 		return execute(uri, "GET", null, handler);
 	}
 
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
-			SimpleGeoJSONHandlerIfc handler) throws IOException {
+			ISimpleGeoJSONHandler handler) throws IOException {
 		
 		return execute(uri, "POST", jsonPayload, handler);
 	}
 
 	@Override
-	protected Object executeDelete(String uri, SimpleGeoJSONHandlerIfc handler)
+	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
 			throws IOException {
 
 		return execute(uri, "DELETE", null, handler);
