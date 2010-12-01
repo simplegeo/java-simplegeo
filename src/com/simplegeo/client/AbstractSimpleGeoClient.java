@@ -32,26 +32,15 @@ package com.simplegeo.client;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.simplegeo.client.ISimpleGeoClient.Handler;
 import com.simplegeo.client.handler.GeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
-import com.simplegeo.client.http.exceptions.UnsupportedHandlerException;
-import com.simplegeo.client.query.NearbyQuery;
 
 /**
  * Extracts as much common code as possible between the SimpleGeoClient and the SimpleGeoURLConnClient.
