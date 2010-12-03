@@ -30,15 +30,30 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+
+import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.handler.GeoJSONHandler;
-import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
+import com.simplegeo.client.handler.JSONHandler;
+import com.simplegeo.client.http.IOAuthClient;
+import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 
@@ -50,11 +65,14 @@ import com.simplegeo.client.http.exceptions.APIException;
 
 public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	
+	private RequestThreadPoolExecutor threadExecutor;
+	protected OAuthHttpClient httpClient;
+	
 	public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
 	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
 	
-	protected static final String mainURL = "http://api.simplegeo.com/0.1";
+	protected static final String mainURL = "http://api.simplegeo.com/";
 	
 	protected static ISimpleGeoClient sharedLocationService = null;
 	
@@ -71,6 +89,16 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		
 		setHandler(Handler.JSON, new JSONHandler());
 		setHandler(Handler.GEOJSON, new GeoJSONHandler());
+		
+		// We want to make sure the client is threadsafe
+		HttpParams params = new BasicHttpParams();
+		HttpProtocolParams.setUseExpectContinue(params, false);
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
+
+		this.httpClient = new OAuthHttpClient(connManager, params);
+		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
 		
 	}
 
@@ -123,33 +151,61 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		return handler;
 	}
 	
-	private String buildUrl(String url, Map<String, ?> parameters) {
-		
-		if(parameters == null)
-			return url;
-		
-		StringBuilder sb = new StringBuilder(url);
-		boolean first = true;
-		for (Entry<String, ?> entry : parameters.entrySet()) {
-			if (entry.getValue() != null) {
-				sb.append(first ? "?" : "&");
-				try {
-					String key = URLEncoder.encode(entry.getKey(), DEFAULT_CONTENT_CHARSET);
-					String value = URLEncoder.encode(entry.getValue().toString(), DEFAULT_CONTENT_CHARSET);
-					sb.append(key).append("=").append(value);
-				} catch (UnsupportedEncodingException e) {
-					throw new RuntimeException(e);
-				}
-				first = false;
-			}
+	protected Object execute(HttpUriRequest request, SimpleGeoHandler handler)
+		throws ClientProtocolException, IOException {
+
+		logger.info(String.format("sending %s", request.toString()));
+	
+		if(futureTask) {
+	
+			final HttpUriRequest finalRequest = request;
+			final SimpleGeoHandler finalHandler = handler;
+	
+			FutureTask<Object> future = 
+				new FutureTask<Object>(new Callable<Object>() {
+					public Object call() throws ClientProtocolException, IOException {
+						Object object = null;
+						try {
+							object = httpClient.executeOAuthRequest(finalRequest, finalHandler);
+						} catch (OAuthMessageSignerException e) {
+							dealWithAuthorizationException(e);
+						} catch (OAuthExpectationFailedException e) {
+							dealWithAuthorizationException(e);
+						} catch (OAuthCommunicationException e) {
+							dealWithAuthorizationException(e);
+						}
+	
+						return object;
+					}
+				});
+	
+			threadExecutor.execute(future);
+			return future;
+	
+		} else {
+	
+			Object object = null;
+			try {
+				object = httpClient.executeOAuthRequest(request, handler);
+			} catch (OAuthMessageSignerException e) {
+				dealWithAuthorizationException(e);
+			} catch (OAuthExpectationFailedException e) {
+				dealWithAuthorizationException(e);
+			} catch (OAuthCommunicationException e) {
+				dealWithAuthorizationException(e);
+			};
+	
+			return object;
 		}
-		return sb.toString();
+
 	}
 
 	private ISimpleGeoJSONHandler getHandler(Object record) {
-		// TODO Fix this
 		return geoJSONHandler;
-
+	}
+	
+	public IOAuthClient getHttpClient() {
+		return httpClient;
 	}
 	
 	protected void dealWithAuthorizationException(Exception e) throws APIException {
@@ -158,9 +214,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		throw new APIException(SimpleGeoHandler.NOT_AUTHORIZED, e.getMessage());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#supportsFutureTasks()
-	 */
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.ISimpleGeoClient#supportsFutureTasks()
 	 */
@@ -175,9 +228,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.ISimpleGeoClient#setFutureTask(boolean)
 	 */
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#setFutureTask(boolean)
-	 */
 	@Override
 	public void setFutureTask(boolean futureTask) {
 		this.futureTask = futureTask;		
@@ -186,21 +236,16 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	/* (non-Javadoc)
 	 * @see com.simplegeo.client.ISimpleGeoClient#getFutureTask()
 	 */
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#getFutureTask()
-	 */
 	@Override
 	public boolean getFutureTask() {
 		return futureTask;	
-	}
-	
-	private String getURI(String string) {
-		return mainURL + string;
 	}
 
 	protected abstract Object executeGet(String uri, ISimpleGeoJSONHandler handler) throws IOException;
 	
 	protected abstract Object executePost(String uri, String jsonPayload, ISimpleGeoJSONHandler handler) throws IOException;
+	
+	protected abstract Object executePut(String uri, String jsonPayload, ISimpleGeoJSONHandler handler) throws IOException;
 
 	protected abstract Object executeDelete(String uri, ISimpleGeoJSONHandler handler) throws IOException;
 
