@@ -49,4 +49,8 @@ public class FeatureCollection {
 		return jsonArray;
 	}
 	
+	public String toJsonString() throws JSONException {
+		return this.toJson().toString();
+	}
+	
 }
