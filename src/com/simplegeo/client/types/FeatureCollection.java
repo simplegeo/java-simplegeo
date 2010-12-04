@@ -40,9 +40,12 @@ public class FeatureCollection {
 		return fromJson(new JSONArray(jsonString));
 	}
 	
-	public JSONArray toJson() {
+	public JSONArray toJson() throws JSONException {
 		JSONArray jsonArray = new JSONArray();
-		
+		ArrayList<Feature> features = this.getFeatures();
+		for (Feature feature : features) {
+			jsonArray.put(feature.toJson());
+		}
 		return jsonArray;
 	}
 	
