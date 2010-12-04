@@ -7,12 +7,16 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.json.JSONException;
 
+import com.simplegeo.client.handler.GeoJSONHandler;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.IOAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
-import com.simplegeo.client.types.Place;
+import com.simplegeo.client.types.Feature;
+import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
@@ -32,30 +36,34 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		return endpoints.get(endpointName);
 	}
 	
-	public void getEndpointDescriptions() throws IOException {
-		this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler());
+	public Object getEndpointDescriptions() throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler());
 	}
 	
-	public void getPlace(Place place) throws IOException {
-		this.executeGet(String.format(this.getEndpoint("places"), place.getSimpleGeoId()), new JSONHandler());
+	public Object getPlace(String simpleGeoId) throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("places"), simpleGeoId), new GeoJSONHandler());
 	}
 	
-	public void addPlace(Object place) throws IOException {
-		// TODO Convert the place object to a json string
-		this.executePut(String.format(this.getEndpoint("place")), "", new JSONHandler());
+	public Object addPlace(Feature feature) throws IOException, JSONException {
+		String jsonString = feature.toJsonString();
+		return this.executePut(String.format(this.getEndpoint("place")), jsonString, new GeoJSONHandler());
 	}
 	
-	public void updatePlace(Place place) throws IOException {
-		// TODO Convert the place object to a json string
-		this.executePost(String.format(this.getEndpoint("places"), place.getSimpleGeoId()), "", new JSONHandler());
+	public Object updatePlace(Feature feature) throws IOException, JSONException {
+		String jsonString = feature.toJsonString();
+		return this.executePost(String.format(this.getEndpoint("places"), feature.getSimpleGeoId()), jsonString, new GeoJSONHandler());
 	}
 	
-	public void deletePlace(String simpleGeoId) throws IOException {
-		this.executeDelete(String.format(this.getEndpoint("places"), simpleGeoId), new JSONHandler());
+	public Object deletePlace(String simpleGeoId) throws IOException {
+		return this.executeDelete(String.format(this.getEndpoint("places"), simpleGeoId), new GeoJSONHandler());
 	}
 	
-	public void search(double lat, double lon, String query, String category) throws IOException {
-		this.executeGet(String.format(this.getEndpoint("search"), lat, lon, query, category), new JSONHandler());
+	public Object search(Point point, String query, String category) throws IOException {
+		return this.search(point.getLat(), point.getLon(), query, category);
+	}
+	
+	public Object search(double lat, double lon, String query, String category) throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, query, category), new GeoJSONHandler());
 	}
 	
 	@Override
@@ -73,7 +81,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	protected Object executePost(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
 		HttpPost post = new HttpPost(uri);
-		// TODO Need to set post.entity here
+		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		return super.execute(post, new SimpleGeoHandler(handler));
 	}
 	
@@ -81,7 +89,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	protected Object executePut(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
 		HttpPut put = new HttpPut(uri);
-		// TODO Need to set put.entity here
+		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		return super.execute(new HttpPut(uri), new SimpleGeoHandler(handler));
 	}
 

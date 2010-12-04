@@ -73,7 +73,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	public Object handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 
-		logger.info("recieved response " + response);
+		logger.info("received response " + response);
 
 		StatusLine statusLine = response.getStatusLine();
 		int statusCode = statusLine.getStatusCode();

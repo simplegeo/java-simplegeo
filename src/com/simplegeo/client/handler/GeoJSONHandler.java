@@ -30,9 +30,10 @@ package com.simplegeo.client.handler;
 
 import java.util.logging.Logger;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+
+import com.simplegeo.client.types.Feature;
+import com.simplegeo.client.types.FeatureCollection;
 
 /**
  * A response handler used for creating {@link com.simplegeo.client.geojson.GeoJSONObject}s
@@ -45,6 +46,20 @@ public class GeoJSONHandler implements ISimpleGeoJSONHandler {
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 	
 	public Object parseResponse(String response) {
-		return new Object();
+		Object returnObject = new Object();
+		if (response.contains("FeatureCollection")) {
+			try {
+				returnObject = FeatureCollection.fromJsonString(response);
+			} catch (JSONException je){
+				// hmmm, this doesn't seem like it should happen
+			}
+		} else {
+			try {
+				returnObject = Feature.fromJsonString(response);
+			} catch (JSONException je){
+				// hmmm, this doesn't seem like it should happen
+			}
+		}
+		return returnObject;
 	}
 }
