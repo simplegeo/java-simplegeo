@@ -21,19 +21,29 @@ import com.simplegeo.client.types.Point;
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	public HashMap<String, String> endpoints;
-	String baseUrl = "http://api.simplegeo.com";
-	String port = "80";
-	String apiVersion = "1.0";
 	
-	public SimpleGeoPlacesClient() {
-		endpoints.put("endpoints", "/endpoints.json");
-		endpoints.put("places", "/places/%s.json");
-		endpoints.put("place", "/places/place.json");
-		endpoints.put("search", "/places/%f,%f/search.json?q=%s&category=%s");
+	public static SimpleGeoPlacesClient getInstance() {
+		if(sharedLocationService == null)
+			sharedLocationService = new SimpleGeoPlacesClient();
+
+		return (SimpleGeoPlacesClient) sharedLocationService;
+	}
+	
+	private SimpleGeoPlacesClient(String baseUrl, String port, String apiVersion) {
+		super(baseUrl, port, apiVersion);
+		
+		endpoints.put("endpoints", "endpoints.json");
+		endpoints.put("places", "places/%s.json");
+		endpoints.put("place", "places.json");
+		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s");
+	}
+	
+	private SimpleGeoPlacesClient() {
+		this("http://api.simplegeo.com", "80", "1.0");
 	}
 	
 	protected String getEndpoint(String endpointName) {
-		return endpoints.get(endpointName);
+		return String.format("%s:%s/%s/%s", baseUrl, port, apiVersion, endpoints.get(endpointName));
 	}
 	
 	public Object getEndpointDescriptions() throws IOException {

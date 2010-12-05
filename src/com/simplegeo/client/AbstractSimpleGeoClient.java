@@ -30,6 +30,8 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
@@ -71,21 +73,26 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
 	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
-	
-	protected static final String mainURL = "http://api.simplegeo.com/";
-	
+		
 	protected static ISimpleGeoClient sharedLocationService = null;
 	
 	protected GeoJSONHandler geoJSONHandler = null;
 	protected JSONHandler jsonHandler = null;
+	
+	protected String baseUrl = "http://api.simplegeo.com";
+	protected String port = "80";
+	protected String apiVersion = "1.0";
 	
 	/**
 	 * Tells the service whether to make the Http call on the same thread.  Note: if the underlying
 	 * client doesn't handle future tasks, this flag will be ignored.
 	 */
 	protected boolean futureTask = false; 
-		
-	protected AbstractSimpleGeoClient() {
+	
+	protected AbstractSimpleGeoClient(String baseUrl, String port, String apiVersion) {
+		this.baseUrl = baseUrl;
+		this.port = port;
+		this.apiVersion = apiVersion;
 		
 		setHandler(Handler.JSON, new JSONHandler());
 		setHandler(Handler.GEOJSON, new GeoJSONHandler());
@@ -99,7 +106,10 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 
 		this.httpClient = new OAuthHttpClient(connManager, params);
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
+	}
 		
+	protected AbstractSimpleGeoClient() {
+		this("http://api.simplegeo.com", "80", "1.0");
 	}
 
 	/**
@@ -239,6 +249,18 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	@Override
 	public boolean getFutureTask() {
 		return futureTask;	
+	}
+	
+	public String createQueryString(HashMap<String, Object> queryParams) {
+		if (queryParams.size() == 0)
+			return "";
+		String queryString = "";
+		Iterator<String> keys = queryParams.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			queryString += "," + key + "=" + queryParams.get(key);
+		}
+		return queryString.replaceFirst(",", "");
 	}
 
 	protected abstract Object executeGet(String uri, ISimpleGeoJSONHandler handler) throws IOException;
