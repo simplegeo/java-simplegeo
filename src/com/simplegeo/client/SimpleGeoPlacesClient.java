@@ -22,11 +22,15 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	public HashMap<String, String> endpoints;
 	
-	public static SimpleGeoPlacesClient getInstance() {
+	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
 		if(sharedLocationService == null)
-			sharedLocationService = new SimpleGeoPlacesClient();
+			sharedLocationService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
 
-		return (SimpleGeoPlacesClient) sharedLocationService;
+		return (SimpleGeoPlacesClient) sharedLocationService;		
+	}
+	
+	public static SimpleGeoPlacesClient getInstance() {
+		return getInstance("http://api.simplegeo.com", "80", "1.0");
 	}
 	
 	private SimpleGeoPlacesClient(String baseUrl, String port, String apiVersion) {
@@ -36,10 +40,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		endpoints.put("places", "places/%s.json");
 		endpoints.put("place", "places.json");
 		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s");
-	}
-	
-	private SimpleGeoPlacesClient() {
-		this("http://api.simplegeo.com", "80", "1.0");
 	}
 	
 	protected String getEndpoint(String endpointName) {
