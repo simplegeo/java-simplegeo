@@ -11,6 +11,7 @@ import org.json.JSONException;
 
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.Feature;
+import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClientTest extends TestCase {
@@ -132,9 +133,18 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testDeletePlace() {
 		try {
-			Object response = client.deletePlace("");
-		} catch (IOException ie) {
-			this.fail(ie.getMessage());
+			FutureTask<Object> future = (FutureTask<Object>) client.deletePlace("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			this.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", responseMap.get("token").toString());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
 		}
 	}
 	
@@ -142,9 +152,18 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		double lat = -122.937467;
 		double lon = 47.046962;
 		try {
-			Object response =  client.search(new Point(lat, lon), "", "");
-		} catch (IOException ie) {
-			this.fail(ie.getMessage());
+			FutureTask<Object> future = (FutureTask<Object>)  client.search(new Point(lat, lon), "hotdogs", "Restaurants");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			FeatureCollection features = (FeatureCollection) future.get();
+			this.assertEquals(7, features.getFeatures().size());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
 		}
 	}
 

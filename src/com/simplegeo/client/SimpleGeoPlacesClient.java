@@ -1,6 +1,7 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import org.apache.http.client.methods.HttpDelete;
@@ -67,7 +68,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	public Object deletePlace(String simpleGeoId) throws IOException {
-		return this.executeDelete(String.format(this.getEndpoint("features"), simpleGeoId), new GeoJSONHandler());
+		return this.executeDelete(String.format(this.getEndpoint("features"), simpleGeoId), new JSONHandler());
 	}
 	
 	public Object search(Point point, String query, String category) throws IOException {
@@ -75,7 +76,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	public Object search(double lat, double lon, String query, String category) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, query, category), new GeoJSONHandler());
+		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, 
+				URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FeatureCollection {
 
@@ -25,19 +26,20 @@ public class FeatureCollection {
 		this.features = features;
 	}
 	
-	public static FeatureCollection fromJson(JSONArray jsonArray) throws JSONException {
+	public static FeatureCollection fromJson(JSONObject json) throws JSONException {
 		FeatureCollection featureCollection = new FeatureCollection();
-		int numOfFeatures = jsonArray.length();
+		int numOfFeatures = json.getInt("total");
 		ArrayList<Feature> features = new ArrayList<Feature>();
+		JSONArray featuresArray = json.getJSONArray("features");
 		for (int i=0; i<numOfFeatures; i++) {
-			features.add(Feature.fromJson(jsonArray.getJSONObject(i)));
+			features.add(Feature.fromJson(featuresArray.getJSONObject(i)));
 		}
 		featureCollection.setFeatures(features);
 		return featureCollection;
 	}
 	
 	public static FeatureCollection fromJsonString(String jsonString) throws JSONException {
-		return fromJson(new JSONArray(jsonString));
+		return fromJson(new JSONObject(jsonString));
 	}
 	
 	public JSONArray toJson() throws JSONException {
