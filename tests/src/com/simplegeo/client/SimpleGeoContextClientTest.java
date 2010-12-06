@@ -32,7 +32,6 @@ public class SimpleGeoContextClientTest extends TestCase {
 				Thread.sleep(500);
 			}
 			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
-			System.out.println(responseMap);
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
 			this.assertNotNull(responseMap.get("demographics"));
