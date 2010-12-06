@@ -54,7 +54,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	public Object getPlace(String simpleGeoId) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("features"), simpleGeoId), new GeoJSONHandler());
+		return this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler());
 	}
 	
 	public Object addPlace(Feature feature) throws IOException, JSONException {
@@ -64,11 +64,11 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	public Object updatePlace(Feature feature) throws IOException, JSONException {
 		String jsonString = feature.toJsonString();
-		return this.executePost(String.format(this.getEndpoint("places"), feature.getSimpleGeoId()), jsonString, new JSONHandler());
+		return this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler());
 	}
 	
 	public Object deletePlace(String simpleGeoId) throws IOException {
-		return this.executeDelete(String.format(this.getEndpoint("features"), simpleGeoId), new JSONHandler());
+		return this.executeDelete(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new JSONHandler());
 	}
 	
 	public Object search(Point point, String query, String category) throws IOException {
