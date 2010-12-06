@@ -28,14 +28,17 @@
  */
 package com.simplegeo.client.handler;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Logger;
-import org.json.JSONArray;
+
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A response handler that converts the payload into a JSONObject.
  * 
- * @author Derek Smith
+ * @author Casey Crites
  */
 public class JSONHandler implements ISimpleGeoJSONHandler {
 
@@ -43,7 +46,18 @@ public class JSONHandler implements ISimpleGeoJSONHandler {
 
 	
 	public Object parseResponse(String response) {
-		return new Object();
+		HashMap<String, Object> responseMap = new HashMap<String, Object>();
+		try {
+			JSONObject json = new JSONObject(response);
+			Iterator<String> propertyIterator = json.sortedKeys();
+			while (propertyIterator.hasNext()) {
+				String key = (String) propertyIterator.next();
+				responseMap.put(key, json.get(key));
+			}
+		} catch (JSONException e) {
+			// do something
+		}
+		return responseMap;
 	}
 
 }

@@ -30,11 +30,43 @@ package com.simplegeo.client.test;
 
 public class TestEnvironment {
 
-       private static final String ACCESS_KEY = "my-key";
-       private static final String SECRET_KEY = "my-secret";
+       private static final String ACCESS_KEY = "consumerKey";
+       private static final String SECRET_KEY = "consumerSecret";
        private static final String BASE_URL = "http://localhost";
        private static final String PORT = "4567";
        private static final String API_VERSION = "1.0";
+       
+       private static final String JSON_STRING = "{" +
+												    "\"geometry\": { " +
+												        "\"type\": \"Point\"," +
+												        "\"coordinates\": [" +
+												            "-122.937467," +
+												            "47.046962" +
+												        "]" +
+												    "}," +
+												    "\"type\": \"Feature\"," +
+												    "\"id\": \"SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830\"," +
+												    "\"properties\": { " +
+												        "\"city\": \"Olympia\"," +
+												        "\"name\": \"Burger Master West Olympia\"," +
+												        "\"tags\": [" +
+												            "\"eating\""+
+												        "]," +
+												        "\"country\": \"us\"," +
+												        "\"phone\": \"3603575451\"," +
+												        "\"state\": \"WA\"," +
+												        "\"address\": \"2820 Harrison Ave NW\"," +
+												        "\"owner\": \"simplegeo\"," +
+												        "\"categories\": [" +
+												            "[" +
+												                "\"Food & Drink\"," +
+												                "\"Restaurants\"," +
+												                "\"\"" +
+												            "]" +
+												        "]," +
+												        "\"postcode\": \"98502\"" +
+												    "}" +
+												"}";
        
        public static String getKey() throws Exception {
     	   if(ACCESS_KEY.equals("my-key"))
@@ -60,6 +92,10 @@ public class TestEnvironment {
 
 	public static String getApiVersion() {
 		return API_VERSION;
+	}
+
+	public static String getJsonString() {
+		return JSON_STRING;
 	}
 
 }

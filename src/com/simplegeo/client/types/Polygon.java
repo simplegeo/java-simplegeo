@@ -27,10 +27,9 @@ public class Polygon {
 	
 	public static ArrayList<ArrayList<Point>> fromJsonArray(JSONArray polygonArray) throws JSONException {
 		ArrayList<ArrayList<Point>> ringList = new ArrayList<ArrayList<Point>>();
-		JSONArray rings = polygonArray.getJSONArray(0);
-		int numOfRings = rings.length();
+		int numOfRings = polygonArray.length();
 		for (int i=0; i<numOfRings; i++) {
-			JSONArray ring = rings.getJSONArray(i);
+			JSONArray ring = polygonArray.getJSONArray(i);
 			int numOfCoords = ring.length();
 			ArrayList<Point> pointList = new ArrayList<Point>();
 			for (int j=0; j<numOfCoords; j++) {

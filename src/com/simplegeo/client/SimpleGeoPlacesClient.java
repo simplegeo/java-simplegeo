@@ -20,7 +20,7 @@ import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
-	public HashMap<String, String> endpoints;
+	public HashMap<String, String> endpoints = new HashMap<String, String>();
 	
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
 		if(sharedLocationService == null)
@@ -37,9 +37,11 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		super(baseUrl, port, apiVersion);
 		
 		endpoints.put("endpoints", "endpoints.json");
-		endpoints.put("places", "places/%s.json");
+		endpoints.put("places", "features/%s.json");
 		endpoints.put("place", "places.json");
 		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s");
+		
+		this.setFutureTask(true);
 	}
 	
 	protected String getEndpoint(String endpointName) {
@@ -56,7 +58,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	public Object addPlace(Feature feature) throws IOException, JSONException {
 		String jsonString = feature.toJsonString();
-		return this.executePut(String.format(this.getEndpoint("place")), jsonString, new GeoJSONHandler());
+		return this.executePost(String.format(this.getEndpoint("place")), jsonString, new JSONHandler());
 	}
 	
 	public Object updatePlace(Feature feature) throws IOException, JSONException {
