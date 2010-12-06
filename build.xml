@@ -13,7 +13,9 @@
 
 	<property name="dist.dir" value="${basedir}/dist" />
 	<property name="version" value="1.2.4" />
-	<property name="final.name" value="simplegeo-java-client-${version}" />
+	<property name="final.name" value="java-simplegeo-${version}" />
+	<property name="final.places.name" value="java-simplegeo-places-${version}" />
+	<property name="final.context.name" value="java-simplegeo-context-${version}" />
 
     <path id="java.simplegeo.classpath">
         <pathelement location="${build.classes}"/>
@@ -41,6 +43,16 @@
 	<target name="jar" depends="build">
 		<mkdir dir="${build.classes}/META-INF" />
 		<jar jarfile="${build.out}/${final.name}.jar" basedir="${build.classes}" />
+	</target>
+	
+	<target name="places-jar" depends="build">
+		<mkdir dir="${build.classes}/META-INF" />
+		<jar jarfile="${build.out}/${final.places.name}.jar" basedir="${build.classes}" excludes="**/*ContextClient.class" />
+	</target>
+	
+	<target name="context-jar" depends="build">
+		<mkdir dir="${build.classes}/META-INF" />
+		<jar jarfile="${build.out}/${final.context.name}.jar" basedir="${build.classes}" excludes="**/*PlacesClient.class" />
 	</target>
 	
 	<target name="dist" depends="jar,javadoc">
