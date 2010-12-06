@@ -21,8 +21,6 @@ import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
-	public HashMap<String, String> endpoints = new HashMap<String, String>();
-	
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
 		if(sharedLocationService == null)
 			sharedLocationService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);

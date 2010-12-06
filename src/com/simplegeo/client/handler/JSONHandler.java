@@ -49,13 +49,13 @@ public class JSONHandler implements ISimpleGeoJSONHandler {
 		HashMap<String, Object> responseMap = new HashMap<String, Object>();
 		try {
 			JSONObject json = new JSONObject(response);
-			Iterator<String> propertyIterator = json.sortedKeys();
+			Iterator<String> propertyIterator = json.keys();
 			while (propertyIterator.hasNext()) {
 				String key = (String) propertyIterator.next();
 				responseMap.put(key, json.get(key));
 			}
 		} catch (JSONException e) {
-			// do something
+			System.out.println(e.getMessage());
 		}
 		return responseMap;
 	}

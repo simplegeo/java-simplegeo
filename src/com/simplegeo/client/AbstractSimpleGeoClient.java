@@ -82,6 +82,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	protected String baseUrl = "http://api.simplegeo.com";
 	protected String port = "80";
 	protected String apiVersion = "1.0";
+	public HashMap<String, String> endpoints = new HashMap<String, String>();
 	
 	/**
 	 * Tells the service whether to make the Http call on the same thread.  Note: if the underlying
