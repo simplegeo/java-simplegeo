@@ -57,6 +57,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
 	public static final int PUT_SUCCESS = 202;
+	public static final int POST_SUCCESS = 301;
 	public static final int BAD_REQUEST = 400;
 	public static final int NO_SUCH = 404;
 	public static final int NOT_AUTHORIZED = 401;
@@ -85,6 +86,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 		switch(statusCode) {
 		
 			case GET_SUCCESS:
+			case POST_SUCCESS:
 			case PUT_SUCCESS:
 				validResponse = response; 
 				break;
