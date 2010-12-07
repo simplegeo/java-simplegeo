@@ -90,9 +90,9 @@ public class Feature {
 	
 	public JSONObject toJson() throws JSONException {
 		JSONObject json = new JSONObject();
+		json.put("geometry", this.getGeometryJSON());
 		json.put("type", "Feature");
 		json.put("id", this.getSimpleGeoId());
-		json.put("geometry", this.getGeometryJSON());
 		json.put("properties", this.getPropertyJSON());
 		return json;
 	}

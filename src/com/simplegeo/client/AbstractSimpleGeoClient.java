@@ -71,6 +71,9 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	protected OAuthHttpClient httpClient;
 	
 	public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
+	public static final String DEFAULT_HOST = "http://api.simplegeo.com";
+	public static final String DEFAULT_PORT = "80";
+	public static final String DEFAULT_VERSION = "1.0";
 	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
 		
@@ -90,6 +93,13 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 */
 	protected boolean futureTask = false; 
 	
+	/**
+	 * Main constructor class for setting up the client that the specific Places/Context clients
+	 * extend from.
+	 * @param baseUrl String - Default is http://api.simplegeo.com, but this can be overridden
+	 * @param port String - Default is 80, but this can be overridden
+	 * @param apiVersion - Default is 1.0, but this can be overridden
+	 */
 	protected AbstractSimpleGeoClient(String baseUrl, String port, String apiVersion) {
 		this.baseUrl = baseUrl;
 		this.port = port;
@@ -108,9 +118,12 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		this.httpClient = new OAuthHttpClient(connManager, params);
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
 	}
-		
+	
+	/**
+	 * Default constructor class
+	 */
 	protected AbstractSimpleGeoClient() {
-		this("http://api.simplegeo.com", "80", "1.0");
+		this(DEFAULT_HOST, DEFAULT_PORT, DEFAULT_VERSION);
 	}
 
 	/**
@@ -162,6 +175,17 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		return handler;
 	}
 	
+	/**
+	 * Method for executing HttpRequests either synchronously or asynchronously.
+	 * @param request HttpUriRequest
+	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
+	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
+	 * @return If futureTask is true, it will return a FutureTask. If futureTask is false, it will return either
+	 * a {@link com.simplegeo.client.types.Feature}, {@link com.simplegeo.client.types.FeatureCollection} or a
+	 * regular HashMap<Sring, Object>.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	protected Object execute(HttpUriRequest request, SimpleGeoHandler handler)
 		throws ClientProtocolException, IOException {
 
@@ -210,23 +234,26 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		}
 
 	}
-
-	private ISimpleGeoJSONHandler getHandler(Object record) {
-		return geoJSONHandler;
-	}
 	
+	/**
+	 * Return the OAuthHttpClient
+	 */
 	public IOAuthClient getHttpClient() {
 		return httpClient;
 	}
 	
+	/**
+	 * Method called when AuthorizationExceptions are raised during execute.
+	 * @param e
+	 * @throws APIException
+	 */
 	protected void dealWithAuthorizationException(Exception e) throws APIException {
-		
 		e.printStackTrace();
 		throw new APIException(SimpleGeoHandler.NOT_AUTHORIZED, e.getMessage());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#supportsFutureTasks()
+	/**
+	 * Whether or not the httpclient supports FutureTasks
 	 */
 	@Override
 	public boolean supportsFutureTasks() {
@@ -236,32 +263,14 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#setFutureTask(boolean)
-	 */
 	@Override
 	public void setFutureTask(boolean futureTask) {
 		this.futureTask = futureTask;		
 	}
 
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#getFutureTask()
-	 */
 	@Override
 	public boolean getFutureTask() {
 		return futureTask;	
-	}
-	
-	public String createQueryString(HashMap<String, Object> queryParams) {
-		if (queryParams.size() == 0)
-			return "";
-		String queryString = "";
-		Iterator<String> keys = queryParams.keySet().iterator();
-		while (keys.hasNext()) {
-			String key = keys.next();
-			queryString += "," + key + "=" + queryParams.get(key);
-		}
-		return queryString.replaceFirst(",", "");
 	}
 
 	protected abstract Object executeGet(String uri, ISimpleGeoJSONHandler handler) throws IOException;

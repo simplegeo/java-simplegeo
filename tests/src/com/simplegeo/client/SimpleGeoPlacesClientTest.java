@@ -80,7 +80,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testAddPlace() {
 		try {
-			Feature feature = Feature.fromJsonString(TestEnvironment.getJsonString());
+			Feature feature = Feature.fromJsonString(TestEnvironment.getJsonPointString());
 			FutureTask<Object> future = (FutureTask<Object>) client.addPlace(feature);
 			while (!future.isDone()) {
 				Thread.sleep(500);
@@ -109,7 +109,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testUpdatePlace() {
 		try {
-			Feature feature = Feature.fromJsonString(TestEnvironment.getJsonString());
+			Feature feature = Feature.fromJsonString(TestEnvironment.getJsonPointString());
 			FutureTask<Object> future = (FutureTask<Object>) client.updatePlace(feature);
 			while (!future.isDone()) {
 				Thread.sleep(500);
@@ -133,7 +133,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testDeletePlace() {
 		try {
-			FutureTask<Object> future = (FutureTask<Object>) client.deletePlace("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51");
+			FutureTask<Object> future = (FutureTask<Object>) client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
@@ -149,14 +149,15 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearch() {
-		double lat = -122.937467;
-		double lon = 47.046962;
+		double lat = 37.759737;
+		double lon = -122.433203;
 		try {
-			FutureTask<Object> future = (FutureTask<Object>)  client.search(new Point(lat, lon), "hotdogs", "Restaurants");
+			FutureTask<Object> future = (FutureTask<Object>)  client.search(new Point(lat, lon), "", "Restaurants");
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
 			FeatureCollection features = (FeatureCollection) future.get();
+			System.out.println(features.getFeatures().get(0).getSimpleGeoId());
 			this.assertEquals(7, features.getFeatures().size());
 		} catch (IOException e) {
 			this.fail(e.getMessage());
