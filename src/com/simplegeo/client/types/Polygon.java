@@ -71,18 +71,18 @@ public class Polygon {
 	}
 	
 	public JSONArray toJSONArray() throws JSONException {
-		JSONArray polygonArray = new JSONArray();
 		JSONArray rings = new JSONArray();
 		ArrayList<ArrayList<Point>> ringList = this.getRings();
 		for (ArrayList<Point> ring : ringList) {
+			JSONArray r = new JSONArray();
 			int numOfPoints = ring.size();
 			for (int i=0; i<numOfPoints; i++) {
 				Point point = ring.get(i);
-				rings.put(point.toJSONArray());
+				r.put(point.toJSONArray());
 			}
+			rings.put(r);
 		}
-		polygonArray.put(rings);
-		return polygonArray;
+		return rings;
 	}
 	
 }
