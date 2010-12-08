@@ -21,10 +21,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoContextClient
 	 */
 	public static SimpleGeoContextClient getInstance(String baseUrl, String port, String apiVersion) {
-		if(sharedLocationService == null)
-			sharedLocationService = new SimpleGeoContextClient(baseUrl, port, apiVersion);
+		if(sharedContextService == null)
+			sharedContextService = new SimpleGeoContextClient(baseUrl, port, apiVersion);
 
-		return (SimpleGeoContextClient) sharedLocationService;		
+		return (SimpleGeoContextClient) sharedContextService;		
 	}
 	
 	/**

@@ -29,10 +29,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
-		if(sharedLocationService == null)
-			sharedLocationService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
+		if(sharedPlacesService == null)
+			sharedPlacesService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
 
-		return (SimpleGeoPlacesClient) sharedLocationService;		
+		return (SimpleGeoPlacesClient) sharedPlacesService;		
 	}
 	
 	/**

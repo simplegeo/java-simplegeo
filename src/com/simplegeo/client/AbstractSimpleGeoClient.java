@@ -77,7 +77,8 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
 		
-	protected static ISimpleGeoClient sharedLocationService = null;
+	protected static ISimpleGeoClient sharedPlacesService = null;
+	protected static ISimpleGeoClient sharedContextService = null;
 	
 	protected GeoJSONHandler geoJSONHandler = null;
 	protected JSONHandler jsonHandler = null;
