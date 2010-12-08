@@ -109,7 +109,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testAddPlace() {
 		try {
-			Feature feature = Feature.fromJsonString(TestEnvironment.getJsonPointString());
+			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
 			FutureTask<Object> future = (FutureTask<Object>) client.addPlace(feature);
 			while (!future.isDone()) {
 				Thread.sleep(500);
@@ -138,7 +138,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testUpdatePlace() {
 		try {
-			Feature feature = Feature.fromJsonString(TestEnvironment.getJsonPointString());
+			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
 			FutureTask<Object> future = (FutureTask<Object>) client.updatePlace(feature);
 			while (!future.isDone()) {
 				Thread.sleep(500);

@@ -33,6 +33,7 @@ public class Geometry {
 	
 	private Point point;
 	private Polygon polygon;
+	private MultiPolygon multiPolygon;
 	
 	public Geometry() {
 		
@@ -44,6 +45,10 @@ public class Geometry {
 	
 	public Geometry(Polygon polygon) {
 		this.polygon = polygon;
+	}
+	
+	public Geometry(MultiPolygon multiPolygon) {
+		this.multiPolygon = multiPolygon;
 	}
 
 	public Point getPoint() {
@@ -60,6 +65,14 @@ public class Geometry {
 
 	public void setPolygon(Polygon polygon) {
 		this.polygon = polygon;
+	}
+
+	public MultiPolygon getMultiPolygon() {
+		return multiPolygon;
+	}
+
+	public void setMultiPolygon(MultiPolygon multiPolygon) {
+		this.multiPolygon = multiPolygon;
 	}
 
 }

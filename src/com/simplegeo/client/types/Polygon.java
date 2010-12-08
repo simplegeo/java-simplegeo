@@ -54,7 +54,7 @@ public class Polygon {
 		this.rings = rings;
 	}
 	
-	public static ArrayList<ArrayList<Point>> fromJsonArray(JSONArray polygonArray) throws JSONException {
+	public static Polygon fromJSONArray(JSONArray polygonArray) throws JSONException {
 		ArrayList<ArrayList<Point>> ringList = new ArrayList<ArrayList<Point>>();
 		int numOfRings = polygonArray.length();
 		for (int i=0; i<numOfRings; i++) {
@@ -67,7 +67,7 @@ public class Polygon {
 			}
 			ringList.add(pointList);
 		}
-		return ringList;
+		return new Polygon(ringList);
 	}
 	
 	public JSONArray toJSONArray() throws JSONException {

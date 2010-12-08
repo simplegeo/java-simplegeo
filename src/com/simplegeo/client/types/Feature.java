@@ -87,7 +87,7 @@ public class Feature {
 		this.properties = properties;
 	}
 	
-	public static Feature fromJson(JSONObject json) throws JSONException {
+	public static Feature fromJSON(JSONObject json) throws JSONException {
 		Feature feature = new Feature();
 		feature.setSimpleGeoId(json.getString("id"));
 		feature.setType("Feature");
@@ -96,10 +96,14 @@ public class Feature {
 			JSONArray coordinates = jsonGeometry.getJSONArray("coordinates");
 			Point point = new Point(coordinates.getDouble(0), coordinates.getDouble(1));
 			feature.setGeometry(new Geometry(point));
+		} else if ("Polygon".equals(jsonGeometry.getString("type"))) {
+			JSONArray polygonArray = jsonGeometry.getJSONArray("coordinates");
+			Polygon polygon = Polygon.fromJSONArray(polygonArray);
+			feature.setGeometry(new Geometry(polygon));
 		} else {
 			JSONArray polygonArray = jsonGeometry.getJSONArray("coordinates");
-			Polygon polygon = new Polygon(Polygon.fromJsonArray(polygonArray));
-			feature.setGeometry(new Geometry(polygon));
+			MultiPolygon multiPolygon = MultiPolygon.fromJSONArray(polygonArray);
+			feature.setGeometry(new Geometry(multiPolygon));
 		}
 		
 		HashMap<String, Object> propertyMap = new HashMap<String, Object>();
@@ -113,11 +117,11 @@ public class Feature {
 		return feature;
 	}
 	
-	public static Feature fromJsonString(String jsonString) throws JSONException {
-		return fromJson(new JSONObject(jsonString));
+	public static Feature fromJSONString(String jsonString) throws JSONException {
+		return fromJSON(new JSONObject(jsonString));
 	}
 	
-	public JSONObject toJson() throws JSONException {
+	public JSONObject toJSON() throws JSONException {
 		JSONObject json = new JSONObject();
 		json.put("geometry", this.getGeometryJSON());
 		json.put("type", "Feature");
@@ -126,8 +130,8 @@ public class Feature {
 		return json;
 	}
 	
-	public String toJsonString() throws JSONException {
-		return this.toJson().toString();
+	public String toJSONString() throws JSONException {
+		return this.toJSON().toString();
 	}
 	
 	private JSONObject getGeometryJSON() throws JSONException {
@@ -136,9 +140,12 @@ public class Feature {
 		if (geometry.getPoint() != null) {
 			json.put("type", "Point");
 			json.put("coordinates", geometry.getPoint().toJSONArray());
-		} else {
+		} else if (geometry.getPolygon() != null){
 			json.put("type", "Polygon");
 			json.put("coordinates", geometry.getPolygon().toJSONArray());
+		} else {
+			json.put("type", "MultiPolygon");
+			json.put("coordinates", geometry.getMultiPolygon().toJSONArray());
 		}
 		return json;
 	}

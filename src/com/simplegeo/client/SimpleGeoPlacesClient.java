@@ -117,7 +117,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws JSONException
 	 */
 	public Object addPlace(Feature feature) throws IOException, JSONException {
-		String jsonString = feature.toJsonString();
+		String jsonString = feature.toJSONString();
 		return this.executePost(String.format(this.getEndpoint("places")), jsonString, new JSONHandler());
 	}
 	
@@ -129,7 +129,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws JSONException
 	 */
 	public Object updatePlace(Feature feature) throws IOException, JSONException {
-		String jsonString = feature.toJsonString();
+		String jsonString = feature.toJSONString();
 		return this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler());
 	}
 	

@@ -49,13 +49,13 @@ public class GeoJSONHandler implements ISimpleGeoJSONHandler {
 		Object returnObject = new Object();
 		if (response.contains("FeatureCollection")) {
 			try {
-				returnObject = FeatureCollection.fromJsonString(response);
+				returnObject = FeatureCollection.fromJSONString(response);
 			} catch (JSONException e){
 				logger.info(e.getMessage());
 			}
 		} else {
 			try {
-				returnObject = Feature.fromJsonString(response);
+				returnObject = Feature.fromJSONString(response);
 			} catch (JSONException e){
 				logger.info(e.getMessage());
 			}
