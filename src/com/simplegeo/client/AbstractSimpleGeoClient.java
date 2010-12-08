@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2010, SimpleGeo
+ * Copyright (c) 2010-2011, SimpleGeo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
@@ -31,7 +31,6 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;

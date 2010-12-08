@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2010, SimpleGeo
+ * Copyright (c) 2010-2011, SimpleGeo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
