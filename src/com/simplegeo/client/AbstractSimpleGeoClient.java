@@ -176,6 +176,15 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	}
 	
 	/**
+	 * Grab the desired endpoint and add it to the server, port and version.
+	 * @param endpointName
+	 * @return String A URL pointing at the desired server
+	 */
+	protected String getEndpoint(String endpointName) {
+		return String.format("%s:%s/%s/%s", baseUrl, port, apiVersion, endpoints.get(endpointName));
+	}
+	
+	/**
 	 * Method for executing HttpRequests either synchronously or asynchronously.
 	 * @param request HttpUriRequest
 	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.

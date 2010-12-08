@@ -23,10 +23,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Method that ensures we only have one instance of the SimpleGeoPlacesClient instantiated and allows
 	 * server connection variables to be overridden.
-	 * @param baseUrl
-	 * @param port
-	 * @param apiVersion
-	 * @return
+	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
+	 * @param port String 80 is default, but can be overridden.
+	 * @param apiVersion String 1.0 is default, but can be overridden.
+	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
 		if(sharedLocationService == null)
@@ -38,7 +38,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Default method for retrieving a SimpleGeoPlacesClient.  This should be used unless a test
 	 * server is being hit.
-	 * @return
+	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance() {
 		return getInstance(DEFAULT_HOST, DEFAULT_PORT, DEFAULT_VERSION);
@@ -46,9 +46,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * SimpleGeoPlacesClient constructor
-	 * @param baseUrl
-	 * @param port
-	 * @param apiVersion
+	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
+	 * @param port String 80 is default, but can be overridden.
+	 * @param apiVersion String 1.0 is default, but can be overridden.
 	 */
 	private SimpleGeoPlacesClient(String baseUrl, String port, String apiVersion) {
 		super(baseUrl, port, apiVersion);
@@ -62,15 +62,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Grab the desired endpoint and add it to the server, port and version.
-	 * @param endpointName
-	 * @return String A URL pointing at the desired server
-	 */
-	protected String getEndpoint(String endpointName) {
-		return String.format("%s:%s/%s/%s", baseUrl, port, apiVersion, endpoints.get(endpointName));
-	}
-	
-	/**
 	 * 
 	 * @return
 	 * @throws IOException
@@ -80,9 +71,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param simpleGeoId
-	 * @return
+	 * Return the place that corresponds to the simpleGeoId
+	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
+	 * @return FutureTask/Feature FutureTask if supported, if not a Feature representing the place
 	 * @throws IOException
 	 */
 	public Object getPlace(String simpleGeoId) throws IOException {
@@ -90,9 +81,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param feature
-	 * @return
+	 * Add a new place to the places database
+	 * @param feature Feature representing a new place.
+	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token,
+	 * simplegeoid and a uri.
 	 * @throws IOException
 	 * @throws JSONException
 	 */
@@ -102,9 +94,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param feature
-	 * @return
+	 * Update an existing place in the places database.
+	 * @param feature Feature representing an existing place.
+	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token.
 	 * @throws IOException
 	 * @throws JSONException
 	 */
@@ -114,9 +106,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param simpleGeoId
-	 * @return
+	 * Delete an existing place from the places database.
+	 * @param simpleGeoId String corresponding to an existing place.
+	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token.
 	 * @throws IOException
 	 */
 	public Object deletePlace(String simpleGeoId) throws IOException {
@@ -124,11 +116,11 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param point
-	 * @param query
-	 * @param category
-	 * @return
+	 * Search for nearby places.
+	 * @param point Point {@link com.simplegeo.client.types.Point}
+	 * @param query String A term/phrase to search for.
+	 * @param category String A type of place to search for.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	public Object search(Point point, String query, String category) throws IOException {
@@ -136,12 +128,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param lat
-	 * @param lon
-	 * @param query
-	 * @param category
-	 * @return
+	 * Search for nearby places.
+	 * @param lat Double latitude.
+	 * @param lon Double longitude.
+	 * @param query A term/phrase to search for.
+	 * @param category A type of place to search for.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	public Object search(double lat, double lon, String query, String category) throws IOException {
@@ -150,28 +142,16 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		return this.executeGet(uri, new GeoJSONHandler());
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public IOAuthClient getHttpClient() {
 		return super.getHttpClient();
 	}
-
-	/**
-	 * 
-	 */
-	@Override
-	protected Object executeGet(String uri, ISimpleGeoJSONHandler handler)
-			throws IOException {
-		System.out.println(uri);
-		uri = this.removeEmptyParameters(uri);
-		System.out.println(uri);
-		HttpGet get = new HttpGet(uri);
-		System.out.println(get.getURI().getQuery());
-		return super.execute(get, new SimpleGeoHandler(handler));
-	}
 	
+	/**
+	 * Remove empty parameters so we're not sending q=&category=.
+	 * @param uri String uri containing parameters.
+	 * @return String uri with empty parameters removed.
+	 */
 	private String removeEmptyParameters(String uri) {
 		if (uri.indexOf("?") == -1)
 			return uri;
@@ -186,10 +166,15 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		}
 		return base + "?" + newQuery.replaceFirst("&", "");
 	}
+	
+	@Override
+	protected Object executeGet(String uri, ISimpleGeoJSONHandler handler)
+			throws IOException {
+		uri = this.removeEmptyParameters(uri);
+		HttpGet get = new HttpGet(uri);
+		return super.execute(get, new SimpleGeoHandler(handler));
+	}
 
-	/**
-	 * 
-	 */
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
@@ -198,10 +183,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		post.addHeader("Content-type", "application/json");
 		return super.execute(post, new SimpleGeoHandler(handler));
 	}
-	
-	/**
-	 * 
-	 */
+
 	@Override
 	protected Object executePut(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
@@ -211,9 +193,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		return super.execute(new HttpPut(uri), new SimpleGeoHandler(handler));
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
 			throws IOException {
