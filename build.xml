@@ -12,7 +12,7 @@
 	<property name="ant.lib" value="${basedir}/ant/lib" />
 
 	<property name="dist.dir" value="${basedir}/dist" />
-	<property name="version" value="0.1" />
+	<property name="version" value="1.0" />
 	<property name="final.name" value="java-simplegeo-${version}" />
 	<property name="final.places.name" value="java-simplegeo-places-${version}" />
 	<property name="final.context.name" value="java-simplegeo-context-${version}" />
