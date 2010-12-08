@@ -50,14 +50,14 @@ public class GeoJSONHandler implements ISimpleGeoJSONHandler {
 		if (response.contains("FeatureCollection")) {
 			try {
 				returnObject = FeatureCollection.fromJsonString(response);
-			} catch (JSONException je){
-				// hmmm, this doesn't seem like it should happen
+			} catch (JSONException e){
+				logger.info(e.getMessage());
 			}
 		} else {
 			try {
 				returnObject = Feature.fromJsonString(response);
-			} catch (JSONException je){
-				// hmmm, this doesn't seem like it should happen
+			} catch (JSONException e){
+				logger.info(e.getMessage());
 			}
 		}
 		return returnObject;

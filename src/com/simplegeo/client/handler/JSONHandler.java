@@ -43,7 +43,6 @@ import org.json.JSONObject;
 public class JSONHandler implements ISimpleGeoJSONHandler {
 
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
-
 	
 	public Object parseResponse(String response) {
 		HashMap<String, Object> responseMap = new HashMap<String, Object>();
@@ -55,7 +54,7 @@ public class JSONHandler implements ISimpleGeoJSONHandler {
 				responseMap.put(key, json.get(key));
 			}
 		} catch (JSONException e) {
-			System.out.println(e.getMessage());
+			logger.info(e.getMessage());
 		}
 		return responseMap;
 	}
