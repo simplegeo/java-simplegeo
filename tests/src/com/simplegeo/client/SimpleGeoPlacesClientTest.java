@@ -157,7 +157,6 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 				Thread.sleep(500);
 			}
 			FeatureCollection features = (FeatureCollection) future.get();
-			System.out.println(features.getFeatures().get(0).getSimpleGeoId());
 			this.assertEquals(7, features.getFeatures().size());
 		} catch (IOException e) {
 			this.fail(e.getMessage());

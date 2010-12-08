@@ -196,7 +196,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	@Override
 	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
 			throws IOException {
-		System.out.println(uri);
 		return super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler));
 	}
 
