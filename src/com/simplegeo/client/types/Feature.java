@@ -94,7 +94,7 @@ public class Feature {
 		JSONObject jsonGeometry = json.getJSONObject("geometry");
 		if ("Point".equals(jsonGeometry.getString("type"))) {
 			JSONArray coordinates = jsonGeometry.getJSONArray("coordinates");
-			Point point = new Point(coordinates.getDouble(0), coordinates.getDouble(1));
+			Point point = new Point(coordinates.getDouble(1), coordinates.getDouble(0));
 			feature.setGeometry(new Geometry(point));
 		} else if ("Polygon".equals(jsonGeometry.getString("type"))) {
 			JSONArray polygonArray = jsonGeometry.getJSONArray("coordinates");

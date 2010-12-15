@@ -64,8 +64,8 @@ public class Point {
 	
 	public JSONArray toJSONArray() throws JSONException {
 		JSONArray pointArray = new JSONArray();
-		pointArray.put(this.getLat());
 		pointArray.put(this.getLon());
+		pointArray.put(this.getLat());
 		return pointArray;
 	}
 	

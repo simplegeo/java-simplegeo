@@ -63,7 +63,7 @@ public class Polygon {
 			ArrayList<Point> pointList = new ArrayList<Point>();
 			for (int j=0; j<numOfCoords; j++) {
 				JSONArray coords = ring.getJSONArray(j);
-				pointList.add(new Point(coords.getDouble(0), coords.getDouble(1)));
+				pointList.add(new Point(coords.getDouble(1), coords.getDouble(0)));
 			}
 			ringList.add(pointList);
 		}

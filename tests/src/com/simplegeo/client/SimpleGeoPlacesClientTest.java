@@ -58,8 +58,8 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testGetPlacePoint() {
-		double lat = -122.937467;
-		double lon = 47.046962;
+		double lon = -122.937467;
+		double lat = 47.046962;
 		try {
 			FutureTask<Object> future = (FutureTask<Object>) client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
 			while (!future.isDone()) {
