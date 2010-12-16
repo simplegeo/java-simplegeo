@@ -10,7 +10,42 @@ import org.json.JSONException;
 public class PolygonTest extends TestCase {
 
 	public void testToJSONArray() {
-		
+		try {
+			ArrayList<ArrayList<Point>> rings = new ArrayList<ArrayList<Point>>();
+			rings.add(this.generateRing());
+			Polygon polygon = new Polygon(rings);
+			JSONArray jsonArray = polygon.toJSONArray();
+			this.assertEquals(1, jsonArray.length());
+			JSONArray ringArray = jsonArray.getJSONArray(0);
+			this.assertEquals(5, ringArray.length());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testToJSONArrayMultipleRings() {
+		try {
+			ArrayList<ArrayList<Point>> rings = new ArrayList<ArrayList<Point>>();
+			rings.add(this.generateRing());
+			rings.add(this.generateRing());
+			Polygon polygon = new Polygon(rings);
+			JSONArray jsonArray = polygon.toJSONArray();
+			this.assertEquals(2, jsonArray.length());
+			JSONArray ringArray = jsonArray.getJSONArray(0);
+			this.assertEquals(5, ringArray.length());
+			ringArray = jsonArray.getJSONArray(1);
+			this.assertEquals(5, ringArray.length());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	private ArrayList<Point> generateRing() {
+		ArrayList<Point> ring = new ArrayList<Point>();
+		for (int i=0; i<5; i++) {
+			ring.add(new Point(37.0, -110.0));
+		}
+		return ring;
 	}
 	
 	public void testFromJSONArray() {
@@ -36,7 +71,7 @@ public class PolygonTest extends TestCase {
 			ArrayList<Point> points2 = polygon.getRings().get(1);
 			this.assertEquals(23, points2.size());
 		} catch (JSONException e) {
-			
+			this.fail(e.getMessage());
 		}
 	}
 	
