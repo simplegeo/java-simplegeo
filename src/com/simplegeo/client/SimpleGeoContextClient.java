@@ -30,6 +30,7 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import org.apache.http.client.methods.HttpGet;
 
@@ -73,6 +74,8 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 		super(baseUrl, port, apiVersion);
 		
 		endpoints.put("context", "context/%f,%f.json");
+		endpoints.put("ip", "context/%s.json");
+		endpoints.put("myIp", "context/ip.json");
 		
 		this.setFutureTask(true);
 	}
@@ -87,6 +90,18 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 */
 	public Object getContext(double lat, double lon) throws IOException {
 		return this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler());
+	}
+	
+	public Object getContextByIP() throws IOException {
+		return this.getContextByIP("");
+	}
+	
+	public Object getContextByIP(String ip) throws IOException {
+		if ("".equals(ip)) {
+			return this.executeGet(this.getEndpoint("myIp"), new JSONHandler());
+		} else {
+			return this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler());
+		}
 	}
 
 	@Override

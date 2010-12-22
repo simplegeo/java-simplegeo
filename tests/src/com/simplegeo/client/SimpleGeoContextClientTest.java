@@ -36,6 +36,9 @@ import java.util.concurrent.FutureTask;
 
 import junit.framework.TestCase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.simplegeo.client.test.TestEnvironment;
 
 public class SimpleGeoContextClientTest extends TestCase {
@@ -69,6 +72,64 @@ public class SimpleGeoContextClientTest extends TestCase {
 		} catch (InterruptedException e) {
 			this.fail(e.getMessage());
 		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetContextByMyIP() {
+		try {
+			FutureTask<Object> future = (FutureTask<Object>) client.getContextByIP("");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			this.assertNotNull(responseMap.get("query"));
+			this.assertNotNull(responseMap.get("features"));
+			this.assertNotNull(responseMap.get("weather"));
+			this.assertNotNull(responseMap.get("demographics"));
+			
+			Object latitude = ((JSONObject)responseMap.get("query")).get("latitude");
+			Object longitude = ((JSONObject)responseMap.get("query")).get("longitude");
+			
+			this.assertEquals(37.778381,latitude);
+			this.assertEquals(-122.389388,longitude);
+			
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetContextByIP() {
+		try {
+			FutureTask<Object> future = (FutureTask<Object>) client.getContextByIP("92.156.43.27");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			this.assertNotNull(responseMap.get("query"));
+			this.assertNotNull(responseMap.get("features"));
+			this.assertNotNull(responseMap.get("weather"));
+			this.assertNotNull(responseMap.get("demographics"));
+			
+			Object latitude = ((JSONObject)responseMap.get("query")).get("latitude");
+			Object longitude = ((JSONObject)responseMap.get("query")).get("longitude");
+			
+			this.assertEquals(42.39020,latitude);
+			this.assertEquals(-71.11470,longitude);
+			
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
 	}

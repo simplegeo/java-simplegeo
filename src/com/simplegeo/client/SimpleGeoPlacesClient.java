@@ -58,6 +58,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
+		// Screw this?  Just allow them to create as many as they want, but make the ThreadPoolExecutor static?
 		if(sharedPlacesService == null)
 			sharedPlacesService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
 
@@ -81,10 +82,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	private SimpleGeoPlacesClient(String baseUrl, String port, String apiVersion) {
 		super(baseUrl, port, apiVersion);
 		
+		endpoints.put("address", "places/address.json?address=%s&q=%s&category=%s");
 		endpoints.put("endpoints", "endpoints.json");
 		endpoints.put("features", "features/%s.json");
 		endpoints.put("places", "places");
 		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s");
+		endpoints.put("searcByIP", "places/%s.json?q=%s&category=%s");
+		endpoints.put("searchByMyIP", "places/ip.json?q=%s&category=%s");
 		
 		this.setFutureTask(true);
 	}
@@ -100,6 +104,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Return the place that corresponds to the simpleGeoId
+	 * 
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
 	 * @return FutureTask/Feature FutureTask if supported, if not a Feature representing the place
 	 * @throws IOException
@@ -110,6 +115,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Add a new place to the places database
+	 * 
 	 * @param feature Feature representing a new place.
 	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token,
 	 * simplegeoid and a uri.
@@ -123,6 +129,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Update an existing place in the places database.
+	 * 
 	 * @param feature Feature representing an existing place.
 	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token.
 	 * @throws IOException
@@ -145,6 +152,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Search for nearby places.
+	 * 
 	 * @param point Point {@link com.simplegeo.client.types.Point}
 	 * @param query String A term/phrase to search for.
 	 * @param category String A type of place to search for.
@@ -157,6 +165,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Search for nearby places.
+	 * 
 	 * @param lat Double latitude.
 	 * @param lon Double longitude.
 	 * @param query A term/phrase to search for.
@@ -165,9 +174,49 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public Object search(double lat, double lon, String query, String category) throws IOException {
-		String uri = String.format(this.getEndpoint("search"), lat, lon, 
-				URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"));
-		return this.executeGet(uri, new GeoJSONHandler());
+		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+	}
+	
+	/**
+	 * Do a search by a physical address.
+	 * 
+	 * @param address Snail mail address, such as 41 Decatur St, San Francisco, CA.
+	 * @param query A term/phrase to search for.
+	 * @param category A type of place to search for.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object searchByAddress(String address, String query, String category) throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+	}
+	
+	/**
+	 * Do a search by your IP.
+	 * 
+	 * @param query A term/phrase to search for.
+	 * @param category A type of place to search for.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object searchByIP(String query, String category) throws IOException {
+		return this.searchByIP("", query, category);
+	}
+	
+	/**
+	 * Do a search by a specific IP.
+	 * 
+	 * @param ip IP address
+	 * @param query A term/phrase to search for
+	 * @param category A type of place to search for
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object searchByIP(String ip, String query, String category) throws IOException {
+		if ("".equals(ip)) {
+			return this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+		} else {
+			return this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+		}
 	}
 	
 	@Override

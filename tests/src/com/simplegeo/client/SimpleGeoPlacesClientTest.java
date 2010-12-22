@@ -195,5 +195,17 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			this.fail(e.getMessage());
 		}
 	}
+	
+	public void testSearchByMyIP() {
+		// TODO write this
+	}
+	
+	public void testSearchByIP() {
+		// TODO write this
+	}
+	
+	public void testSearchByAddress() {
+		// TODO write this
+	}
 
 }
