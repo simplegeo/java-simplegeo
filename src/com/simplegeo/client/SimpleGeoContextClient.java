@@ -58,6 +58,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Default method for retrieving a SimpleGeoContextClient.
+	 * 
 	 * @return SimpleGeoContextClient
 	 */
 	public static SimpleGeoContextClient getInstance() {
@@ -66,6 +67,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * SimpleGeoContextClient constructor
+	 * 
 	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
 	 * @param port String 80 is default, but can be overridden.
 	 * @param apiVersion String 1.0 is default, but can be overridden.
@@ -73,6 +75,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	private SimpleGeoContextClient(String baseUrl, String port, String apiVersion) {
 		super(baseUrl, port, apiVersion);
 		
+		endpoints.put("address", "context/address.json?address=%s");
 		endpoints.put("context", "context/%f,%f.json");
 		endpoints.put("ip", "context/%s.json");
 		endpoints.put("myIp", "context/ip.json");
@@ -82,6 +85,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Retrieve context for the given latitude and longitude.
+	 * 
 	 * @param lat Double latitude.
 	 * @param lon Double longitude.
 	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
@@ -92,16 +96,43 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 		return this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler());
 	}
 	
+	/**
+	 * Retrieve context for the requesting IP.
+	 * 
+	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
+	 * demographics and query.
+	 * @throws IOException
+	 */
 	public Object getContextByIP() throws IOException {
 		return this.getContextByIP("");
 	}
 	
+	/**
+	 * Retrieve context for a specific IP.
+	 * 
+	 * @param ip IP Address
+	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
+	 * demographics and query.
+	 * @throws IOException
+	 */
 	public Object getContextByIP(String ip) throws IOException {
 		if ("".equals(ip)) {
 			return this.executeGet(this.getEndpoint("myIp"), new JSONHandler());
 		} else {
 			return this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler());
 		}
+	}
+	
+	/**
+	 * Retrieve context for a physical street address.
+	 * 
+	 * @param address Physical street address
+	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
+	 * demographics and query.
+	 * @throws IOException
+	 */
+	public Object getContextByAddress(String address) throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler());
 	}
 
 	@Override

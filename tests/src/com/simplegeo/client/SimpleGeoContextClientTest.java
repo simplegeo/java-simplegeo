@@ -133,4 +133,33 @@ public class SimpleGeoContextClientTest extends TestCase {
 			this.fail(e.getMessage());
 		}
 	}
+	
+	public void testGetContextByAddress() {
+		try {
+			FutureTask<Object> future = (FutureTask<Object>) client.getContextByAddress("41 Decatur St, San Francisco, CA");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			this.assertNotNull(responseMap.get("query"));
+			this.assertNotNull(responseMap.get("features"));
+			this.assertNotNull(responseMap.get("weather"));
+			this.assertNotNull(responseMap.get("demographics"));
+			
+			Object latitude = ((JSONObject)responseMap.get("query")).get("latitude");
+			Object longitude = ((JSONObject)responseMap.get("query")).get("longitude");
+			
+			this.assertEquals(40.01753,latitude);
+			this.assertEquals(-105.27741,longitude);
+			
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
 }
