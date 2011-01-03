@@ -108,7 +108,7 @@ public class Feature {
 		
 		HashMap<String, Object> propertyMap = new HashMap<String, Object>();
 		JSONObject properties = json.getJSONObject("properties");
-		Iterator<String> propertyIterator = properties.sortedKeys();
+		Iterator<String> propertyIterator = properties.keys();
 		while (propertyIterator.hasNext()) {
 			String key = (String) propertyIterator.next();
 			propertyMap.put(key, properties.get(key));

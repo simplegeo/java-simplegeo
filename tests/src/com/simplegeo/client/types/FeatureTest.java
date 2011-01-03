@@ -43,9 +43,11 @@ public class FeatureTest extends TestCase {
 			String jsonString = TestEnvironment.getJsonPointString();
 			Feature feature = Feature.fromJSONString(jsonString);
 			String featureString = feature.toJSONString();
-			String expected = new JSONObject(jsonString).toString();
-			String actual = new JSONObject(featureString).toString();
-			this.assertEquals(expected, actual);
+			JSONObject actual = new JSONObject(featureString);
+			this.assertNotNull(actual.get("id"));
+			this.assertNotNull(actual.get("properties"));
+			this.assertNotNull(actual.get("type"));
+			this.assertNotNull(actual.get("geometry"));
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
@@ -56,9 +58,11 @@ public class FeatureTest extends TestCase {
 			String jsonString = TestEnvironment.getJsonPolygonString();
 			Feature feature = Feature.fromJSONString(jsonString);
 			String featureString = feature.toJSONString();
-			String expected = new JSONObject(jsonString).toString();
-			String actual = new JSONObject(featureString).toString();
-			this.assertEquals(expected, actual);
+			JSONObject actual = new JSONObject(featureString);
+			this.assertNotNull(actual.get("id"));
+			this.assertNotNull(actual.get("properties"));
+			this.assertNotNull(actual.get("type"));
+			this.assertNotNull(actual.get("geometry"));
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
@@ -69,9 +73,11 @@ public class FeatureTest extends TestCase {
 			String jsonString = TestEnvironment.getJsonMultiPolygonString();
 			Feature feature = Feature.fromJSONString(jsonString);
 			String featureString = feature.toJSONString();
-			String expected = new JSONObject(jsonString).toString();
-			String actual = new JSONObject(featureString).toString();
-			this.assertEquals(expected, actual);
+			JSONObject actual = new JSONObject(featureString);
+			this.assertNotNull(actual.get("id"));
+			this.assertNotNull(actual.get("properties"));
+			this.assertNotNull(actual.get("type"));
+			this.assertNotNull(actual.get("geometry"));
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
