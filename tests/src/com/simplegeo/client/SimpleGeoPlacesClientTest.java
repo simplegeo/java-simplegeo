@@ -197,7 +197,21 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearchByMyIP() {
-		// TODO write this
+		try {
+			FutureTask<Object> future = (FutureTask<Object>)  client.searchByIP("", "");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			FeatureCollection features = (FeatureCollection) future.get();
+			System.out.println(features.getFeatures());
+			this.assertEquals(1, features.getFeatures().size());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
+		}
 	}
 	
 	public void testSearchByIP() {
@@ -205,7 +219,22 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearchByAddress() {
-		// TODO write this
+		String address = "1535 Pearl St, Boulder, CO";
+		try {
+			FutureTask<Object> future = (FutureTask<Object>)  client.searchByAddress(address, "", "");
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			FeatureCollection features = (FeatureCollection) future.get();
+			System.out.println(features.getFeatures());
+			this.assertEquals(1, features.getFeatures().size());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (InterruptedException e) {
+			this.fail(e.getMessage());
+		} catch (ExecutionException e) {
+			this.fail(e.getMessage());
+		}
 	}
 
 }

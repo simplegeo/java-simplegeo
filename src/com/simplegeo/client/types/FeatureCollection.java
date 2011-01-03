@@ -57,9 +57,9 @@ public class FeatureCollection {
 	
 	public static FeatureCollection fromJSON(JSONObject json) throws JSONException {
 		FeatureCollection featureCollection = new FeatureCollection();
-		int numOfFeatures = json.getInt("total");
 		ArrayList<Feature> features = new ArrayList<Feature>();
 		JSONArray featuresArray = json.getJSONArray("features");
+		int numOfFeatures = featuresArray.length();
 		for (int i=0; i<numOfFeatures; i++) {
 			features.add(Feature.fromJSON(featuresArray.getJSONObject(i)));
 		}
