@@ -186,7 +186,11 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 				Thread.sleep(500);
 			}
 			FeatureCollection features = (FeatureCollection) future.get();
-			this.assertEquals(7, features.getFeatures().size());
+			this.assertEquals(1, features.getFeatures().size());
+			this.assertEquals(features.getFeatures().get(0).getType(), "Feature");
+			this.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
+			this.assertNotNull(features.getFeatures().get(0).getProperties());
+			this.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		} catch (InterruptedException e) {
@@ -197,21 +201,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearchByMyIP() {
-		try {
-			FutureTask<Object> future = (FutureTask<Object>)  client.searchByIP("", "");
-			while (!future.isDone()) {
-				Thread.sleep(500);
-			}
-			FeatureCollection features = (FeatureCollection) future.get();
-			System.out.println(features.getFeatures());
-			this.assertEquals(1, features.getFeatures().size());
-		} catch (IOException e) {
-			this.fail(e.getMessage());
-		} catch (InterruptedException e) {
-			this.fail(e.getMessage());
-		} catch (ExecutionException e) {
-			this.fail(e.getMessage());
-		}
+		// TODO write this
 	}
 	
 	public void testSearchByIP() {
@@ -226,7 +216,6 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 				Thread.sleep(500);
 			}
 			FeatureCollection features = (FeatureCollection) future.get();
-			System.out.println(features.getFeatures());
 			this.assertEquals(1, features.getFeatures().size());
 		} catch (IOException e) {
 			this.fail(e.getMessage());

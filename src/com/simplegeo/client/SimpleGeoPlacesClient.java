@@ -49,6 +49,8 @@ import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
+	protected static SimpleGeoPlacesClient sharedPlacesService = null;
+	
 	/**
 	 * Method that ensures we only have one instance of the SimpleGeoPlacesClient instantiated and allows
 	 * server connection variables to be overridden.
@@ -58,7 +60,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
-		// Screw this?  Just allow them to create as many as they want, but make the ThreadPoolExecutor static?
 		if(sharedPlacesService == null)
 			sharedPlacesService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
 
@@ -82,13 +83,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	private SimpleGeoPlacesClient(String baseUrl, String port, String apiVersion) {
 		super(baseUrl, port, apiVersion);
 		
-		endpoints.put("address", "places/address.json?address=%s&q=%s&category=%s");
+		endpoints.put("address", "places/address.json?address=%s&q=%s&category=%s&radius=%s");
 		endpoints.put("endpoints", "endpoints.json");
 		endpoints.put("features", "features/%s.json");
 		endpoints.put("places", "places");
-		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s");
-		endpoints.put("searcByIP", "places/%s.json?q=%s&category=%s");
-		endpoints.put("searchByMyIP", "places/ip.json?q=%s&category=%s");
+		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s&radius=%s");
+		endpoints.put("searcByIP", "places/%s.json?q=%s&category=%s&radius=%s");
+		endpoints.put("searchByMyIP", "places/ip.json?q=%s&category=%s&radius=%s");
 		
 		this.setFutureTask(true);
 	}
@@ -166,6 +167,20 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Search for nearby places.
 	 * 
+	 * @param point Point {@link com.simplegeo.client.types.Point}
+	 * @param query String A term/phrase to search for.
+	 * @param category String A type of place to search for.
+	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object search(Point point, String query, String category, double radius) throws IOException {
+		return this.search(point.getLat(), point.getLon(), query, category, radius);
+	}
+	
+	/**
+	 * Search for nearby places.
+	 * 
 	 * @param lat Double latitude.
 	 * @param lon Double longitude.
 	 * @param query A term/phrase to search for.
@@ -174,20 +189,49 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public Object search(double lat, double lon, String query, String category) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+		return this.search(lat, lon, query, category, DEFAULT_RADIUS);
+	}
+	
+	/**
+	 * Search for nearby places.
+	 * 
+	 * @param lat Double latitude.
+	 * @param lon Double longitude.
+	 * @param query A term/phrase to search for.
+	 * @param category A type of place to search for.
+	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object search(double lat, double lon, String query, String category, double radius) throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 	}
 	
 	/**
 	 * Do a search by a physical address.
 	 * 
-	 * @param address Snail mail address, such as 41 Decatur St, San Francisco, CA.
+	 * @param address Physical address, such as 41 Decatur St, San Francisco, CA.
 	 * @param query A term/phrase to search for.
 	 * @param category A type of place to search for.
 	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	public Object searchByAddress(String address, String query, String category) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+		return this.searchByAddress(address, query, category, DEFAULT_RADIUS);
+	}
+	
+	/**
+	 * Do a search by a physical address.
+	 * 
+	 * @param address Physical address, such as 41 Decatur St, San Francisco, CA.
+	 * @param query A term/phrase to search for.
+	 * @param category A type of place to search for.
+	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object searchByAddress(String address, String query, String category, double radius) throws IOException {
+		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 	}
 	
 	/**
@@ -199,7 +243,20 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public Object searchByIP(String query, String category) throws IOException {
-		return this.searchByIP("", query, category);
+		return this.searchByIP("", query, category, DEFAULT_RADIUS);
+	}
+	
+	/**
+	 * Do a search by your IP.
+	 * 
+	 * @param query A term/phrase to search for.
+	 * @param category A type of place to search for.
+	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	public Object searchByIP(String query, String category, double radius) throws IOException {
+		return this.searchByIP("", query, category, radius);
 	}
 	
 	/**
@@ -211,11 +268,25 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
 	 * @throws IOException
 	 */
-	public Object searchByIP(String ip, String query, String category) throws IOException {
+	protected Object searchByIP(String ip, String query, String category) throws IOException {
+		return this.searchByIP(query, category, DEFAULT_RADIUS);
+	}
+	
+	/**
+	 * Do a search by a specific IP.
+	 * 
+	 * @param ip IP address
+	 * @param query A term/phrase to search for
+	 * @param category A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @throws IOException
+	 */
+	protected Object searchByIP(String ip, String query, String category, double radius) throws IOException {
 		if ("".equals(ip)) {
-			return this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+			return this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 		} else {
-			return this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8")), new GeoJSONHandler());
+			return this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 		}
 	}
 	

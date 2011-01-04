@@ -41,6 +41,8 @@ import com.simplegeo.client.http.SimpleGeoHandler;
 
 public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	
+	protected static SimpleGeoContextClient sharedContextService = null;
+	
 	/**
 	 * Method that ensures we only have one instance of the SimpleGeoContextClient instantiated and allows
 	 * server connection variables to be overridden.

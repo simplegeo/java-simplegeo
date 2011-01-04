@@ -73,11 +73,9 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	public static final String DEFAULT_HOST = "http://api.simplegeo.com";
 	public static final String DEFAULT_PORT = "80";
 	public static final String DEFAULT_VERSION = "1.0";
+	public static final double DEFAULT_RADIUS = 25;
 	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
-		
-	protected static ISimpleGeoClient sharedPlacesService = null;
-	protected static ISimpleGeoClient sharedContextService = null;
 	
 	protected GeoJSONHandler geoJSONHandler = null;
 	protected JSONHandler jsonHandler = null;
@@ -101,9 +99,9 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 * @param apiVersion - Default is 1.0, but this can be overridden
 	 */
 	protected AbstractSimpleGeoClient(String baseUrl, String port, String apiVersion) {
-		this.baseUrl = baseUrl;
-		this.port = port;
-		this.apiVersion = apiVersion;
+		this.baseUrl = baseUrl == "" ? DEFAULT_HOST : baseUrl;
+		this.port = port == "" ? DEFAULT_PORT : port;
+		this.apiVersion = apiVersion == "" ? DEFAULT_VERSION : apiVersion;
 		
 		setHandler(Handler.JSON, new JSONHandler());
 		setHandler(Handler.GEOJSON, new GeoJSONHandler());
