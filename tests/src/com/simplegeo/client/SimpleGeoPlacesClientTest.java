@@ -201,11 +201,11 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearchByMyIP() {
-		// TODO write this
+		// TODO write this when the test server supports it
 	}
 	
 	public void testSearchByIP() {
-		// TODO write this
+		// TODO write this when the test server supports it
 	}
 	
 	public void testSearchByAddress() {
