@@ -102,9 +102,9 @@ public class OAuthHttpClient extends DefaultHttpClient implements IOAuthClient {
 			token  = new CommonsHttpOAuthConsumer(key, secret);
 			
 			if(token == null)
-				logger.info(String.format("failure to create OAuth token %s,%s", key, secret));
+				logger.info(String.format("Failed to created OAuth token."));
 			else
-				logger.info(String.format("token was created with %s,%s", key, secret));
+				logger.info(String.format("Successfully created OAuth token."));
 		}
 		
 	}
