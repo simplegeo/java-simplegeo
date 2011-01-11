@@ -15,6 +15,5 @@
 	<classpathentry kind="lib" path="libs/junit.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-1.2.15.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="libs/geohash-java-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
