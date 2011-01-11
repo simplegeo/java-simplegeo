@@ -40,22 +40,43 @@
 		</javac>
 	</target>
 	
-	<target name="jar" depends="build">
+	<target name="jar-with-libs" depends="build">
+		<mkdir dir="${build.classes}/META-INF" />
+		<jar jarfile="${build.out}/${final.name}.jar" basedir="${build.classes}">
+			<zipgroupfileset dir="libs" includes="*.jar"/>
+		</jar>
+	</target>
+	
+	<target name="jar-without-libs" depends="build">
 		<mkdir dir="${build.classes}/META-INF" />
 		<jar jarfile="${build.out}/${final.name}.jar" basedir="${build.classes}" />
 	</target>
 	
-	<target name="places-jar" depends="build">
+	<target name="places-jar-with-libs" depends="build">
 		<mkdir dir="${build.classes}/META-INF" />
-		<jar jarfile="${build.out}/${final.places.name}.jar" basedir="${build.classes}" excludes="**/*ContextClient.class" />
+		<jar jarfile="${build.out}/${final.places.name}.jar" basedir="${build.classes}" excludes="**/*ContextClient.class">
+			<zipgroupfileset dir="libs" includes="*.jar"/>
+		</jar>
 	</target>
 	
-	<target name="context-jar" depends="build">
+	<target name="places-jar-without-libs" depends="build">
+			<mkdir dir="${build.classes}/META-INF" />
+			<jar jarfile="${build.out}/${final.places.name}.jar" basedir="${build.classes}" excludes="**/*ContextClient.class" />
+		</target>
+	
+	<target name="context-jar-with-libs" depends="build">
+		<mkdir dir="${build.classes}/META-INF" />
+		<jar jarfile="${build.out}/${final.context.name}.jar" basedir="${build.classes}" excludes="**/*PlacesClient.class">
+			<zipgroupfileset dir="libs" includes="*.jar"/>
+		</jar>
+	</target>
+	
+	<target name="context-jar-without-libs" depends="build">
 		<mkdir dir="${build.classes}/META-INF" />
 		<jar jarfile="${build.out}/${final.context.name}.jar" basedir="${build.classes}" excludes="**/*PlacesClient.class" />
 	</target>
 	
-	<target name="dist" depends="jar,javadoc">
+	<target name="dist" depends="jar-without-libs,javadoc">
 		<mkdir dir="${dist.dir}" />
 		<copy file="${build.out}/${final.name}.jar" todir="${dist.dir}" />
 		<copy todir="${dist.dir}" flatten="true">
