@@ -68,15 +68,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	private RequestThreadPoolExecutor threadExecutor;
 	protected OAuthHttpClient httpClient;
 	
-	public static final String DEFAULT_HOST = "http://api.simplegeo.com";
-	public static final String DEFAULT_PORT = "80";
-	public static final String DEFAULT_VERSION = "1.0";
-	public static final double DEFAULT_RADIUS = 25;
-	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
-	
-	protected GeoJSONHandler geoJSONHandler = null;
-	protected JSONHandler jsonHandler = null;
 	
 	protected String baseUrl = "http://api.simplegeo.com";
 	protected String port = "80";

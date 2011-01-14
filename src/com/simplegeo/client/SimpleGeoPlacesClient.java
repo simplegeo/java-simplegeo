@@ -96,8 +96,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Synchronously get a map detailing all places endpoints.
 	 * 
-	 * @return
+	 * @return HashMap<String, Object> HashMap detailing all places endpoints.
 	 * @throws IOException
 	 */
 	public Object getEndpointDescriptions() throws IOException {
@@ -105,8 +106,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously get a map detailing all places endpoints.
 	 * 
-	 * @param callback
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback
 	 * @throws IOException
 	 */
 	public void getEndpointDescriptions(ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
@@ -114,7 +116,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Return the place that corresponds to the simpleGeoId
+	 * Synchronously get the place that corresponds to the simpleGeoId
 	 * 
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
 	 * @return FutureTask/Feature FutureTask if supported, if not a Feature representing the place
@@ -125,9 +127,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * 
-	 * @param simpleGeoId
-	 * @param callback
+	 * Asynchronously get the place that corresponds to the simpleGeoId
+	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback
 	 * @throws IOException
 	 */
 	public void getPlace(String simpleGeoId, ISimpleGeoCallback<Feature> callback) throws IOException {
@@ -135,7 +137,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Add a new place to the places database
+	 * Synchronously add a new place to the places database
 	 * 
 	 * @param feature Feature representing a new place.
 	 * @return HashMap<String, Object> HashMap containing a polling token, simplegeoid and a uri.
@@ -148,9 +150,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Aynchronously add a new place to the places database
 	 * 
-	 * @param feature
-	 * @param callback
+	 * @param feature Feature representing a new place.
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 * @throws JSONException
 	 */
@@ -160,7 +163,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Update an existing place in the places database.
+	 * Synchronously update an existing place in the places database.
 	 * 
 	 * @param feature Feature representing an existing place.
 	 * @return HashMap<String, Object> HashMap containing a polling token.
@@ -173,9 +176,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously update an existing place in the places database.
 	 * 
-	 * @param feature
-	 * @param callback
+	 * @param feature Feature representing an existing place.
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 * @throws JSONException
 	 */
@@ -185,7 +189,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Delete an existing place from the places database.
+	 * Synchronously delete an existing place from the places database.
 	 * 
 	 * @param simpleGeoId String corresponding to an existing place.
 	 * @return HashMap<String, Object> HashMap containing a polling token.
@@ -196,9 +200,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously delete an existing place from the places database.
 	 * 
-	 * @param simpleGeoId
-	 * @param callback
+	 * @param simpleGeoId String corresponding to an existing place.
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void deletePlace(String simpleGeoId, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
@@ -206,13 +211,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Search for nearby places.
+	 * Synchronously search for nearby places.
 	 * 
 	 * @param point Point {@link com.simplegeo.client.types.Point}
-	 * @param query String A term/phrase to search for.
-	 * @param category String A type of place to search for.
-	 * @param radius double A distance in kilometers used to restrict searches.
-	 * @return FeatureCollection FeatureCollection containing search results.
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @return FeatureCollection FeatureCollection containing search results
 	 * @throws IOException
 	 */
 	public Object search(Point point, String query, String category, double radius) throws IOException {
@@ -220,12 +225,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously search for nearby places.
 	 * 
-	 * @param point
-	 * @param query
-	 * @param category
-	 * @param radius
-	 * @param callback
+	 * @param point Point {@link com.simplegeo.client.types.Point}
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void search(Point point, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
@@ -233,13 +239,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Search for nearby places.
+	 * Synchronously search for nearby places.
 	 * 
-	 * @param lat Double latitude.
-	 * @param lon Double longitude.
-	 * @param query A term/phrase to search for.
-	 * @param category A type of place to search for.
-	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @param lat double latitude
+	 * @param lon double longitude
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
 	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
@@ -248,13 +254,14 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously search for nearby places.
 	 * 
-	 * @param lat
-	 * @param lon
-	 * @param query
-	 * @param category
-	 * @param radius
-	 * @param callback
+	 * @param lat Double latitude
+	 * @param lon double longitude
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void search(double lat, double lon, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
@@ -262,12 +269,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Do a search by a physical address.
+	 * Synchronously search by a physical address.
 	 * 
-	 * @param address Physical address, such as 41 Decatur St, San Francisco, CA.
-	 * @param query A term/phrase to search for.
-	 * @param category A type of place to search for.
-	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @param address String Physical address, such as 41 Decatur St, San Francisco, CA
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
 	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
@@ -276,12 +283,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously search by a physical address.
 	 * 
-	 * @param address
-	 * @param query
-	 * @param category
-	 * @param radius
-	 * @param callback
+	 * @param address Physical address, such as 41 Decatur St, San Francisco, CA
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void searchByAddress(String address, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
@@ -289,12 +297,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Do a search by a specific IP.
+	 * Synchronously search by a specific IP.
 	 * 
-	 * @param ip IP address If blank, your IP address will be used
-	 * @param query A term/phrase to search for
-	 * @param category A type of place to search for
-	 * @param radius double A distance in kilometers used to restrict searches.
+	 * @param ip String IP address If blank, your IP address will be used
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
 	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
@@ -307,12 +315,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously search by a specific IP.
 	 * 
-	 * @param ip
-	 * @param query
-	 * @param category
-	 * @param radius
-	 * @param callback
+	 * @param ip String IP address If blank, your IP address will be used
+	 * @param query String A term/phrase to search for
+	 * @param category String A type of place to search for
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	protected void searchByIP(String ip, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
@@ -330,6 +339,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	/**
 	 * Remove empty parameters so we're not sending q=&category=.
+	 * 
 	 * @param uri String uri containing parameters.
 	 * @return String uri with empty parameters removed.
 	 */
@@ -410,24 +420,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	protected void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
 			throws IOException {
 		super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler), callback);
-	}
-	
-	public static void main(String[] args) {
-		SimpleGeoPlacesClient client = SimpleGeoPlacesClient.getInstance("http://localhost", "4567", "1.0");
-		client.getHttpClient().setToken("consumerKey", "consumerSecret");
-		try {
-			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new ISimpleGeoCallback<Feature>() {
-				public void onSuccess(Feature feature) {
-					logger.info("success");
-				}
-				
-				public void onError(String errorMessage) {
-					logger.info("error");
-				}
-			});
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
 	}
 
 }

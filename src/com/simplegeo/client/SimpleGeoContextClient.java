@@ -86,12 +86,11 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Retrieve context for the given latitude and longitude.
+	 * Synchronously get context for the given latitude and longitude.
 	 * 
-	 * @param lat Double latitude.
-	 * @param lon Double longitude.
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
-	 * demographics and query.
+	 * @param lat double latitude
+	 * @param lon double longitude
+	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
 	public Object getContext(double lat, double lon) throws IOException {
@@ -99,10 +98,11 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously get context for the given latitude and longitude.
 	 * 
-	 * @param lat
-	 * @param lon
-	 * @param callback
+	 * @param lat double latitude
+	 * @param lon double longitude
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void getContext(double lat, double lon, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
@@ -110,11 +110,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Retrieve context for a specific IP.
+	 * Synchronously get context for a specific IP.
 	 * 
-	 * @param ip IP Address If blank, your IP address will be used
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
-	 * demographics and query.
+	 * @param ip String IP Address If blank, your IP address will be used
+	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
 	public Object getContextByIP(String ip) throws IOException {
@@ -126,9 +125,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously get context for a specific IP.
 	 * 
-	 * @param ip
-	 * @param callback
+	 * @param ip String IP Address If blank, your IP address will be used
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void getContextByIP(String ip, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
@@ -140,11 +140,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Retrieve context for a physical street address.
+	 * Synchronously get context for a physical street address.
 	 * 
-	 * @param address Physical street address
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
-	 * demographics and query.
+	 * @param address String Physical street address
+	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
 	public Object getContextByAddress(String address) throws IOException {
@@ -152,9 +151,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * Asynchronously get context for a physical street address.
 	 * 
-	 * @param address
-	 * @param callback
+	 * @param address String Physical street address
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws IOException
 	 */
 	public void getContextByAddress(String address, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
