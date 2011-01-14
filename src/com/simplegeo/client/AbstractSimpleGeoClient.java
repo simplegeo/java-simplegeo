@@ -68,7 +68,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	private RequestThreadPoolExecutor threadExecutor;
 	protected OAuthHttpClient httpClient;
 	
-	public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
 	public static final String DEFAULT_HOST = "http://api.simplegeo.com";
 	public static final String DEFAULT_PORT = "80";
 	public static final String DEFAULT_VERSION = "1.0";
@@ -96,9 +95,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		this.port = port == "" ? DEFAULT_PORT : port;
 		this.apiVersion = apiVersion == "" ? DEFAULT_VERSION : apiVersion;
 		
-		setHandler(Handler.JSON, new JSONHandler());
-		setHandler(Handler.GEOJSON, new GeoJSONHandler());
-		
 		// We want to make sure the client is threadsafe
 		HttpParams params = new BasicHttpParams();
 		HttpProtocolParams.setUseExpectContinue(params, false);
@@ -108,62 +104,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 
 		this.httpClient = new OAuthHttpClient(connManager, params);
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
-	}
-	
-	/**
-	 * Default constructor class
-	 */
-	protected AbstractSimpleGeoClient() {
-		this(DEFAULT_HOST, DEFAULT_PORT, DEFAULT_VERSION);
-	}
-
-	/**
-	 * Set the handler per type.
-	 * 
-	 * This is useful if subclasses or implementations of the model
-	 * objects change and the response object needs to be built 
-	 * differently.
-	 * 
-	 * @param type the Handler type to override
-	 * @param handler the handler must implement ISimpleGeoJSONHandler.
-	 */
-	public void setHandler(Handler type, ISimpleGeoJSONHandler handler) {
-		
-		switch(type) {
-			case GEOJSON:
-				geoJSONHandler = (GeoJSONHandler)handler;
-				break;
-			case JSON:
-				jsonHandler = (JSONHandler)handler;
-				break;
-			default:
-				break;
-		}
-	}
-	
-	/**
-	 * @param type the type of handler to retrieved defined by 
-	 * {@link com.simplegeo.client.Handler}
-	 * @return the instance of {@link com.simplegeo.client.handler.ISimpleGeoJSONHandler}
-	 * that is associated with the type
-	 */
-	public ISimpleGeoJSONHandler getHandler(Handler type) {
-		
-		ISimpleGeoJSONHandler handler = null;
-		switch(type) {
-			
-			case GEOJSON:
-				handler = geoJSONHandler;
-				break;
-			case JSON:
-				handler = jsonHandler;
-				break;
-			default:
-				break;
-				
-		}
-		
-		return handler;
 	}
 	
 	/**

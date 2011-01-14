@@ -31,8 +31,6 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
 import junit.framework.TestCase;
 
@@ -59,30 +57,20 @@ public class SimpleGeoContextClientTest extends TestCase {
 		double lat = 37.803259;
 		double lon = -122.440033;
 		try {
-			FutureTask<Object> future = (FutureTask<Object>) client.getContext(lat, lon);
-			while (!future.isDone()) {
-				Thread.sleep(500);
-			}
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContext(lat, lon);
+			
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
 			this.assertNotNull(responseMap.get("demographics"));
 		} catch (IOException e) {	
-			this.fail(e.getMessage());
-		} catch (InterruptedException e) {
-			this.fail(e.getMessage());
-		} catch (ExecutionException e) {
 			this.fail(e.getMessage());
 		}
 	}
 	
 	public void testGetContextByMyIP() {
 		try {
-			FutureTask<Object> future = (FutureTask<Object>) client.getContextByIP("");
-			while (!future.isDone()) {
-				Thread.sleep(500);
-			}
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContextByIP("");
+			
 			this.assertNotNull(responseMap.get("query"));
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
@@ -96,10 +84,6 @@ public class SimpleGeoContextClientTest extends TestCase {
 			
 		} catch (IOException e) {
 			this.fail(e.getMessage());
-		} catch (InterruptedException e) {
-			this.fail(e.getMessage());
-		} catch (ExecutionException e) {
-			this.fail(e.getMessage());
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
@@ -107,11 +91,8 @@ public class SimpleGeoContextClientTest extends TestCase {
 	
 	public void testGetContextByIP() {
 		try {
-			FutureTask<Object> future = (FutureTask<Object>) client.getContextByIP("92.156.43.27");
-			while (!future.isDone()) {
-				Thread.sleep(500);
-			}
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContextByIP("92.156.43.27");
+			
 			this.assertNotNull(responseMap.get("query"));
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
@@ -125,10 +106,6 @@ public class SimpleGeoContextClientTest extends TestCase {
 			
 		} catch (IOException e) {
 			this.fail(e.getMessage());
-		} catch (InterruptedException e) {
-			this.fail(e.getMessage());
-		} catch (ExecutionException e) {
-			this.fail(e.getMessage());
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
@@ -136,11 +113,8 @@ public class SimpleGeoContextClientTest extends TestCase {
 	
 	public void testGetContextByAddress() {
 		try {
-			FutureTask<Object> future = (FutureTask<Object>) client.getContextByAddress("41 Decatur St, San Francisco, CA");
-			while (!future.isDone()) {
-				Thread.sleep(500);
-			}
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) future.get();
+			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContextByAddress("41 Decatur St, San Francisco, CA");
+			
 			this.assertNotNull(responseMap.get("query"));
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
@@ -153,10 +127,6 @@ public class SimpleGeoContextClientTest extends TestCase {
 			this.assertEquals(-105.27741,longitude);
 			
 		} catch (IOException e) {
-			this.fail(e.getMessage());
-		} catch (InterruptedException e) {
-			this.fail(e.getMessage());
-		} catch (ExecutionException e) {
 			this.fail(e.getMessage());
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
