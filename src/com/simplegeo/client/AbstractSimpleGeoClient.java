@@ -112,9 +112,8 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 * @param request HttpUriRequest
 	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
 	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
-	 * @return If futureTask is true, it will return a FutureTask. If futureTask is false, it will return either
-	 * a {@link com.simplegeo.client.types.Feature}, {@link com.simplegeo.client.types.FeatureCollection} or a
-	 * regular HashMap<Sring, Object>.
+	 * @return Either a {@link com.simplegeo.client.types.Feature}, {@link com.simplegeo.client.types.FeatureCollection}
+	 * or a regular HashMap<Sring, Object>.
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
@@ -143,7 +142,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 * @param request HttpUriRequest
 	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
 	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
-	 * @param callback
+	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */

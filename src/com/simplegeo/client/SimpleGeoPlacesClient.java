@@ -340,8 +340,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Remove empty parameters so we're not sending q=&category=.
 	 * 
-	 * @param uri String uri containing parameters.
-	 * @return String uri with empty parameters removed.
+	 * @param uri String uri containing parameters
+	 * @return String uri with empty parameters removed
 	 */
 	private String removeEmptyParameters(String uri) {
 		if (uri.indexOf("?") == -1)
