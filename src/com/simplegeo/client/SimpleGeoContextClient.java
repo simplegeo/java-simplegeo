@@ -34,6 +34,7 @@ import java.net.URLEncoder;
 
 import org.apache.http.client.methods.HttpGet;
 
+import com.simplegeo.client.callbacks.ISimpleGeoCallback;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.IOAuthClient;
@@ -81,8 +82,6 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 		endpoints.put("context", "context/%f,%f.json");
 		endpoints.put("ip", "context/%s.json");
 		endpoints.put("myIp", "context/ip.json");
-		
-		this.setFutureTask(true);
 	}
 	
 	/**
@@ -99,20 +98,20 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Retrieve context for the requesting IP.
 	 * 
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
-	 * demographics and query.
+	 * @param lat
+	 * @param lon
+	 * @param callback
 	 * @throws IOException
 	 */
-	public Object getContextByIP() throws IOException {
-		return this.getContextByIP("");
+	public void getContext(double lat, double lon, ISimpleGeoCallback callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler(), callback);
 	}
 	
 	/**
 	 * Retrieve context for a specific IP.
 	 * 
-	 * @param ip IP Address
+	 * @param ip IP Address If blank, your IP address will be used
 	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else HashMap containing weather, features,
 	 * demographics and query.
 	 * @throws IOException
@@ -122,6 +121,20 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 			return this.executeGet(this.getEndpoint("myIp"), new JSONHandler());
 		} else {
 			return this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param ip
+	 * @param callback
+	 * @throws IOException
+	 */
+	public void getContextByIP(String ip, ISimpleGeoCallback callback) throws IOException {
+		if ("".equals(ip)) {
+			this.executeGet(this.getEndpoint("myIp"), new JSONHandler(), callback);
+		} else {
+			this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler(), callback);
 		}
 	}
 	
@@ -136,6 +149,16 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	public Object getContextByAddress(String address) throws IOException {
 		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler());
 	}
+	
+	/**
+	 * 
+	 * @param address
+	 * @param callback
+	 * @throws IOException
+	 */
+	public void getContextByAddress(String address, ISimpleGeoCallback callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler(), callback);
+	}
 
 	@Override
 	public IOAuthClient getHttpClient() {
@@ -147,10 +170,22 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 			throws IOException {
 		return super.execute(new HttpGet(uri), new SimpleGeoHandler(handler));
 	}
+	
+	@Override
+	protected void executeGet(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+			throws IOException {
+		super.execute(new HttpGet(uri), new SimpleGeoHandler(handler), callback);
+	}
 
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
+		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
+	}
+	
+	@Override
+	protected void executePost(String uri, String jsonPayload,
+			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
 		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
 	}
 
@@ -159,9 +194,21 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 			ISimpleGeoJSONHandler handler) throws IOException {
 		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
 	}
+	
+	@Override
+	protected void executePut(String uri, String jsonPayload,
+			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
+	}
 
 	@Override
 	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
+			throws IOException {
+		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
+	}
+	
+	@Override
+	protected void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
 			throws IOException {
 		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
 	}

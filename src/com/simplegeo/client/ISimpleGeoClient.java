@@ -40,19 +40,4 @@ public interface ISimpleGeoClient {
 	 */
 	public IOAuthClient getHttpClient();
 
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#supportsFutureTasks()
-	 */
-	public abstract boolean supportsFutureTasks();
-
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#setFutureTask(boolean)
-	 */
-	public abstract void setFutureTask(boolean futureTask);
-
-	/* (non-Javadoc)
-	 * @see com.simplegeo.client.ISimpleGeoClient#getFutureTask()
-	 */
-	public abstract boolean getFutureTask();
-
 }

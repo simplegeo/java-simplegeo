@@ -31,8 +31,6 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
 import oauth.signpost.exception.OAuthCommunicationException;
@@ -49,6 +47,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
+import com.simplegeo.client.callbacks.ISimpleGeoCallback;
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.handler.GeoJSONHandler;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
@@ -59,7 +58,7 @@ import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 
 /**
- * Extracts as much common code as possible between the SimpleGeoClient and the SimpleGeoURLConnClient.
+ * Extracts as much common code as possible between the SimpleGeoPlacesClient and the SimpleGeoContextClient.
  * 
  * @author Casey Crites
  */
@@ -84,12 +83,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	protected String port = "80";
 	protected String apiVersion = "1.0";
 	public HashMap<String, String> endpoints = new HashMap<String, String>();
-	
-	/**
-	 * Tells the service whether to make the Http call on the same thread.  Note: if the underlying
-	 * client doesn't handle future tasks, this flag will be ignored.
-	 */
-	protected boolean futureTask = false; 
 	
 	/**
 	 * Main constructor class for setting up the client that the specific Places/Context clients
@@ -183,7 +176,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	}
 	
 	/**
-	 * Method for executing HttpRequests either synchronously or asynchronously.
+	 * Method for executing HttpRequests synchronously.
 	 * @param request HttpUriRequest
 	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
 	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
@@ -198,55 +191,59 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 
 		logger.info(String.format("sending %s", request.toString()));
 	
-		if(futureTask) {
-	
-			final HttpUriRequest finalRequest = request;
-			final SimpleGeoHandler finalHandler = handler;
-	
-			FutureTask<Object> future = 
-				new FutureTask<Object>(new Callable<Object>() {
-					public Object call() throws ClientProtocolException, IOException {
-						Object object = null;
-						try {
-							object = httpClient.executeOAuthRequest(finalRequest, finalHandler);
-						} catch (OAuthMessageSignerException e) {
-							dealWithAuthorizationException(e);
-						} catch (OAuthExpectationFailedException e) {
-							dealWithAuthorizationException(e);
-						} catch (OAuthCommunicationException e) {
-							dealWithAuthorizationException(e);
-						}
-	
-						return object;
-					}
-				});
-	
-			threadExecutor.execute(future);
-			return future;
-	
-		} else {
-	
-			Object object = null;
-			try {
-				object = httpClient.executeOAuthRequest(request, handler);
-			} catch (OAuthMessageSignerException e) {
-				dealWithAuthorizationException(e);
-			} catch (OAuthExpectationFailedException e) {
-				dealWithAuthorizationException(e);
-			} catch (OAuthCommunicationException e) {
-				dealWithAuthorizationException(e);
-			};
-	
-			return object;
-		}
+		Object object = null;
+		try {
+			object = httpClient.executeOAuthRequest(request, handler);
+		} catch (OAuthMessageSignerException e) {
+			dealWithAuthorizationException(e);
+		} catch (OAuthExpectationFailedException e) {
+			dealWithAuthorizationException(e);
+		} catch (OAuthCommunicationException e) {
+			dealWithAuthorizationException(e);
+		};
+
+		return object;
 
 	}
 	
 	/**
-	 * Return the OAuthHttpClient
+	 * Method for executing HttpRequests asynchronously.
+	 * @param request HttpUriRequest
+	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
+	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
+	 * @param callback
+	 * @throws ClientProtocolException
+	 * @throws IOException
 	 */
-	public IOAuthClient getHttpClient() {
-		return httpClient;
+	protected void execute(HttpUriRequest request, SimpleGeoHandler handler, ISimpleGeoCallback callback)
+		throws ClientProtocolException, IOException {
+
+		final HttpUriRequest finalRequest = request;
+		final SimpleGeoHandler finalHandler = handler;
+		final ISimpleGeoCallback finalCallback = callback;
+		
+		threadExecutor.execute(new Thread() {
+			@Override
+			public void run() {
+				logger.info("Thread running");
+				Object object = null;
+				try {
+					logger.info("requested");
+					object = httpClient.executeOAuthRequest(finalRequest, finalHandler);
+					logger.info("responded");
+				} catch (OAuthMessageSignerException e) {
+					finalCallback.onError(e.getMessage());
+				} catch (OAuthExpectationFailedException e) {
+					finalCallback.onError(e.getMessage());
+				} catch (OAuthCommunicationException e) {
+					finalCallback.onError(e.getMessage());
+				} catch (IOException e) {
+					finalCallback.onError(e.getMessage());
+				}
+				logger.info(object.getClass().toString());
+				finalCallback.onSuccess(object);
+			}
+		});
 	}
 	
 	/**
@@ -260,32 +257,22 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	}
 	
 	/**
-	 * Whether or not the httpclient supports FutureTasks
+	 * Return the OAuthHttpClient
 	 */
-	@Override
-	public boolean supportsFutureTasks() {
-		// 
-		// By default, future tasks aren't supported.
-		//
-		return false;
-	}
-
-	@Override
-	public void setFutureTask(boolean futureTask) {
-		this.futureTask = futureTask;		
-	}
-
-	@Override
-	public boolean getFutureTask() {
-		return futureTask;	
-	}
-
+	public IOAuthClient getHttpClient() {
+		return httpClient;
+	}	
+	
 	protected abstract Object executeGet(String uri, ISimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executeGet(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
 	
 	protected abstract Object executePost(String uri, String jsonPayload, ISimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executePost(String uri, String jsonPayload, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
 	
 	protected abstract Object executePut(String uri, String jsonPayload, ISimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executePut(String uri, String jsonPayload, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
 
 	protected abstract Object executeDelete(String uri, ISimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
 
 }

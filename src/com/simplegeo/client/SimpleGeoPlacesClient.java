@@ -39,6 +39,8 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.json.JSONException;
 
+import com.simplegeo.client.callbacks.ISimpleGeoCallback;
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.GeoJSONHandler;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
@@ -49,7 +51,7 @@ import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
-	protected static SimpleGeoPlacesClient sharedPlacesService = null;
+	protected static SimpleGeoPlacesClient placesClient = null;
 	
 	/**
 	 * Method that ensures we only have one instance of the SimpleGeoPlacesClient instantiated and allows
@@ -60,10 +62,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance(String baseUrl, String port, String apiVersion) {
-		if(sharedPlacesService == null)
-			sharedPlacesService = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
+		if(placesClient == null)
+			placesClient = new SimpleGeoPlacesClient(baseUrl, port, apiVersion);
 
-		return (SimpleGeoPlacesClient) sharedPlacesService;		
+		return (SimpleGeoPlacesClient) placesClient;		
 	}
 	
 	/**
@@ -90,8 +92,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s&radius=%s");
 		endpoints.put("searcByIP", "places/%s.json?q=%s&category=%s&radius=%s");
 		endpoints.put("searchByMyIP", "places/ip.json?q=%s&category=%s&radius=%s");
-		
-		this.setFutureTask(true);
 	}
 	
 	/**
@@ -104,6 +104,15 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * 
+	 * @param callback
+	 * @throws IOException
+	 */
+	public void getEndpointDescriptions(ISimpleGeoCallback callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler(), callback);
+	}
+	
+	/**
 	 * Return the place that corresponds to the simpleGeoId
 	 * 
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
@@ -112,6 +121,16 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public Object getPlace(String simpleGeoId) throws IOException {
 		return this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler());
+	}
+	
+	/**
+	 * 
+	 * @param simpleGeoId
+	 * @param callback
+	 * @throws IOException
+	 */
+	public void getPlace(String simpleGeoId, ISimpleGeoCallback callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler(), callback);
 	}
 	
 	/**
@@ -129,6 +148,18 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * 
+	 * @param feature
+	 * @param callback
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public void addPlace(Feature feature, ISimpleGeoCallback callback) throws IOException, JSONException {
+		String jsonString = feature.toJSONString();
+		this.executePost(String.format(this.getEndpoint("places")), jsonString, new JSONHandler(), callback);
+	}
+	
+	/**
 	 * Update an existing place in the places database.
 	 * 
 	 * @param feature Feature representing an existing place.
@@ -142,6 +173,18 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
+	 * 
+	 * @param feature
+	 * @param callback
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public void updatePlace(Feature feature, ISimpleGeoCallback callback) throws IOException, JSONException {
+		String jsonString = feature.toJSONString();
+		this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler(), callback);
+	}
+	
+	/**
 	 * Delete an existing place from the places database.
 	 * @param simpleGeoId String corresponding to an existing place.
 	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token.
@@ -152,16 +195,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Search for nearby places.
 	 * 
-	 * @param point Point {@link com.simplegeo.client.types.Point}
-	 * @param query String A term/phrase to search for.
-	 * @param category String A type of place to search for.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @param simpleGeoId
+	 * @param callback
 	 * @throws IOException
 	 */
-	public Object search(Point point, String query, String category) throws IOException {
-		return this.search(point.getLat(), point.getLon(), query, category);
+	public void deletePlace(String simpleGeoId, ISimpleGeoCallback callback) throws IOException {
+		this.executeDelete(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new JSONHandler(), callback);
 	}
 	
 	/**
@@ -179,17 +219,16 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Search for nearby places.
 	 * 
-	 * @param lat Double latitude.
-	 * @param lon Double longitude.
-	 * @param query A term/phrase to search for.
-	 * @param category A type of place to search for.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @param point
+	 * @param query
+	 * @param category
+	 * @param radius
+	 * @param callback
 	 * @throws IOException
 	 */
-	public Object search(double lat, double lon, String query, String category) throws IOException {
-		return this.search(lat, lon, query, category, DEFAULT_RADIUS);
+	public void search(Point point, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+		this.search(point.getLat(), point.getLon(), query, category, radius, callback);
 	}
 	
 	/**
@@ -208,16 +247,17 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Do a search by a physical address.
 	 * 
-	 * @param address Physical address, such as 41 Decatur St, San Francisco, CA.
-	 * @param query A term/phrase to search for.
-	 * @param category A type of place to search for.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @param lat
+	 * @param lon
+	 * @param query
+	 * @param category
+	 * @param radius
+	 * @param callback
 	 * @throws IOException
 	 */
-	public Object searchByAddress(String address, String query, String category) throws IOException {
-		return this.searchByAddress(address, query, category, DEFAULT_RADIUS);
+	public void search(double lat, double lon, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 	}
 	
 	/**
@@ -235,47 +275,22 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Do a search by your IP.
 	 * 
-	 * @param query A term/phrase to search for.
-	 * @param category A type of place to search for.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @param address
+	 * @param query
+	 * @param category
+	 * @param radius
+	 * @param callback
 	 * @throws IOException
 	 */
-	public Object searchByIP(String query, String category) throws IOException {
-		return this.searchByIP("", query, category, DEFAULT_RADIUS);
-	}
-	
-	/**
-	 * Do a search by your IP.
-	 * 
-	 * @param query A term/phrase to search for.
-	 * @param category A type of place to search for.
-	 * @param radius double A distance in kilometers used to restrict searches.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
-	 * @throws IOException
-	 */
-	public Object searchByIP(String query, String category, double radius) throws IOException {
-		return this.searchByIP("", query, category, radius);
+	public void searchByAddress(String address, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 	}
 	
 	/**
 	 * Do a search by a specific IP.
 	 * 
-	 * @param ip IP address
-	 * @param query A term/phrase to search for
-	 * @param category A type of place to search for
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
-	 * @throws IOException
-	 */
-	protected Object searchByIP(String ip, String query, String category) throws IOException {
-		return this.searchByIP(query, category, DEFAULT_RADIUS);
-	}
-	
-	/**
-	 * Do a search by a specific IP.
-	 * 
-	 * @param ip IP address
+	 * @param ip IP address If blank, your IP address will be used
 	 * @param query A term/phrase to search for
 	 * @param category A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches.
@@ -287,6 +302,23 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 			return this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 		} else {
 			return this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param ip
+	 * @param query
+	 * @param category
+	 * @param radius
+	 * @param callback
+	 * @throws IOException
+	 */
+	protected void searchByIP(String ip, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+		if ("".equals(ip)) {
+			this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
+		} else {
+			this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 		}
 	}
 	
@@ -322,7 +354,15 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		HttpGet get = new HttpGet(uri);
 		return super.execute(get, new SimpleGeoHandler(handler));
 	}
-
+	
+	@Override
+	protected void executeGet(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+			throws IOException {
+		uri = this.removeEmptyParameters(uri);
+		HttpGet get = new HttpGet(uri);
+		super.execute(get, new SimpleGeoHandler(handler), callback);
+	}
+	
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
@@ -333,6 +373,15 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 
 	@Override
+	protected void executePost(String uri, String jsonPayload,
+			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+		HttpPost post = new HttpPost(uri);
+		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
+		post.addHeader("Content-type", "application/json");
+		super.execute(post, new SimpleGeoHandler(handler), callback);
+	}
+	
+	@Override
 	protected Object executePut(String uri, String jsonPayload,
 			ISimpleGeoJSONHandler handler) throws IOException {
 		HttpPut put = new HttpPut(uri);
@@ -342,9 +391,34 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 
 	@Override
+	protected void executePut(String uri, String jsonPayload,
+			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+		HttpPut put = new HttpPut(uri);
+		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
+		put.addHeader("Content-type", "application/json");
+		super.execute(new HttpPut(uri), new SimpleGeoHandler(handler), callback);
+	}
+
+	@Override
 	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
 			throws IOException {
 		return super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler));
+	}
+	
+	@Override
+	protected void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+			throws IOException {
+		super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler), callback);
+	}
+	
+	public static void main(String[] args) {
+		SimpleGeoPlacesClient client = SimpleGeoPlacesClient.getInstance("http://localhost", "4567", "1.0");
+		client.getHttpClient().setToken("consumerKey", "consumerSecret");
+		try {
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoCallback());
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
 	}
 
 }
