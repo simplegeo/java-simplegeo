@@ -36,6 +36,7 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 
+import com.simplegeo.client.callbacks.ISimpleGeoCallback;
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
@@ -74,6 +75,30 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
+	public void testGetPlacePointAsync() {
+		final double lon = -122.937467;
+		final double lat = 47.046962;
+		try {
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new ISimpleGeoCallback<Feature>() {
+				public void onSuccess(Feature feature) {
+					TestCase.assertEquals("Feature", feature.getType());
+					TestCase.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
+					TestCase.assertNotNull(feature.getGeometry().getPoint());
+					
+					TestCase.assertEquals(lat, feature.getGeometry().getPoint().getLat());
+					TestCase.assertEquals(lon, feature.getGeometry().getPoint().getLon());
+					TestCase.assertNull(feature.getGeometry().getPolygon());
+					TestCase.assertEquals(10, feature.getProperties().size());
+				}
+				public void onError(String errorMessage) {
+					// shouldn't be hit
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
 	public void testGetPlacePolygonSync() {
 		try {
 			Feature feature = (Feature) client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd");
@@ -86,6 +111,28 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			this.assertEquals(1, feature.getGeometry().getPolygon().getRings().size());
 			this.assertEquals(60, feature.getGeometry().getPolygon().getRings().get(0).size());
 			this.assertEquals(4, feature.getProperties().size());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetPlacePolygonAsync() {
+		try {
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new ISimpleGeoCallback<Feature>() {
+				public void onSuccess(Feature feature) {
+					TestCase.assertEquals("Feature", feature.getType());
+					TestCase.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
+					TestCase.assertNull(feature.getGeometry().getPoint());
+					
+					TestCase.assertNotNull(feature.getGeometry().getPolygon());
+					TestCase.assertEquals(1, feature.getGeometry().getPolygon().getRings().size());
+					TestCase.assertEquals(60, feature.getGeometry().getPolygon().getRings().get(0).size());
+					TestCase.assertEquals(4, feature.getProperties().size());
+				}
+				public void onError(String errorMessage) {
+					// shouldn't be hit
+				}
+			});
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
