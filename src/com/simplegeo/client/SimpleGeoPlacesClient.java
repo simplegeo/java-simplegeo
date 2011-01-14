@@ -49,6 +49,7 @@ import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
+import com.sun.jdi.Method;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
@@ -101,8 +102,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return HashMap<String, Object> HashMap detailing all places endpoints.
 	 * @throws IOException
 	 */
-	public Object getEndpointDescriptions() throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler());
+	public HashMap<String, Object> getEndpointDescriptions() throws IOException {
+		return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler());
 	}
 	
 	/**
@@ -119,11 +120,11 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * Synchronously get the place that corresponds to the simpleGeoId
 	 * 
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
-	 * @return FutureTask/Feature FutureTask if supported, if not a Feature representing the place
+	 * @return Feature Feature representing the place
 	 * @throws IOException
 	 */
-	public Object getPlace(String simpleGeoId) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler());
+	public Feature getPlace(String simpleGeoId) throws IOException {
+		return (Feature) this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler());
 	}
 	
 	/**
@@ -144,9 +145,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public Object addPlace(Feature feature) throws IOException, JSONException {
+	public HashMap<String, Object> addPlace(Feature feature) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
-		return this.executePost(String.format(this.getEndpoint("places")), jsonString, new JSONHandler());
+		return (HashMap<String, Object>) this.executePost(String.format(this.getEndpoint("places")), jsonString, new JSONHandler());
 	}
 	
 	/**
@@ -170,9 +171,9 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public Object updatePlace(Feature feature) throws IOException, JSONException {
+	public HashMap<String, Object> updatePlace(Feature feature) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
-		return this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler());
+		return (HashMap<String, Object>) this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler());
 	}
 	
 	/**
@@ -195,8 +196,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return HashMap<String, Object> HashMap containing a polling token.
 	 * @throws IOException
 	 */
-	public Object deletePlace(String simpleGeoId) throws IOException {
-		return this.executeDelete(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new JSONHandler());
+	public HashMap<String, Object> deletePlace(String simpleGeoId) throws IOException {
+		return (HashMap<String, Object>) this.executeDelete(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new JSONHandler());
 	}
 	
 	/**
@@ -220,8 +221,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return FeatureCollection FeatureCollection containing search results
 	 * @throws IOException
 	 */
-	public Object search(Point point, String query, String category, double radius) throws IOException {
-		return this.search(point.getLat(), point.getLon(), query, category, radius);
+	public FeatureCollection search(Point point, String query, String category, double radius) throws IOException {
+		return (FeatureCollection) this.search(point.getLat(), point.getLon(), query, category, radius);
 	}
 	
 	/**
@@ -249,8 +250,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
-	public Object search(double lat, double lon, String query, String category, double radius) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
+	public FeatureCollection search(double lat, double lon, String query, String category, double radius) throws IOException {
+		return (FeatureCollection) this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 	}
 	
 	/**
@@ -278,8 +279,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
-	public Object searchByAddress(String address, String query, String category, double radius) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
+	public FeatureCollection searchByAddress(String address, String query, String category, double radius) throws IOException {
+		return (FeatureCollection) this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 	}
 	
 	/**
@@ -306,11 +307,11 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
-	protected Object searchByIP(String ip, String query, String category, double radius) throws IOException {
+	protected FeatureCollection searchByIP(String ip, String query, String category, double radius) throws IOException {
 		if ("".equals(ip)) {
-			return this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
+			return (FeatureCollection) this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 		} else {
-			return this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
+			return (FeatureCollection) this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 		}
 	}
 	

@@ -93,8 +93,8 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
-	public Object getContext(double lat, double lon) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler());
+	public HashMap<String, Object> getContext(double lat, double lon) throws IOException {
+		return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler());
 	}
 	
 	/**
@@ -116,11 +116,11 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
-	public Object getContextByIP(String ip) throws IOException {
+	public HashMap<String, Object> getContextByIP(String ip) throws IOException {
 		if ("".equals(ip)) {
-			return this.executeGet(this.getEndpoint("myIp"), new JSONHandler());
+			return (HashMap<String, Object>) this.executeGet(this.getEndpoint("myIp"), new JSONHandler());
 		} else {
-			return this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler());
+			return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler());
 		}
 	}
 	
@@ -146,8 +146,8 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
-	public Object getContextByAddress(String address) throws IOException {
-		return this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler());
+	public HashMap<String, Object> getContextByAddress(String address) throws IOException {
+		return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler());
 	}
 	
 	/**

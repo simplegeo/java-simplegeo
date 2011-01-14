@@ -37,6 +37,7 @@ import junit.framework.TestCase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.simplegeo.client.callbacks.SimpleGeoMapCallback;
 import com.simplegeo.client.test.TestEnvironment;
 
 public class SimpleGeoContextClientTest extends TestCase {
@@ -53,11 +54,11 @@ public class SimpleGeoContextClientTest extends TestCase {
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
-	public void testGetContext() {
+	public void testGetContextSync() {
 		double lat = 37.803259;
 		double lon = -122.440033;
 		try {
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContext(lat, lon);
+			HashMap<String, Object> responseMap = client.getContext(lat, lon);
 			
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
@@ -67,9 +68,28 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetContextByMyIP() {
+	public void testGetContextAsync() {
+		double lat = 37.803259;
+		double lon = -122.440033;
 		try {
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContextByIP("");
+			client.getContext(lat, lon, new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertNotNull(map.get("features"));
+					TestCase.assertNotNull(map.get("weather"));
+					TestCase.assertNotNull(map.get("demographics"));
+				}
+				public void onError(String errorMessage) {
+					// shouldn't hit this
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetContextByMyIPSync() {
+		try {
+			HashMap<String, Object> responseMap = client.getContextByIP("");
 			
 			this.assertNotNull(responseMap.get("query"));
 			this.assertNotNull(responseMap.get("features"));
@@ -89,9 +109,37 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetContextByIP() {
+	public void testGetContextByMyIPAsync() {
 		try {
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContextByIP("92.156.43.27");
+			client.getContextByIP("", new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertNotNull(map.get("query"));
+					TestCase.assertNotNull(map.get("features"));
+					TestCase.assertNotNull(map.get("weather"));
+					TestCase.assertNotNull(map.get("demographics"));
+					
+					try {
+						Object latitude = ((JSONObject)map.get("query")).get("latitude");
+						Object longitude = ((JSONObject)map.get("query")).get("longitude");
+						
+						TestCase.assertEquals(37.778381,latitude);
+						TestCase.assertEquals(-122.389388,longitude);
+					} catch (JSONException e) {
+						TestCase.fail(e.getMessage());
+					}
+				}
+				public void onError(String errorMessage) {
+					// shouldn't hit this
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetContextByIPSync() {
+		try {
+			HashMap<String, Object> responseMap = client.getContextByIP("92.156.43.27");
 			
 			this.assertNotNull(responseMap.get("query"));
 			this.assertNotNull(responseMap.get("features"));
@@ -111,9 +159,37 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetContextByAddress() {
+	public void testGetContextByIPAsync() {
 		try {
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.getContextByAddress("41 Decatur St, San Francisco, CA");
+			client.getContextByIP("92.156.43.27", new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertNotNull(map.get("query"));
+					TestCase.assertNotNull(map.get("features"));
+					TestCase.assertNotNull(map.get("weather"));
+					TestCase.assertNotNull(map.get("demographics"));
+					
+					try {
+						Object latitude = ((JSONObject)map.get("query")).get("latitude");
+						Object longitude = ((JSONObject)map.get("query")).get("longitude");
+						
+						TestCase.assertEquals(42.39020,latitude);
+						TestCase.assertEquals(-71.11470,longitude);
+					} catch (JSONException e) {
+						TestCase.fail(e.getMessage());
+					}
+				}
+				public void onError(String errorMessage) {
+					// shouldn't hit this
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetContextByAddressSync() {
+		try {
+			HashMap<String, Object> responseMap = client.getContextByAddress("41 Decatur St, San Francisco, CA");
 			
 			this.assertNotNull(responseMap.get("query"));
 			this.assertNotNull(responseMap.get("features"));
@@ -131,5 +207,34 @@ public class SimpleGeoContextClientTest extends TestCase {
 		} catch (JSONException e) {
 			this.fail(e.getMessage());
 		}
+	}
+	
+	public void testGetContextByAddressAsync() {
+		try {
+			client.getContextByAddress("41 Decatur St, San Francisco, CA", new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertNotNull(map.get("query"));
+					TestCase.assertNotNull(map.get("features"));
+					TestCase.assertNotNull(map.get("weather"));
+					TestCase.assertNotNull(map.get("demographics"));
+					
+					try {
+						Object latitude = ((JSONObject)map.get("query")).get("latitude");
+						Object longitude = ((JSONObject)map.get("query")).get("longitude");
+						
+						TestCase.assertEquals(40.01753,latitude);
+						TestCase.assertEquals(-105.27741,longitude);
+					} catch (JSONException e) {
+						TestCase.fail(e.getMessage());
+					}
+				}
+				public void onError(String errorMessage) {
+					// shouldn't hit this
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+		
 	}
 }

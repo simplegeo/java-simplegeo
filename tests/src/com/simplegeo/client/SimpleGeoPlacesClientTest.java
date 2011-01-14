@@ -36,7 +36,9 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 
-import com.simplegeo.client.callbacks.ISimpleGeoCallback;
+import com.simplegeo.client.callbacks.SimpleGeoFeatureCallback;
+import com.simplegeo.client.callbacks.SimpleGeoFeatureCollectionCallback;
+import com.simplegeo.client.callbacks.SimpleGeoMapCallback;
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
@@ -60,7 +62,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		double lon = -122.937467;
 		double lat = 47.046962;
 		try {
-			Feature feature = (Feature) client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
+			Feature feature = client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
 			
 			this.assertEquals("Feature", feature.getType());
 			this.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
@@ -79,7 +81,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final double lon = -122.937467;
 		final double lat = 47.046962;
 		try {
-			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new ISimpleGeoCallback<Feature>() {
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoFeatureCallback() {
 				public void onSuccess(Feature feature) {
 					TestCase.assertEquals("Feature", feature.getType());
 					TestCase.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
@@ -101,7 +103,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testGetPlacePolygonSync() {
 		try {
-			Feature feature = (Feature) client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd");
+			Feature feature = client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd");
 			
 			this.assertEquals("Feature", feature.getType());
 			this.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
@@ -118,7 +120,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testGetPlacePolygonAsync() {
 		try {
-			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new ISimpleGeoCallback<Feature>() {
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoFeatureCallback() {
 				public void onSuccess(Feature feature) {
 					TestCase.assertEquals("Feature", feature.getType());
 					TestCase.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
@@ -141,7 +143,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testAddPlaceSync() {
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.addPlace(feature);
+			HashMap<String, Object> responseMap = client.addPlace(feature);
 			
 			this.assertTrue(this.equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("id").toString()));
@@ -155,7 +157,29 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	private boolean equalExceptTimestamp(String expected, String actual) {
+	public void testAddPlaceAsync() {
+		try {
+			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
+			client.addPlace(feature, new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertTrue(equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+							map.get("id").toString()));
+					TestCase.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", map.get("token").toString());
+					TestCase.assertTrue(equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+							map.get("uri").toString()));
+				}
+				public void onError(String errorMessage) {
+					// shouldn't get hit
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	private final boolean equalExceptTimestamp(String expected, String actual) {
 		String actualMinusTimestamp = actual.substring(0, actual.lastIndexOf("@"));
 		return expected.equals(actualMinusTimestamp);
 	}
@@ -163,13 +187,35 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testUpdatePlaceSync() {
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.updatePlace(feature);
+			HashMap<String, Object> responseMap = client.updatePlace(feature);
 			
 			this.assertTrue(this.equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("id").toString()));
 			this.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", responseMap.get("token").toString());
 			this.assertTrue(this.equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("uri").toString()));
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testUpdatePlaceAsync() {
+		try {
+			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
+			client.updatePlace(feature, new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertTrue(equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+							map.get("id").toString()));
+					TestCase.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", map.get("token").toString());
+					TestCase.assertTrue(equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+							map.get("uri").toString()));
+				}
+				public void onError(String errorMessage) {
+					// shouldn't get hit
+				}
+			});
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		} catch (JSONException e) {
@@ -179,9 +225,24 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	
 	public void testDeletePlaceSync() {
 		try {
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
+			HashMap<String, Object> responseMap = client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
 			
 			this.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", responseMap.get("token").toString());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testDeletePlaceAsync() {
+		try {
+			client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					TestCase.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", map.get("token").toString());
+				}
+				public void onError(String errorMessage) {
+					// shouldn't be hit
+				}
+			});
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -191,7 +252,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		double lat = 37.759737;
 		double lon = -122.433203;
 		try {
-			FeatureCollection features = (FeatureCollection) client.search(new Point(lat, lon), "", "Restaurants", 25);
+			FeatureCollection features = client.search(new Point(lat, lon), "", "Restaurants", 25);
 			
 			this.assertEquals(1, features.getFeatures().size());
 			this.assertEquals(features.getFeatures().get(0).getType(), "Feature");
@@ -203,12 +264,50 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
+	public void testSearchAsync() {
+		final double lat = 37.759737;
+		final double lon = -122.433203;
+		
+		try {
+			client.search(new Point(lat, lon), "", "Restaurants", 25, new SimpleGeoFeatureCollectionCallback() {
+				public void onSuccess(FeatureCollection features) {
+					TestCase.assertEquals(1, features.getFeatures().size());
+					TestCase.assertEquals(features.getFeatures().get(0).getType(), "Feature");
+					TestCase.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
+					TestCase.assertNotNull(features.getFeatures().get(0).getProperties());
+					TestCase.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
+				}
+				public void onError(String errorMessage) {
+					// shouldn't get hit
+				}
+			});
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
 	public void testSearchByAddressSync() {
 		String address = "1535 Pearl St, Boulder, CO";
 		try {
-			FeatureCollection features = (FeatureCollection) client.searchByAddress(address, "", "", 25);
+			FeatureCollection features = client.searchByAddress(address, "", "", 25);
 
 			this.assertEquals(1, features.getFeatures().size());
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testSearchByAddressAsync() {
+		final String address = "1535 Pearl St, Boulder, CO";
+		try {
+			client.searchByAddress(address, "", "", 25, new SimpleGeoFeatureCollectionCallback() {
+				public void onSuccess(FeatureCollection features) {
+					TestCase.assertEquals(1, features.getFeatures().size());
+				}
+				public void onError(String errorMessage) {
+					// shouldn't get hit
+				}
+			});
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
