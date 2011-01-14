@@ -131,7 +131,7 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 			dealWithAuthorizationException(e);
 		} catch (OAuthCommunicationException e) {
 			dealWithAuthorizationException(e);
-		};
+		}
 
 		return object;
 
