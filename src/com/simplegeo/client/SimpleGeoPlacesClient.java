@@ -31,6 +31,7 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -40,13 +41,13 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.json.JSONException;
 
 import com.simplegeo.client.callbacks.ISimpleGeoCallback;
-import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.GeoJSONHandler;
 import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.IOAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.types.Feature;
+import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
@@ -108,7 +109,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void getEndpointDescriptions(ISimpleGeoCallback callback) throws IOException {
+	public void getEndpointDescriptions(ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler(), callback);
 	}
 	
@@ -129,7 +130,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void getPlace(String simpleGeoId, ISimpleGeoCallback callback) throws IOException {
+	public void getPlace(String simpleGeoId, ISimpleGeoCallback<Feature> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler(), callback);
 	}
 	
@@ -137,8 +138,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * Add a new place to the places database
 	 * 
 	 * @param feature Feature representing a new place.
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token,
-	 * simplegeoid and a uri.
+	 * @return HashMap<String, Object> HashMap containing a polling token, simplegeoid and a uri.
 	 * @throws IOException
 	 * @throws JSONException
 	 */
@@ -154,7 +154,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public void addPlace(Feature feature, ISimpleGeoCallback callback) throws IOException, JSONException {
+	public void addPlace(Feature feature, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
 		this.executePost(String.format(this.getEndpoint("places")), jsonString, new JSONHandler(), callback);
 	}
@@ -163,7 +163,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * Update an existing place in the places database.
 	 * 
 	 * @param feature Feature representing an existing place.
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token.
+	 * @return HashMap<String, Object> HashMap containing a polling token.
 	 * @throws IOException
 	 * @throws JSONException
 	 */
@@ -179,15 +179,16 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public void updatePlace(Feature feature, ISimpleGeoCallback callback) throws IOException, JSONException {
+	public void updatePlace(Feature feature, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
 		this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler(), callback);
 	}
 	
 	/**
 	 * Delete an existing place from the places database.
+	 * 
 	 * @param simpleGeoId String corresponding to an existing place.
-	 * @return FutureTask/HashMap<String, Object> FutureTask if supported, else a HashMap containing a polling token.
+	 * @return HashMap<String, Object> HashMap containing a polling token.
 	 * @throws IOException
 	 */
 	public Object deletePlace(String simpleGeoId) throws IOException {
@@ -200,7 +201,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void deletePlace(String simpleGeoId, ISimpleGeoCallback callback) throws IOException {
+	public void deletePlace(String simpleGeoId, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeDelete(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new JSONHandler(), callback);
 	}
 	
@@ -211,7 +212,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for.
 	 * @param category String A type of place to search for.
 	 * @param radius double A distance in kilometers used to restrict searches.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	public Object search(Point point, String query, String category, double radius) throws IOException {
@@ -227,7 +228,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void search(Point point, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+	public void search(Point point, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		this.search(point.getLat(), point.getLon(), query, category, radius, callback);
 	}
 	
@@ -239,7 +240,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query A term/phrase to search for.
 	 * @param category A type of place to search for.
 	 * @param radius double A distance in kilometers used to restrict searches.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	public Object search(double lat, double lon, String query, String category, double radius) throws IOException {
@@ -256,7 +257,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void search(double lat, double lon, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+	public void search(double lat, double lon, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 	}
 	
@@ -267,7 +268,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query A term/phrase to search for.
 	 * @param category A type of place to search for.
 	 * @param radius double A distance in kilometers used to restrict searches.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	public Object searchByAddress(String address, String query, String category, double radius) throws IOException {
@@ -283,7 +284,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void searchByAddress(String address, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+	public void searchByAddress(String address, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 	}
 	
@@ -294,7 +295,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query A term/phrase to search for
 	 * @param category A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches.
-	 * @return FutureTask/FeatureCollection FutureTask if supported, else a FeatureCollection containing search results.
+	 * @return FeatureCollection FeatureCollection containing search results.
 	 * @throws IOException
 	 */
 	protected Object searchByIP(String ip, String query, String category, double radius) throws IOException {
@@ -314,7 +315,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	protected void searchByIP(String ip, String query, String category, double radius, ISimpleGeoCallback callback) throws IOException {
+	protected void searchByIP(String ip, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		if ("".equals(ip)) {
 			this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 		} else {
@@ -415,7 +416,15 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		SimpleGeoPlacesClient client = SimpleGeoPlacesClient.getInstance("http://localhost", "4567", "1.0");
 		client.getHttpClient().setToken("consumerKey", "consumerSecret");
 		try {
-			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoCallback());
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new ISimpleGeoCallback<Feature>() {
+				public void onSuccess(Feature feature) {
+					logger.info("success");
+				}
+				
+				public void onError(String errorMessage) {
+					logger.info("error");
+				}
+			});
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}

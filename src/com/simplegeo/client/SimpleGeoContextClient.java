@@ -31,6 +31,7 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import org.apache.http.client.methods.HttpGet;
 
@@ -104,7 +105,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void getContext(double lat, double lon, ISimpleGeoCallback callback) throws IOException {
+	public void getContext(double lat, double lon, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler(), callback);
 	}
 	
@@ -130,7 +131,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void getContextByIP(String ip, ISimpleGeoCallback callback) throws IOException {
+	public void getContextByIP(String ip, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		if ("".equals(ip)) {
 			this.executeGet(this.getEndpoint("myIp"), new JSONHandler(), callback);
 		} else {
@@ -156,7 +157,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @param callback
 	 * @throws IOException
 	 */
-	public void getContextByAddress(String address, ISimpleGeoCallback callback) throws IOException {
+	public void getContextByAddress(String address, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler(), callback);
 	}
 

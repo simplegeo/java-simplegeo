@@ -1,8 +1,8 @@
 package com.simplegeo.client.callbacks;
 
-public interface ISimpleGeoCallback {
+public interface ISimpleGeoCallback<E> {
 
-	public void onSuccess(Object object);
+	public void onSuccess(E e);
 	
 	public void onError(String errorMessage);
 	

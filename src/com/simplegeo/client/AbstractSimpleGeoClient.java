@@ -225,12 +225,9 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 		threadExecutor.execute(new Thread() {
 			@Override
 			public void run() {
-				logger.info("Thread running");
 				Object object = null;
 				try {
-					logger.info("requested");
 					object = httpClient.executeOAuthRequest(finalRequest, finalHandler);
-					logger.info("responded");
 				} catch (OAuthMessageSignerException e) {
 					finalCallback.onError(e.getMessage());
 				} catch (OAuthExpectationFailedException e) {
@@ -240,7 +237,6 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 				} catch (IOException e) {
 					finalCallback.onError(e.getMessage());
 				}
-				logger.info(object.getClass().toString());
 				finalCallback.onSuccess(object);
 			}
 		});

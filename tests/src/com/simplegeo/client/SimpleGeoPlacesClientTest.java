@@ -36,7 +36,6 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 
-import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
