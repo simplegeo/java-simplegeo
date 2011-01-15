@@ -31,6 +31,8 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import junit.framework.TestCase;
 
@@ -69,6 +71,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	}
 	
 	public void testGetContextAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		double lat = 37.803259;
 		double lon = -122.440033;
 		try {
@@ -77,11 +80,13 @@ public class SimpleGeoContextClientTest extends TestCase {
 					TestCase.assertNotNull(map.get("features"));
 					TestCase.assertNotNull(map.get("weather"));
 					TestCase.assertNotNull(map.get("demographics"));
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't hit this
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -110,6 +115,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	}
 	
 	public void testGetContextByMyIPAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			client.getContextByIP("", new SimpleGeoMapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
@@ -127,11 +133,13 @@ public class SimpleGeoContextClientTest extends TestCase {
 					} catch (JSONException e) {
 						TestCase.fail(e.getMessage());
 					}
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't hit this
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -160,6 +168,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	}
 	
 	public void testGetContextByIPAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			client.getContextByIP("92.156.43.27", new SimpleGeoMapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
@@ -177,11 +186,13 @@ public class SimpleGeoContextClientTest extends TestCase {
 					} catch (JSONException e) {
 						TestCase.fail(e.getMessage());
 					}
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't hit this
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -210,6 +221,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	}
 	
 	public void testGetContextByAddressAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			client.getContextByAddress("41 Decatur St, San Francisco, CA", new SimpleGeoMapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
@@ -227,14 +239,26 @@ public class SimpleGeoContextClientTest extends TestCase {
 					} catch (JSONException e) {
 						TestCase.fail(e.getMessage());
 					}
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't hit this
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
 		
+	}
+	
+	final private void barrierAwait(CyclicBarrier barrier) {
+		try {
+			barrier.await();
+		} catch (InterruptedException e) {
+			TestCase.fail(e.getMessage());
+		} catch (BrokenBarrierException e) {
+			TestCase.fail(e.getMessage());
+		}
 	}
 }

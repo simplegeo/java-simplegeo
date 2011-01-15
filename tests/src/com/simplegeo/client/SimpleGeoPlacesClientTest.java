@@ -31,7 +31,8 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
-
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import junit.framework.TestCase;
 
 import org.json.JSONException;
@@ -80,6 +81,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testGetPlacePointAsync() {
 		final double lon = -122.937467;
 		final double lat = 47.046962;
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoFeatureCallback() {
 				public void onSuccess(Feature feature) {
@@ -91,11 +93,33 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 					TestCase.assertEquals(lon, feature.getGeometry().getPoint().getLon());
 					TestCase.assertNull(feature.getGeometry().getPolygon());
 					TestCase.assertEquals(10, feature.getProperties().size());
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't be hit
 				}
 			});
+			barrierAwait(barrier);
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetPlacePointFailureAsync() {
+		final double lon = -122.937467;
+		final double lat = 47.046962;
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+		try {
+			client.getPlace("SG_garbage", new SimpleGeoFeatureCallback() {
+				public void onSuccess(Feature feature) {
+					// shouldn't be hit
+				}
+				public void onError(String errorMessage) {
+					TestCase.assertEquals("Not Found", errorMessage);
+					barrierAwait(barrier);
+				}
+			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -119,8 +143,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testGetPlacePolygonAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoFeatureCallback() {
+			client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd", new SimpleGeoFeatureCallback() {
 				public void onSuccess(Feature feature) {
 					TestCase.assertEquals("Feature", feature.getType());
 					TestCase.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
@@ -130,11 +155,31 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 					TestCase.assertEquals(1, feature.getGeometry().getPolygon().getRings().size());
 					TestCase.assertEquals(60, feature.getGeometry().getPolygon().getRings().get(0).size());
 					TestCase.assertEquals(4, feature.getProperties().size());
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't be hit
 				}
 			});
+			barrierAwait(barrier);
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetPlacePolygonFailureAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+		try {
+			client.getPlace("SG_garbage", new SimpleGeoFeatureCallback() {
+				public void onSuccess(Feature feature) {
+					// shouldn't be hit
+				}
+				public void onError(String errorMessage) {
+					TestCase.assertEquals("Not Found", errorMessage);
+					barrierAwait(barrier);
+				}
+			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -158,6 +203,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testAddPlaceAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
 			client.addPlace(feature, new SimpleGeoMapCallback() {
@@ -167,11 +213,13 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 					TestCase.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", map.get("token").toString());
 					TestCase.assertTrue(equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 							map.get("uri").toString()));
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't get hit
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		} catch (JSONException e) {
@@ -179,9 +227,25 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	private final boolean equalExceptTimestamp(String expected, String actual) {
-		String actualMinusTimestamp = actual.substring(0, actual.lastIndexOf("@"));
-		return expected.equals(actualMinusTimestamp);
+	public void testAddPlaceFailureAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+		try {
+			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
+			client.addPlace(feature, new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					// shouldn't get hit
+				}
+				public void onError(String errorMessage) {
+					TestCase.assertEquals("Internal Server Error", errorMessage);
+					barrierAwait(barrier);
+				}
+			});
+			barrierAwait(barrier);
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
 	}
 	
 	public void testUpdatePlaceSync() {
@@ -202,6 +266,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testUpdatePlaceAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
 			client.updatePlace(feature, new SimpleGeoMapCallback() {
@@ -211,11 +276,34 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 					TestCase.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", map.get("token").toString());
 					TestCase.assertTrue(equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 							map.get("uri").toString()));
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't get hit
 				}
 			});
+			barrierAwait(barrier);
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		} catch (JSONException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testUpdatePlaceFailureAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+		try {
+			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
+			client.updatePlace(feature, new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					// shouldn't get hit
+				}
+				public void onError(String errorMessage) {
+					TestCase.assertEquals("Internal Server Error", errorMessage);
+					barrierAwait(barrier);
+				}
+			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		} catch (JSONException e) {
@@ -234,15 +322,36 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testDeletePlaceAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoMapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", map.get("token").toString());
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't be hit
 				}
 			});
+			barrierAwait(barrier);
+		} catch (IOException e) {
+			this.fail(e.getMessage());
+		}
+	}
+	
+	public void testDeletePlaceFailureAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+		try {
+			client.deletePlace("SG_garbage", new SimpleGeoMapCallback() {
+				public void onSuccess(HashMap<String, Object> map) {
+					// shouldn't be hit
+				}
+				public void onError(String errorMessage) {
+					TestCase.assertEquals("Not Found", errorMessage);
+					barrierAwait(barrier);
+				}
+			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -265,6 +374,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearchAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		final double lat = 37.759737;
 		final double lon = -122.433203;
 		
@@ -276,11 +386,13 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 					TestCase.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
 					TestCase.assertNotNull(features.getFeatures().get(0).getProperties());
 					TestCase.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't get hit
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
 		}
@@ -298,18 +410,36 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testSearchByAddressAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
 		final String address = "1535 Pearl St, Boulder, CO";
 		try {
 			client.searchByAddress(address, "", "", 25, new SimpleGeoFeatureCollectionCallback() {
 				public void onSuccess(FeatureCollection features) {
 					TestCase.assertEquals(1, features.getFeatures().size());
+					barrierAwait(barrier);
 				}
 				public void onError(String errorMessage) {
 					// shouldn't get hit
 				}
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			this.fail(e.getMessage());
+		}
+	}
+	
+	final private boolean equalExceptTimestamp(String expected, String actual) {
+		String actualMinusTimestamp = actual.substring(0, actual.lastIndexOf("@"));
+		return expected.equals(actualMinusTimestamp);
+	}
+	
+	final private void barrierAwait(CyclicBarrier barrier) {
+		try {
+			barrier.await();
+		} catch (InterruptedException e) {
+			TestCase.fail(e.getMessage());
+		} catch (BrokenBarrierException e) {
+			TestCase.fail(e.getMessage());
 		}
 	}
 
