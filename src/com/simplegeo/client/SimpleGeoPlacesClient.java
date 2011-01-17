@@ -49,7 +49,6 @@ import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
-import com.sun.jdi.Method;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
