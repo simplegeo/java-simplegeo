@@ -37,7 +37,7 @@ package com.simplegeo.client.http;
  * @author Mark Fogle
  */
 
-public interface IOAuthClient {
+public interface OAuthClient {
 
 	/**
 	 * Set the key/secret pair that will be used to sign Http

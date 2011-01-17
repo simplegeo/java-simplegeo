@@ -1,6 +1,6 @@
 package com.simplegeo.client.callbacks;
 
-public interface ISimpleGeoCallback<E> {
+public interface SimpleGeoCallback<E> {
 
 	public void onSuccess(E e);
 	

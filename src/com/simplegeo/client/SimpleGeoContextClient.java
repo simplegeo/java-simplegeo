@@ -35,23 +35,30 @@ import java.util.HashMap;
 
 import org.apache.http.client.methods.HttpGet;
 
-import com.simplegeo.client.callbacks.ISimpleGeoCallback;
-import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
+import com.simplegeo.client.handler.SimpleGeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
-import com.simplegeo.client.http.IOAuthClient;
+import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 
 public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	
+	/**
+	 * Class for interacting with the SimpleGeo Context API.
+	 * 
+	 * @author Casey Crites
+	 */
+	
 	protected static SimpleGeoContextClient sharedContextService = null;
 	
 	/**
-	 * Method that ensures we only have one instance of the SimpleGeoContextClient instantiated and allows
+	 * Method that ensures we only have one instance of the {@link com.simplegeo.client.SimpleGeoContextClient} instantiated.  Also allows
 	 * server connection variables to be overridden.
+	 * 
 	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
 	 * @param port String 80 is default, but can be overridden.
 	 * @param apiVersion String 1.0 is default, but can be overridden.
-	 * @return SimpleGeoContextClient
+	 * @return {@link com.simplegeo.client.SimpleGeoContextClient}
 	 */
 	public static SimpleGeoContextClient getInstance(String baseUrl, String port, String apiVersion) {
 		if(sharedContextService == null)
@@ -61,16 +68,16 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Default method for retrieving a SimpleGeoContextClient.
+	 * Default method for retrieving a {@link com.simplegeo.client.SimpleGeoContextClient}.
 	 * 
-	 * @return SimpleGeoContextClient
+	 * @return {@link com.simplegeo.client.SimpleGeoContextClient}
 	 */
 	public static SimpleGeoContextClient getInstance() {
 		return getInstance(DEFAULT_HOST, DEFAULT_PORT, DEFAULT_VERSION);
 	}
 	
 	/**
-	 * SimpleGeoContextClient constructor
+	 * {@link com.simplegeo.client.SimpleGeoContextClient} constructor
 	 * 
 	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
 	 * @param port String 80 is default, but can be overridden.
@@ -102,10 +109,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * 
 	 * @param lat double latitude
 	 * @param lon double longitude
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContext(double lat, double lon, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
+	public void getContext(double lat, double lon, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler(), callback);
 	}
 	
@@ -128,10 +135,10 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * Asynchronously get context for a specific IP.
 	 * 
 	 * @param ip String IP Address If blank, your IP address will be used
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContextByIP(String ip, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
+	public void getContextByIP(String ip, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		if ("".equals(ip)) {
 			this.executeGet(this.getEndpoint("myIp"), new JSONHandler(), callback);
 		} else {
@@ -154,62 +161,62 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * Asynchronously get context for a physical street address.
 	 * 
 	 * @param address String Physical street address
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContextByAddress(String address, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
+	public void getContextByAddress(String address, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler(), callback);
 	}
 
 	@Override
-	public IOAuthClient getHttpClient() {
+	public OAuthClient getHttpClient() {
 		return super.getHttpClient();
 	}
 
 	@Override
-	protected Object executeGet(String uri, ISimpleGeoJSONHandler handler)
+	protected Object executeGet(String uri, SimpleGeoJSONHandler handler)
 			throws IOException {
 		return super.execute(new HttpGet(uri), new SimpleGeoHandler(handler));
 	}
 	
 	@Override
-	protected void executeGet(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+	protected void executeGet(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		super.execute(new HttpGet(uri), new SimpleGeoHandler(handler), callback);
 	}
 
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoJSONHandler handler) throws IOException {
 		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
 	}
 	
 	@Override
 	protected void executePost(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
 		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
 	}
 
 	@Override
 	protected Object executePut(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoJSONHandler handler) throws IOException {
 		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
 	}
 	
 	@Override
 	protected void executePut(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
 		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
 	}
 
 	@Override
-	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
+	protected Object executeDelete(String uri, SimpleGeoJSONHandler handler)
 			throws IOException {
 		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
 	}
 	
 	@Override
-	protected void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+	protected void executeDelete(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
 	}

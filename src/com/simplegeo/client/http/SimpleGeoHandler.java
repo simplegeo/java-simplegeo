@@ -38,7 +38,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
-import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
+import com.simplegeo.client.handler.SimpleGeoJSONHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.NoSuchEntityException;
 import com.simplegeo.client.http.exceptions.NotAuthorizedException;
@@ -52,7 +52,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	
 	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class.getName());
 	
-	private ISimpleGeoJSONHandler handler;
+	private SimpleGeoJSONHandler handler;
 	
 	/* Status codes */
 	public static final int GET_SUCCESS = 200;
@@ -62,7 +62,7 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	public static final int NO_SUCH = 404;
 	public static final int NOT_AUTHORIZED = 401;
 	
-	public SimpleGeoHandler (ISimpleGeoJSONHandler handler)
+	public SimpleGeoHandler (SimpleGeoJSONHandler handler)
 	{
 		super();
 		this.handler = handler;

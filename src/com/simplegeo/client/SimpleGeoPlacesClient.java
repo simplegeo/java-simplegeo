@@ -40,11 +40,11 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.json.JSONException;
 
-import com.simplegeo.client.callbacks.ISimpleGeoCallback;
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.GeoJSONHandler;
-import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
+import com.simplegeo.client.handler.SimpleGeoJSONHandler;
 import com.simplegeo.client.handler.JSONHandler;
-import com.simplegeo.client.http.IOAuthClient;
+import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
@@ -53,11 +53,18 @@ import com.sun.jdi.Method;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
+	/**
+	 * Class for interacting with the SimpleGeo Places API.
+	 * 
+	 * @author Casey Crites
+	 */
+	
 	protected static SimpleGeoPlacesClient placesClient = null;
 	
 	/**
-	 * Method that ensures we only have one instance of the SimpleGeoPlacesClient instantiated and allows
+	 * Method that ensures we only have one instance of the {@link com.simplegeo.client.SimpleGeoPlacesClient} instantiated.  Also allows
 	 * server connection variables to be overridden.
+	 * 
 	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
 	 * @param port String 80 is default, but can be overridden.
 	 * @param apiVersion String 1.0 is default, but can be overridden.
@@ -71,7 +78,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Default method for retrieving a SimpleGeoPlacesClient.
+	 * Default method for retrieving a {@link com.simplegeo.client.SimpleGeoPlacesClient}.
+	 * 
 	 * @return SimpleGeoPlacesClient
 	 */
 	public static SimpleGeoPlacesClient getInstance() {
@@ -79,7 +87,8 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * SimpleGeoPlacesClient constructor
+	 * {@link com.simplegeo.client.SimpleGeoPlacesClient} constructor
+	 * 
 	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
 	 * @param port String 80 is default, but can be overridden.
 	 * @param apiVersion String 1.0 is default, but can be overridden.
@@ -109,10 +118,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Asynchronously get a map detailing all places endpoints.
 	 * 
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback}
 	 * @throws IOException
 	 */
-	public void getEndpointDescriptions(ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
+	public void getEndpointDescriptions(SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler(), callback);
 	}
 	
@@ -120,7 +129,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * Synchronously get the place that corresponds to the simpleGeoId
 	 * 
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
-	 * @return Feature Feature representing the place
+	 * @return {@link com.simplegeo.client.types.Feature} {@link com.simplegeo.client.types.Feature} representing the place
 	 * @throws IOException
 	 */
 	public Feature getPlace(String simpleGeoId) throws IOException {
@@ -130,17 +139,17 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Asynchronously get the place that corresponds to the simpleGeoId
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback}
 	 * @throws IOException
 	 */
-	public void getPlace(String simpleGeoId, ISimpleGeoCallback<Feature> callback) throws IOException {
+	public void getPlace(String simpleGeoId, SimpleGeoCallback<Feature> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new GeoJSONHandler(), callback);
 	}
 	
 	/**
 	 * Synchronously add a new place to the places database
 	 * 
-	 * @param feature Feature representing a new place.
+	 * @param feature {@link com.simplegeo.client.types.Feature} representing a new place.
 	 * @return HashMap<String, Object> HashMap containing a polling token, simplegeoid and a uri.
 	 * @throws IOException
 	 * @throws JSONException
@@ -153,12 +162,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Aynchronously add a new place to the places database
 	 * 
-	 * @param feature Feature representing a new place.
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param feature {@link com.simplegeo.client.types.Feature} representing a new place.
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public void addPlace(Feature feature, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
+	public void addPlace(Feature feature, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
 		this.executePost(String.format(this.getEndpoint("places")), jsonString, new JSONHandler(), callback);
 	}
@@ -166,7 +175,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Synchronously update an existing place in the places database.
 	 * 
-	 * @param feature Feature representing an existing place.
+	 * @param feature {@link com.simplegeo.client.types.Feature} representing an existing place.
 	 * @return HashMap<String, Object> HashMap containing a polling token.
 	 * @throws IOException
 	 * @throws JSONException
@@ -179,12 +188,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Asynchronously update an existing place in the places database.
 	 * 
-	 * @param feature Feature representing an existing place.
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param feature {@link com.simplegeo.client.types.Feature} representing an existing place.
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public void updatePlace(Feature feature, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
+	public void updatePlace(Feature feature, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
 		this.executePost(String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), jsonString, new JSONHandler(), callback);
 	}
@@ -204,10 +213,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * Asynchronously delete an existing place from the places database.
 	 * 
 	 * @param simpleGeoId String corresponding to an existing place.
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void deletePlace(String simpleGeoId, ISimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
+	public void deletePlace(String simpleGeoId, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		this.executeDelete(String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), new JSONHandler(), callback);
 	}
 	
@@ -218,7 +227,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @return FeatureCollection FeatureCollection containing search results
+	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results
 	 * @throws IOException
 	 */
 	public FeatureCollection search(Point point, String query, String category, double radius) throws IOException {
@@ -232,10 +241,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void search(Point point, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
+	public void search(Point point, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		this.search(point.getLat(), point.getLon(), query, category, radius, callback);
 	}
 	
@@ -247,7 +256,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @return FeatureCollection FeatureCollection containing search results.
+	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
 	public FeatureCollection search(double lat, double lon, String query, String category, double radius) throws IOException {
@@ -262,10 +271,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void search(double lat, double lon, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
+	public void search(double lat, double lon, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 	}
 	
@@ -276,7 +285,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @return FeatureCollection FeatureCollection containing search results.
+	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
 	public FeatureCollection searchByAddress(String address, String query, String category, double radius) throws IOException {
@@ -290,10 +299,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void searchByAddress(String address, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
+	public void searchByAddress(String address, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 	}
 	
@@ -304,7 +313,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @return FeatureCollection FeatureCollection containing search results.
+	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
 	protected FeatureCollection searchByIP(String ip, String query, String category, double radius) throws IOException {
@@ -322,10 +331,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param query String A term/phrase to search for
 	 * @param category String A type of place to search for
 	 * @param radius double A distance in kilometers used to restrict searches
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	protected void searchByIP(String ip, String query, String category, double radius, ISimpleGeoCallback<FeatureCollection> callback) throws IOException {
+	protected void searchByIP(String ip, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		if ("".equals(ip)) {
 			this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 		} else {
@@ -334,7 +343,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	@Override
-	public IOAuthClient getHttpClient() {
+	public OAuthClient getHttpClient() {
 		return super.getHttpClient();
 	}
 	
@@ -360,7 +369,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	@Override
-	protected Object executeGet(String uri, ISimpleGeoJSONHandler handler)
+	protected Object executeGet(String uri, SimpleGeoJSONHandler handler)
 			throws IOException {
 		uri = this.removeEmptyParameters(uri);
 		HttpGet get = new HttpGet(uri);
@@ -368,7 +377,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	@Override
-	protected void executeGet(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+	protected void executeGet(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		uri = this.removeEmptyParameters(uri);
 		HttpGet get = new HttpGet(uri);
@@ -377,7 +386,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoJSONHandler handler) throws IOException {
 		HttpPost post = new HttpPost(uri);
 		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		post.addHeader("Content-type", "application/json");
@@ -386,7 +395,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 
 	@Override
 	protected void executePost(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
 		HttpPost post = new HttpPost(uri);
 		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		post.addHeader("Content-type", "application/json");
@@ -395,7 +404,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	@Override
 	protected Object executePut(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoJSONHandler handler) throws IOException {
 		HttpPut put = new HttpPut(uri);
 		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		put.addHeader("Content-type", "application/json");
@@ -404,7 +413,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 
 	@Override
 	protected void executePut(String uri, String jsonPayload,
-			ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException {
+			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
 		HttpPut put = new HttpPut(uri);
 		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		put.addHeader("Content-type", "application/json");
@@ -412,13 +421,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 
 	@Override
-	protected Object executeDelete(String uri, ISimpleGeoJSONHandler handler)
+	protected Object executeDelete(String uri, SimpleGeoJSONHandler handler)
 			throws IOException {
 		return super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler));
 	}
 	
 	@Override
-	protected void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback)
+	protected void executeDelete(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler), callback);
 	}

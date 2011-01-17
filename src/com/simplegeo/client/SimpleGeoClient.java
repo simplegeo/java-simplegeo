@@ -29,9 +29,9 @@
 
 package com.simplegeo.client;
 
-import com.simplegeo.client.http.IOAuthClient;
+import com.simplegeo.client.http.OAuthClient;
 
-public interface ISimpleGeoClient {
+public interface SimpleGeoClient {
 	
 	public static final String DEFAULT_HOST = "http://api.simplegeo.com";
 	public static final String DEFAULT_PORT = "80";
@@ -43,6 +43,6 @@ public interface ISimpleGeoClient {
 	/**
 	 * @return the Http client used to execute all requests
 	 */
-	public IOAuthClient getHttpClient();
+	public OAuthClient getHttpClient();
 
 }

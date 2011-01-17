@@ -47,12 +47,10 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
-import com.simplegeo.client.callbacks.ISimpleGeoCallback;
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
-import com.simplegeo.client.handler.GeoJSONHandler;
-import com.simplegeo.client.handler.ISimpleGeoJSONHandler;
-import com.simplegeo.client.handler.JSONHandler;
-import com.simplegeo.client.http.IOAuthClient;
+import com.simplegeo.client.handler.SimpleGeoJSONHandler;
+import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
@@ -63,7 +61,7 @@ import com.simplegeo.client.http.exceptions.APIException;
  * @author Casey Crites
  */
 
-public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
+public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	
 	private RequestThreadPoolExecutor threadExecutor;
 	protected OAuthHttpClient httpClient;
@@ -146,12 +144,12 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	protected void execute(HttpUriRequest request, SimpleGeoHandler handler, ISimpleGeoCallback callback)
+	protected void execute(HttpUriRequest request, SimpleGeoHandler handler, SimpleGeoCallback callback)
 		throws ClientProtocolException, IOException {
 
 		final HttpUriRequest finalRequest = request;
 		final SimpleGeoHandler finalHandler = handler;
-		final ISimpleGeoCallback finalCallback = callback;
+		final SimpleGeoCallback finalCallback = callback;
 		
 		threadExecutor.execute(new Thread() {
 			@Override
@@ -186,20 +184,20 @@ public abstract class AbstractSimpleGeoClient implements ISimpleGeoClient {
 	/**
 	 * Return the OAuthHttpClient
 	 */
-	public IOAuthClient getHttpClient() {
+	public OAuthClient getHttpClient() {
 		return httpClient;
 	}	
 	
-	protected abstract Object executeGet(String uri, ISimpleGeoJSONHandler handler) throws IOException;
-	protected abstract void executeGet(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
+	protected abstract Object executeGet(String uri, SimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executeGet(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException;
 	
-	protected abstract Object executePost(String uri, String jsonPayload, ISimpleGeoJSONHandler handler) throws IOException;
-	protected abstract void executePost(String uri, String jsonPayload, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
+	protected abstract Object executePost(String uri, String jsonPayload, SimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executePost(String uri, String jsonPayload, SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException;
 	
-	protected abstract Object executePut(String uri, String jsonPayload, ISimpleGeoJSONHandler handler) throws IOException;
-	protected abstract void executePut(String uri, String jsonPayload, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
+	protected abstract Object executePut(String uri, String jsonPayload, SimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executePut(String uri, String jsonPayload, SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException;
 
-	protected abstract Object executeDelete(String uri, ISimpleGeoJSONHandler handler) throws IOException;
-	protected abstract void executeDelete(String uri, ISimpleGeoJSONHandler handler, ISimpleGeoCallback callback) throws IOException;
+	protected abstract Object executeDelete(String uri, SimpleGeoJSONHandler handler) throws IOException;
+	protected abstract void executeDelete(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException;
 
 }
