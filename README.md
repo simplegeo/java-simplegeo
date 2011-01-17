@@ -3,6 +3,12 @@
 A thread-safe, Java HttpClient used to interface with the SimpleGeo Places and Context API. Both
 synchronous and asynchronous calls are provided. 
 
+## Disclaimer
+
+Version 2.0 of this client is non-backwards compatible.  It was deemed that in order to better serve the community, the library needed a near complete rewrite to make it more conducive to asynchronous programming.  Older versions of the client are still available by selecting a 1.x tag from the drop down.
+
+We hope you find this version of the client much more useful than the 1.0 release.
+
 ## Getting Started
 
 For network tests to succeed, you'll want to clone and start the mock SimpleGeo
@@ -42,5 +48,9 @@ Right click (ctrl + click) on your project -> Build Path -> Configure Build Path
 
     $ SimpleGeoPlacesClient placesClient = SimpleGeoPlacesClient.getInstance();
     $ placesClient.getHttpClient.setToken("oauth-key", "oauth-secret");
+
+## Documents
+
+The docs are generated using `javadoc` and are updated as often as possible in the `gh-pages` branch of this repository.  You can view them [here](http://simplegeo.github.com/java-simplegeo/2.0/index)
 
 ### Copyright (C) 2011 SimpleGeo Inc. All rights reserved.
