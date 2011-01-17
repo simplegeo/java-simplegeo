@@ -316,7 +316,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
-	protected FeatureCollection searchByIP(String ip, String query, String category, double radius) throws IOException {
+	public FeatureCollection searchByIP(String ip, String query, String category, double radius) throws IOException {
 		if ("".equals(ip)) {
 			return (FeatureCollection) this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler());
 		} else {
@@ -334,7 +334,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	protected void searchByIP(String ip, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
+	public void searchByIP(String ip, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		if ("".equals(ip)) {
 			this.executeGet(String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius), new GeoJSONHandler(), callback);
 		} else {
