@@ -159,7 +159,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Aynchronously add a new place to the places database
+	 * Asynchronously add a new place to the places database
 	 * 
 	 * @param feature {@link com.simplegeo.client.types.Feature} representing a new place.
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
