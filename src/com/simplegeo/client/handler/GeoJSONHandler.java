@@ -36,7 +36,7 @@ import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 
 /**
- * A response handler used for creating {@link com.simplegeo.client.geojson.GeoJSONObject}s
+ * A response handler used for creating {@link com.simplegeo.client.types.Feature}s and {@link com.simplegeo.client.types.FeatureCollection}s.
  * from a given payload.
  * 
  * @author Derek Smith
