@@ -39,7 +39,7 @@ import junit.framework.TestCase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.simplegeo.client.callbacks.SimpleGeoMapCallback;
+import com.simplegeo.client.callbacks.MapCallback;
 import com.simplegeo.client.test.TestEnvironment;
 
 public class SimpleGeoContextClientTest extends TestCase {
@@ -75,7 +75,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		double lat = 37.803259;
 		double lon = -122.440033;
 		try {
-			client.getContext(lat, lon, new SimpleGeoMapCallback() {
+			client.getContext(lat, lon, new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertNotNull(map.get("features"));
 					TestCase.assertNotNull(map.get("weather"));
@@ -117,7 +117,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	public void testGetContextByMyIPAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getContextByIP("", new SimpleGeoMapCallback() {
+			client.getContextByIP("", new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertNotNull(map.get("query"));
 					TestCase.assertNotNull(map.get("features"));
@@ -170,7 +170,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	public void testGetContextByIPAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getContextByIP("92.156.43.27", new SimpleGeoMapCallback() {
+			client.getContextByIP("92.156.43.27", new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertNotNull(map.get("query"));
 					TestCase.assertNotNull(map.get("features"));
@@ -223,7 +223,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	public void testGetContextByAddressAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getContextByAddress("41 Decatur St, San Francisco, CA", new SimpleGeoMapCallback() {
+			client.getContextByAddress("41 Decatur St, San Francisco, CA", new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertNotNull(map.get("query"));
 					TestCase.assertNotNull(map.get("features"));

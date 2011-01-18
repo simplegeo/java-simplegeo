@@ -37,9 +37,9 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 
-import com.simplegeo.client.callbacks.SimpleGeoFeatureCallback;
-import com.simplegeo.client.callbacks.SimpleGeoFeatureCollectionCallback;
-import com.simplegeo.client.callbacks.SimpleGeoMapCallback;
+import com.simplegeo.client.callbacks.FeatureCallback;
+import com.simplegeo.client.callbacks.FeatureCollectionCallback;
+import com.simplegeo.client.callbacks.MapCallback;
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
@@ -83,7 +83,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final double lat = 47.046962;
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoFeatureCallback() {
+			client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new FeatureCallback() {
 				public void onSuccess(Feature feature) {
 					TestCase.assertEquals("Feature", feature.getType());
 					TestCase.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
@@ -110,7 +110,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final double lat = 47.046962;
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getPlace("SG_garbage", new SimpleGeoFeatureCallback() {
+			client.getPlace("SG_garbage", new FeatureCallback() {
 				public void onSuccess(Feature feature) {
 					// shouldn't be hit
 				}
@@ -145,7 +145,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testGetPlacePolygonAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd", new SimpleGeoFeatureCallback() {
+			client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd", new FeatureCallback() {
 				public void onSuccess(Feature feature) {
 					TestCase.assertEquals("Feature", feature.getType());
 					TestCase.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
@@ -170,7 +170,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testGetPlacePolygonFailureAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.getPlace("SG_garbage", new SimpleGeoFeatureCallback() {
+			client.getPlace("SG_garbage", new FeatureCallback() {
 				public void onSuccess(Feature feature) {
 					// shouldn't be hit
 				}
@@ -206,7 +206,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
-			client.addPlace(feature, new SimpleGeoMapCallback() {
+			client.addPlace(feature, new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertTrue(equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 							map.get("id").toString()));
@@ -231,7 +231,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
-			client.addPlace(feature, new SimpleGeoMapCallback() {
+			client.addPlace(feature, new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					// shouldn't get hit
 				}
@@ -269,7 +269,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
-			client.updatePlace(feature, new SimpleGeoMapCallback() {
+			client.updatePlace(feature, new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertTrue(equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 							map.get("id").toString()));
@@ -294,7 +294,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
-			client.updatePlace(feature, new SimpleGeoMapCallback() {
+			client.updatePlace(feature, new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					// shouldn't get hit
 				}
@@ -324,7 +324,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testDeletePlaceAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new SimpleGeoMapCallback() {
+			client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0", new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					TestCase.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", map.get("token").toString());
 					barrierAwait(barrier);
@@ -342,7 +342,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	public void testDeletePlaceFailureAsync() {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		try {
-			client.deletePlace("SG_garbage", new SimpleGeoMapCallback() {
+			client.deletePlace("SG_garbage", new MapCallback() {
 				public void onSuccess(HashMap<String, Object> map) {
 					// shouldn't be hit
 				}
@@ -379,7 +379,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final double lon = -122.433203;
 		
 		try {
-			client.search(new Point(lat, lon), "", "Restaurants", 25, new SimpleGeoFeatureCollectionCallback() {
+			client.search(new Point(lat, lon), "", "Restaurants", 25, new FeatureCollectionCallback() {
 				public void onSuccess(FeatureCollection features) {
 					TestCase.assertEquals(1, features.getFeatures().size());
 					TestCase.assertEquals(features.getFeatures().get(0).getType(), "Feature");
@@ -413,7 +413,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		final String address = "1535 Pearl St, Boulder, CO";
 		try {
-			client.searchByAddress(address, "", "", 25, new SimpleGeoFeatureCollectionCallback() {
+			client.searchByAddress(address, "", "", 25, new FeatureCollectionCallback() {
 				public void onSuccess(FeatureCollection features) {
 					TestCase.assertEquals(1, features.getFeatures().size());
 					barrierAwait(barrier);
