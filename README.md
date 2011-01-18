@@ -47,7 +47,7 @@ After running the ant task you require, your jar will be located in the `bin/` f
 Right click (ctrl + click) on your project -> Build Path -> Configure Build Path -> Select the Libraries tab -> Add JARs (if the SimpleGeo jar is in your workspace)/Add External JARs (if the SimpleGeo jar is on your filesystem) -> Navigate to the jar you want to add and click OK.  The jar has been added to your project and you can start using it by getting an instance and setting your OAuth Token like so:
 
     $ SimpleGeoPlacesClient placesClient = SimpleGeoPlacesClient.getInstance();
-    $ placesClient.getHttpClient.setToken("oauth-key", "oauth-secret");
+    $ placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
 
 ## Documents
 
