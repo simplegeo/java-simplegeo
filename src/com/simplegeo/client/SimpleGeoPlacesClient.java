@@ -105,26 +105,6 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	/**
-	 * Synchronously get a map detailing all places endpoints.
-	 * 
-	 * @return HashMap<String, Object> HashMap detailing all places endpoints.
-	 * @throws IOException
-	 */
-	public HashMap<String, Object> getEndpointDescriptions() throws IOException {
-		return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler());
-	}
-	
-	/**
-	 * Asynchronously get a map detailing all places endpoints.
-	 * 
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback}
-	 * @throws IOException
-	 */
-	public void getEndpointDescriptions(SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		this.executeGet(String.format(this.getEndpoint("endpoints")), new JSONHandler(), callback);
-	}
-	
-	/**
 	 * Synchronously get the place that corresponds to the simpleGeoId
 	 * 
 	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
