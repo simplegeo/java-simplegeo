@@ -42,10 +42,12 @@ import org.json.JSONException;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.GeoJSONHandler;
-import com.simplegeo.client.handler.SimpleGeoJSONHandler;
+import com.simplegeo.client.handler.ListHandler;
+import com.simplegeo.client.handler.SimpleGeoResponseHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
+import com.simplegeo.client.types.CategoryCollection;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
@@ -321,6 +323,25 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		}
 	}
 	
+	/**
+	 * Synchronously get a list of all the possible Feature categories
+	 * 
+	 * @return {@link com.simplegeo.client.types.CategoryCollection} containing a list of {@link com.simplegeo.client.types.Category} objects
+	 */
+	public CategoryCollection getCategories() throws IOException{
+		return (CategoryCollection) this.executeGet(String.format(this.getEndpoint("features"), "categories"), new ListHandler());
+	}
+	
+	/**
+	 * Asynchronously get a list of all the possible Feature categories
+	 * 
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 */
+	public void getCategories(SimpleGeoCallback<CategoryCollection> callback) throws IOException{
+		this.executeGet(String.format(this.getEndpoint("features"), "categories"), new ListHandler(),callback);
+
+	}
+
 	@Override
 	public OAuthClient getHttpClient() {
 		return super.getHttpClient();
@@ -348,7 +369,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	@Override
-	protected Object executeGet(String uri, SimpleGeoJSONHandler handler)
+	protected Object executeGet(String uri, SimpleGeoResponseHandler handler)
 			throws IOException {
 		uri = this.removeEmptyParameters(uri);
 		HttpGet get = new HttpGet(uri);
@@ -356,7 +377,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 	
 	@Override
-	protected void executeGet(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
+	protected void executeGet(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		uri = this.removeEmptyParameters(uri);
 		HttpGet get = new HttpGet(uri);
@@ -365,7 +386,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoResponseHandler handler) throws IOException {
 		HttpPost post = new HttpPost(uri);
 		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		post.addHeader("Content-type", "application/json");
@@ -374,7 +395,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 
 	@Override
 	protected void executePost(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
+			SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException {
 		HttpPost post = new HttpPost(uri);
 		post.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		post.addHeader("Content-type", "application/json");
@@ -383,7 +404,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
 	@Override
 	protected Object executePut(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoResponseHandler handler) throws IOException {
 		HttpPut put = new HttpPut(uri);
 		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		put.addHeader("Content-type", "application/json");
@@ -392,7 +413,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 
 	@Override
 	protected void executePut(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
+			SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException {
 		HttpPut put = new HttpPut(uri);
 		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		put.addHeader("Content-type", "application/json");
@@ -400,13 +421,13 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	}
 
 	@Override
-	protected Object executeDelete(String uri, SimpleGeoJSONHandler handler)
+	protected Object executeDelete(String uri, SimpleGeoResponseHandler handler)
 			throws IOException {
 		return super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler));
 	}
 	
 	@Override
-	protected void executeDelete(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
+	protected void executeDelete(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		super.execute(new HttpDelete(uri), new SimpleGeoHandler(handler), callback);
 	}

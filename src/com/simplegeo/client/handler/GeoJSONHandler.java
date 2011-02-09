@@ -41,7 +41,7 @@ import com.simplegeo.client.types.FeatureCollection;
  * 
  * @author Derek Smith
  */
-public class GeoJSONHandler implements SimpleGeoJSONHandler {
+public class GeoJSONHandler implements SimpleGeoResponseHandler {
 	
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 	

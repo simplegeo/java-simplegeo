@@ -40,7 +40,10 @@ import org.json.JSONException;
 import com.simplegeo.client.callbacks.FeatureCallback;
 import com.simplegeo.client.callbacks.FeatureCollectionCallback;
 import com.simplegeo.client.callbacks.MapCallback;
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.test.TestEnvironment;
+import com.simplegeo.client.types.Category;
+import com.simplegeo.client.types.CategoryCollection;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
@@ -57,6 +60,44 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		client = SimpleGeoPlacesClient.getInstance(TestEnvironment.getBaseUrl(), 
 						TestEnvironment.getPort(), TestEnvironment.getApiVersion());
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
+	}
+	
+	public void testGetCategoriesSync() {
+		try {
+			CategoryCollection categoryCollection = client.getCategories();
+			TestCase.assertEquals(4, categoryCollection.getCategories().size());
+			Category category = categoryCollection.getCategories().get(0);
+			TestCase.assertEquals("Administrative", category.getCategory());
+			TestCase.assertEquals("10100100", category.getCategoryId());
+			TestCase.assertEquals("Region", category.getType());
+			TestCase.assertEquals("Consolidated City", category.getSubCategory());						
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+	
+	public void testGetCategoriesAsync() {
+		try {
+			client.getCategories(new SimpleGeoCallback<CategoryCollection>() {
+				
+				public void onSuccess(CategoryCollection categoryCollection) {
+					TestCase.assertEquals(4, categoryCollection.getCategories().size());
+					Category category = categoryCollection.getCategories().get(0);
+					TestCase.assertEquals("Administrative", category.getCategory());
+					TestCase.assertEquals("10100100", category.getCategoryId());
+					TestCase.assertEquals("Region", category.getType());
+					TestCase.assertEquals("Consolidated City", category.getSubCategory());					
+				}
+				
+				public void onError(String errorMessage) {
+					// shouldn't get hit
+					TestCase.fail(errorMessage);
+				}
+				
+			});
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
 	}
 	
 	public void testGetPlacePointSync() {

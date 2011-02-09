@@ -36,7 +36,7 @@ import java.util.HashMap;
 import org.apache.http.client.methods.HttpGet;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
-import com.simplegeo.client.handler.SimpleGeoJSONHandler;
+import com.simplegeo.client.handler.SimpleGeoResponseHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
@@ -174,49 +174,49 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	}
 
 	@Override
-	protected Object executeGet(String uri, SimpleGeoJSONHandler handler)
+	protected Object executeGet(String uri, SimpleGeoResponseHandler handler)
 			throws IOException {
 		return super.execute(new HttpGet(uri), new SimpleGeoHandler(handler));
 	}
 	
 	@Override
-	protected void executeGet(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
+	protected void executeGet(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		super.execute(new HttpGet(uri), new SimpleGeoHandler(handler), callback);
 	}
 
 	@Override
 	protected Object executePost(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoResponseHandler handler) throws IOException {
 		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
 	}
 	
 	@Override
 	protected void executePost(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
+			SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException {
 		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
 	}
 
 	@Override
 	protected Object executePut(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler) throws IOException {
+			SimpleGeoResponseHandler handler) throws IOException {
 		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
 	}
 	
 	@Override
 	protected void executePut(String uri, String jsonPayload,
-			SimpleGeoJSONHandler handler, SimpleGeoCallback callback) throws IOException {
+			SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException {
 		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
 	}
 
 	@Override
-	protected Object executeDelete(String uri, SimpleGeoJSONHandler handler)
+	protected Object executeDelete(String uri, SimpleGeoResponseHandler handler)
 			throws IOException {
 		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
 	}
 	
 	@Override
-	protected void executeDelete(String uri, SimpleGeoJSONHandler handler, SimpleGeoCallback callback)
+	protected void executeDelete(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback)
 			throws IOException {
 		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
 	}

@@ -40,7 +40,7 @@ import org.json.JSONObject;
  * 
  * @author Casey Crites
  */
-public class JSONHandler implements SimpleGeoJSONHandler {
+public class JSONHandler implements SimpleGeoResponseHandler {
 
 	private static Logger logger = Logger.getLogger(GeoJSONHandler.class.getName());
 	
