@@ -68,12 +68,10 @@ public class CategoryCollection {
 		
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject json = jsonArray.getJSONObject(i);
-			Category category = new Category();
-			category.setCategoryId(json.getString("category_id"));
-			category.setCategory(json.getString("category"));
-			category.setType(json.getString("type"));
-			category.setSubCategory(json.getString("subcategory"));
-			
+			Category category = new Category(json.getString("category_id"),
+					json.getString("category"), json.getString("type"),
+					json.getString("subcategory"));
+
 			categories.add(category);
 		}
 		categoryCollection.setCategories(categories);

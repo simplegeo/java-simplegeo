@@ -338,7 +338,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 */
 	public void getCategories(SimpleGeoCallback<CategoryCollection> callback) throws IOException{
-		this.executeGet(String.format(this.getEndpoint("features"), "categories"), new ListHandler(),callback);
+		this.executeGet(String.format(this.getEndpoint("features"), "categories"), new ListHandler(), callback);
 
 	}
 

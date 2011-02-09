@@ -77,6 +77,8 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 	}
 	
 	public void testGetCategoriesAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
 		try {
 			client.getCategories(new SimpleGeoCallback<CategoryCollection>() {
 				
@@ -86,7 +88,8 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 					TestCase.assertEquals("Administrative", category.getCategory());
 					TestCase.assertEquals("10100100", category.getCategoryId());
 					TestCase.assertEquals("Region", category.getType());
-					TestCase.assertEquals("Consolidated City", category.getSubCategory());					
+					TestCase.assertEquals("Consolidated City", category.getSubCategory());	
+					barrierAwait(barrier);
 				}
 				
 				public void onError(String errorMessage) {
@@ -95,6 +98,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 				}
 				
 			});
+			barrierAwait(barrier);
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		}
@@ -106,16 +110,16 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		try {
 			Feature feature = client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
 			
-			this.assertEquals("Feature", feature.getType());
-			this.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
-			this.assertNotNull(feature.getGeometry().getPoint());
+			TestCase.assertEquals("Feature", feature.getType());
+			TestCase.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
+			TestCase.assertNotNull(feature.getGeometry().getPoint());
 			
-			this.assertEquals(lat, feature.getGeometry().getPoint().getLat());
-			this.assertEquals(lon, feature.getGeometry().getPoint().getLon());
-			this.assertNull(feature.getGeometry().getPolygon());
-			this.assertEquals(10, feature.getProperties().size());
+			TestCase.assertEquals(lat, feature.getGeometry().getPoint().getLat());
+			TestCase.assertEquals(lon, feature.getGeometry().getPoint().getLon());
+			TestCase.assertNull(feature.getGeometry().getPolygon());
+			TestCase.assertEquals(10, feature.getProperties().size());
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -142,7 +146,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -162,7 +166,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -170,16 +174,16 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		try {
 			Feature feature = client.getPlace("SG_0Bw22I6fWoxnZ4GDc8YlXd");
 			
-			this.assertEquals("Feature", feature.getType());
-			this.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
-			this.assertNull(feature.getGeometry().getPoint());
+			TestCase.assertEquals("Feature", feature.getType());
+			TestCase.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd_37.759737_-122.433203", feature.getSimpleGeoId());
+			TestCase.assertNull(feature.getGeometry().getPoint());
 			
-			this.assertNotNull(feature.getGeometry().getPolygon());
-			this.assertEquals(1, feature.getGeometry().getPolygon().getRings().size());
-			this.assertEquals(60, feature.getGeometry().getPolygon().getRings().get(0).size());
-			this.assertEquals(4, feature.getProperties().size());
+			TestCase.assertNotNull(feature.getGeometry().getPolygon());
+			TestCase.assertEquals(1, feature.getGeometry().getPolygon().getRings().size());
+			TestCase.assertEquals(60, feature.getGeometry().getPolygon().getRings().get(0).size());
+			TestCase.assertEquals(4, feature.getProperties().size());
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -204,7 +208,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -222,7 +226,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -231,15 +235,15 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
 			HashMap<String, Object> responseMap = client.addPlace(feature);
 			
-			this.assertTrue(this.equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+			TestCase.assertTrue(this.equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("id").toString()));
-			this.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", responseMap.get("token").toString());
-			this.assertTrue(this.equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+			TestCase.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", responseMap.get("token").toString());
+			TestCase.assertTrue(this.equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("uri").toString()));
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -262,9 +266,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -283,9 +287,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -294,15 +298,15 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointString());
 			HashMap<String, Object> responseMap = client.updatePlace(feature);
 			
-			this.assertTrue(this.equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+			TestCase.assertTrue(this.equalExceptTimestamp("SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("id").toString()));
-			this.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", responseMap.get("token").toString());
-			this.assertTrue(this.equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
+			TestCase.assertEquals("596499b4fc2a11dfa39058b035fcf1e5", responseMap.get("token").toString());
+			TestCase.assertTrue(this.equalExceptTimestamp("/1.0/features/SG_2cf49b19bfbbe6b737e43699b106fb4e2ade9b51_47.046962_-122.937467", 
 					responseMap.get("uri").toString()));
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -325,9 +329,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -346,9 +350,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -356,9 +360,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		try {
 			HashMap<String, Object> responseMap = client.deletePlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
 			
-			this.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", responseMap.get("token").toString());
+			TestCase.assertEquals("8fa0d1c4fc2911dfa39058b035fcf1e5", responseMap.get("token").toString());
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -376,7 +380,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -394,7 +398,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -404,13 +408,13 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		try {
 			FeatureCollection features = client.search(new Point(lat, lon), "", "Restaurants", 25);
 			
-			this.assertEquals(1, features.getFeatures().size());
-			this.assertEquals(features.getFeatures().get(0).getType(), "Feature");
-			this.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
-			this.assertNotNull(features.getFeatures().get(0).getProperties());
-			this.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
+			TestCase.assertEquals(1, features.getFeatures().size());
+			TestCase.assertEquals(features.getFeatures().get(0).getType(), "Feature");
+			TestCase.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
+			TestCase.assertNotNull(features.getFeatures().get(0).getProperties());
+			TestCase.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -435,7 +439,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -444,9 +448,9 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		try {
 			FeatureCollection features = client.searchByAddress(address, "", "", 25);
 
-			this.assertEquals(1, features.getFeatures().size());
+			TestCase.assertEquals(1, features.getFeatures().size());
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
@@ -465,7 +469,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			});
 			barrierAwait(barrier);
 		} catch (IOException e) {
-			this.fail(e.getMessage());
+			TestCase.fail(e.getMessage());
 		}
 	}
 	
