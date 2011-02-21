@@ -39,10 +39,10 @@ import org.json.JSONObject;
 
 public class Feature {
 
-	private String simpleGeoId;
-	private Geometry geometry;
-	private String type;
-	private HashMap<String, Object> properties;
+	protected String simpleGeoId;
+	protected Geometry geometry;
+	protected String type;
+	protected HashMap<String, Object> properties;
 	
 	public Feature() {
 		

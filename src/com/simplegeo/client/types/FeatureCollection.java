@@ -38,7 +38,8 @@ import org.json.JSONObject;
 public class FeatureCollection {
 
 	private ArrayList<Feature> features;
-	
+	private String cursor;
+
 	public FeatureCollection() {
 		
 	}
@@ -55,6 +56,20 @@ public class FeatureCollection {
 		this.features = features;
 	}
 	
+	/**
+	 * @param cursor the cursor to set
+	 */
+	public void setCursor(String cursor) {
+		this.cursor = cursor;
+	}
+	
+	/**
+	 * @return the cursor
+	 */
+	public String getCursor() {
+		return cursor;
+	}	
+
 	public static FeatureCollection fromJSON(JSONObject json) throws JSONException {
 		FeatureCollection featureCollection = new FeatureCollection();
 		ArrayList<Feature> features = new ArrayList<Feature>();
@@ -64,6 +79,8 @@ public class FeatureCollection {
 			features.add(Feature.fromJSON(featuresArray.getJSONObject(i)));
 		}
 		featureCollection.setFeatures(features);
+		featureCollection.setCursor(json.optString("cursor"));
+		
 		return featureCollection;
 	}
 	

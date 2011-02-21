@@ -26,62 +26,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.simplegeo.client.handler;
 
-package com.simplegeo.client.types;
+import java.util.logging.Logger;
 
-public class Geometry {
+import org.json.JSONException;
+
+import com.simplegeo.client.types.GeometryCollection;
+import com.simplegeo.client.types.Record;
+
+/**
+ * A response handler used for creating {@link com.simplegeo.client.types.Record}s from a given payload.
+ * 
+ * @author Pranil Kanderi
+ */
+public class GeoJSONRecordHandler implements SimpleGeoResponseHandler {
 	
-	private Point point;
-	private Polygon polygon;
-	private MultiPolygon multiPolygon;
-	private long created;
+	private static Logger logger = Logger.getLogger(GeoJSONRecordHandler.class.getName());
 	
-	public Geometry() {
-		
+	public Object parseResponse(String response) {
+		Object returnObject = new Object();
+		if (response.contains("GeometryCollection")) {
+			try {
+				returnObject = GeometryCollection.fromJSONString(response);
+			} catch (JSONException e) {
+				logger.info(e.getMessage());
+			}
+		} else {
+			try {
+				returnObject = Record.fromJSONString(response);
+			} catch (JSONException e) {
+				logger.info(e.getMessage());
+			}
+		}
+		return returnObject;
 	}
-	
-	public Geometry(Point point) {
-		this.point = point;
-	}
-	
-	public Geometry(Polygon polygon) {
-		this.polygon = polygon;
-	}
-	
-	public Geometry(MultiPolygon multiPolygon) {
-		this.multiPolygon = multiPolygon;
-	}
-
-	public Point getPoint() {
-		return point;
-	}
-
-	public void setPoint(Point point) {
-		this.point = point;
-	}
-
-	public Polygon getPolygon() {
-		return polygon;
-	}
-
-	public void setPolygon(Polygon polygon) {
-		this.polygon = polygon;
-	}
-
-	public MultiPolygon getMultiPolygon() {
-		return multiPolygon;
-	}
-
-	public void setMultiPolygon(MultiPolygon multiPolygon) {
-		this.multiPolygon = multiPolygon;
-	}
-
-	public void setCreated(long created) {
-		this.created = created;
-	}
-
-	public long getCreated() {
-		return created;
-	}
-
 }
