@@ -42,7 +42,9 @@ import org.json.JSONException;
 import com.simplegeo.client.callbacks.FeatureCallback;
 import com.simplegeo.client.callbacks.FeatureCollectionCallback;
 import com.simplegeo.client.callbacks.GeometryCollectionCallback;
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.test.TestEnvironment;
+import com.simplegeo.client.types.CategoryCollection;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.GeometryCollection;
@@ -101,10 +103,10 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			HashMap<String, Object> properties = new HashMap<String, Object>();
 			properties.put(testPropertyKey, testPropertyValue);
 			record.setProperties(properties);
-			client.addOrUpdateRecord(record, new FeatureCallback() {
+			client.addOrUpdateRecord(record, new SimpleGeoCallback<HashMap<String, Object>>() {
 				
 				@Override
-				public void onSuccess(Feature feature) {
+				public void onSuccess(HashMap<String, Object> hasmap) {
 					TestCase.assertEquals(layer, record.getLayer());
 					TestCase.assertEquals(lat, record.getGeometry().getPoint().getLat());
 					TestCase.assertEquals(lon, record.getGeometry().getPoint().getLon());
@@ -114,7 +116,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 				
 				@Override
 				public void onError(String errorMessage) {
-//					TestCase.fail(errorMessage);
+					TestCase.fail(errorMessage);
 				}
 			});
 			barrierAwait(barrier);
@@ -129,7 +131,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 	public void testAddOrUpdateRecordsSync() {
 		double lon = -122.937467;
 		double lat = 47.046962;
-		String layer = "mojodna.layer";
+		String layer = "mojodna.test";
 		String testPropertyKey = "name";
 		String testPropertyValue = "Testing Storage";
 		try {
@@ -180,10 +182,10 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			records.add(record1);
 			records.add(record2);
 			
-			client.addOrUpdateRecords(records, new FeatureCallback() {
+			client.addOrUpdateRecords(records,  new SimpleGeoCallback<HashMap<String, Object>>() {
 				
 				@Override
-				public void onSuccess(Feature feature) {
+				public void onSuccess(HashMap<String, Object> hashmap) {
 					TestCase.assertEquals(layer, record1.getLayer());
 					TestCase.assertEquals(lat, record1.getGeometry().getPoint().getLat());
 					TestCase.assertEquals(lon, record1.getGeometry().getPoint().getLon());
@@ -193,7 +195,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 				
 				@Override
 				public void onError(String errorMessage) {					
-//					TestCase.fail(errorMessage);
+					TestCase.fail(errorMessage);
 				}
 			});
 			barrierAwait(barrier);
@@ -261,11 +263,10 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 
 		try {
-				client.deleteRecord("mojodna.test", "simplegeo-boulder", new FeatureCallback() {
+				client.deleteRecord("mojodna.test", "simplegeo-boulder", new SimpleGeoCallback<HashMap<String, Object>>() {
 				
 					@Override
-					public void onSuccess(Feature feature) {
-//						TestCase.assertNull(feature);
+					public void onSuccess(HashMap<String, Object> hashmap) {
 						barrierAwait(barrier);
 					}
 					

@@ -408,7 +408,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		HttpPut put = new HttpPut(uri);
 		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		put.addHeader("Content-type", "application/json");
-		return super.execute(new HttpPut(uri), new SimpleGeoHandler(handler));
+		return super.execute(put, new SimpleGeoHandler(handler));
 	}
 
 	@Override
@@ -417,7 +417,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		HttpPut put = new HttpPut(uri);
 		put.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
 		put.addHeader("Content-type", "application/json");
-		super.execute(new HttpPut(uri), new SimpleGeoHandler(handler), callback);
+		super.execute(put, new SimpleGeoHandler(handler), callback);
 	}
 
 	@Override

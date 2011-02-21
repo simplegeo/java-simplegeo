@@ -153,15 +153,18 @@ public class Record extends Feature {
 		return record;
 	}
 
-	public static JSONArray toJSON(ArrayList<Record> records)
+	public static JSONObject toJSON(ArrayList<Record> records)
 			throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("type", "FeatureCollection");
+		
 		JSONArray jsonArray = new JSONArray();
-
 		for (Record record : records) {
 			jsonArray.put(record.toJSON());
 		}
+		jsonObject.put("features", jsonArray);
 
-		return jsonArray;
+		return jsonObject;
 	}
 
 	public static String toJSONString(ArrayList<Record> records)
