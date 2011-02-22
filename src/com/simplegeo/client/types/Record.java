@@ -50,10 +50,6 @@ public class Record extends Feature {
 
 	}
 
-	public Record(String recordId, String layer, String type) {
-		this(recordId, layer, type, 0.0, 0.0);
-	}
-
 	public Record(String recordId, String layer, String type, double longitude,
 			double latitude) {
 		super(recordId, new Geometry(new Point(latitude, longitude)), type,

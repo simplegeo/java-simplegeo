@@ -138,11 +138,9 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public void addOrUpdateRecords(ArrayList<Record> records) throws IOException, JSONException {
+	public void addOrUpdateRecords(ArrayList<Record> records, String layer) throws IOException, JSONException {
 		String jsonString = Record.toJSONString(records);
-		System.out.println("Add mul records:" + jsonString);
-		Record record = records.get(0); // Assumes there is at least one Record
-		this.executePost(String.format(this.getEndpoint("multipleRecords"), URLEncoder.encode(record.getLayer(), "UTF-8")), jsonString, new JSONHandler());
+		this.executePost(String.format(this.getEndpoint("multipleRecords"), URLEncoder.encode(layer, "UTF-8")), jsonString, new JSONHandler());
 	}
 
 	/**
@@ -153,10 +151,9 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public void addOrUpdateRecords(ArrayList<Record> records, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
+	public void addOrUpdateRecords(ArrayList<Record> records, String layer, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = Record.toJSONString(records);
-		Record record = records.get(0); // Assumes there is at least one Record
-		this.executePost(String.format(this.getEndpoint("multipleRecords"), URLEncoder.encode(record.getLayer(), "UTF-8")), jsonString, new JSONHandler(), callback);
+		this.executePost(String.format(this.getEndpoint("multipleRecords"), URLEncoder.encode(layer, "UTF-8")), jsonString, new JSONHandler(), callback);
 	}
 
 	/**
@@ -211,88 +208,6 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * 
 	 * @param layer String name of the layer
 	 * @param recordId String id of this record
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of 
-	 * record with the specified recordId and layer
-	 * @throws IOException
-	 */
-	public GeometryCollection getHistory(String layer, String recordId) throws IOException {
-		return getHistory(layer, recordId, 0, "");
-	}
-	
-	/**
-	 * Asynchronously get the history of the record that corresponds to the recordId
-	 * 
-	 * @param layer String name of the layer
-	 * @param recordId String id of this record
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of record with the specified recordId and layer
-	 * @throws IOException
-	 */
-	public void getHistory(String layer, String recordId, SimpleGeoCallback<GeometryCollection> callback) throws IOException {
-		getHistory(layer, recordId, 0, null, callback);
-	}
-
-	/**
-	 * Synchronously get the history of the record that corresponds to the recordId
-	 * 
-	 * @param layer String name of the layer
-	 * @param recordId String id of this record
-	 * @param limit The maximum number of records to return. Default: 10
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of 
-	 * record with the specified recordId and layer
-	 * @throws IOException
-	 */
-	public GeometryCollection getHistory(String layer, String recordId, int limit) throws IOException {
-		return getHistory(layer, recordId, limit, "");
-	}
-	
-	/**
-	 * Asynchronously get the history of the record that corresponds to the recordId
-	 * 
-	 * @param layer String name of the layer
-	 * @param recordId String id of this record
-	 * @param limit The maximum number of records to return. Default: 10
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of record with the specified recordId and layer
-	 * @throws IOException
-	 */
-	public void getHistory(String layer, String recordId, int limit, SimpleGeoCallback<GeometryCollection> callback) throws IOException {
-		getHistory(layer, recordId, limit, null, callback);
-	}
-
-	/**
-	 * Synchronously get the history of the record that corresponds to the recordId
-	 * 
-	 * @param layer String name of the layer
-	 * @param recordId String id of this record
-	 * @param cursor String encrypted string that is returned when a previous query has reached its prescribed limit and still has more records to return. 
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of 
-	 * record with the specified recordId and layer
-	 * @throws IOException
-	 */
-	public GeometryCollection getHistory(String layer, String recordId, String cursor) throws IOException {
-		return getHistory(layer, recordId, 0, cursor);
-	}
-	
-	/**
-	 * Asynchronously get the history of the record that corresponds to the recordId
-	 * 
-	 * @param layer String name of the layer
-	 * @param recordId String id of this record
-	 * @param cursor String encrypted string that is returned when a previous query has reached its prescribed limit and still has more records to return. 
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of record with the specified recordId and layer
-	 * @throws IOException
-	 */
-	public void getHistory(String layer, String recordId, String cursor, SimpleGeoCallback<GeometryCollection> callback) throws IOException {
-		getHistory(layer, recordId, 0, cursor, callback);
-	}
-	
-	/**
-	 * Synchronously get the history of the record that corresponds to the recordId
-	 * 
-	 * @param layer String name of the layer
-	 * @param recordId String id of this record
 	 * @param limit The maximum number of records to return. Default: 10
 	 * @param cursor String encrypted string that is returned when a previous query has reached its prescribed limit and still has more records to return. 
 	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of 
@@ -322,55 +237,6 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 		this.executeGet(uri, new GeoJSONRecordHandler(), callback);
 	}
 
-	/**
-	 * Synchronously search for nearby records in the specified layer.
-	 * 
-	 * @param point Point {@link com.simplegeo.client.types.Point}
-	 * @param layer String name of the layer
-	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results
-	 * @throws IOException
-	 */
-	public FeatureCollection search(Point point, String layer) throws IOException {
-		return (FeatureCollection) this.search(point.getLat(), point.getLon(), layer);
-	}
-	
-	/**
-	 * Asynchronously search for nearby records in the specified layer.
-	 * 
-	 * @param point Point {@link com.simplegeo.client.types.Point}
-	 * @param layer String name of the layer
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @throws IOException
-	 */
-	public void search(Point point, String layer, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
-		this.search(point.getLat(), point.getLon(), layer, callback);
-	}
-
-	/**
-	 * Synchronously search for nearby records in the specified layer.
-	 * 
-	 * @param lat double latitude
-	 * @param lon double longitude
-	 * @param layer String name of the layer
-	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results
-	 * @throws IOException
-	 */
-	public FeatureCollection search(double lat, double lon, String layer) throws IOException {
-		return (FeatureCollection) this.search(lat, lon, layer, 0, 0, "");
-	}
-	
-	/**
-	 * Asynchronously search for nearby records in the specified layer.
-	 * 
-	 * @param lat double latitude
-	 * @param lon double longitude
-	 * @param layer String name of the layer
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @throws IOException
-	 */
-	public void search(double lat, double lon, String layer, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
-		this.search(lat, lon, layer, 0, 0, "", callback);
-	}
 	
 	/**
 	 * Synchronously search for nearby records in the specified layer.
@@ -406,30 +272,6 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
  		String uri = String.format(this.getEndpoint("searchByLatLon"), URLEncoder.encode(layer, "UTF-8"), lat, lon, (limit > 0 ? limit : ""), (cursor == null ? "" : cursor), (radius > 0 ? radius : ""));
  		
 		this.executeGet(uri, new GeoJSONHandler(), callback);
-	}
-
-	/**
-	 * Synchronously search for records near a given IP address for the specified layer.
-	 * 
-	 * @param ip String IP address If blank, your IP address will be used
-	 * @param layer String name of the layer
-	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
-	 * @throws IOException
-	 */
-	public FeatureCollection searchByIP(String ip, String layer) throws IOException {
-		return this.searchByIP(ip, layer, 0, null);
-	}
-	
-	/**
-	 * Asynchronously search for records near a given IP address for the specified layer.
-	 * 
-	 * @param ip String IP address If blank, your IP address will be used
-	 * @param layer String name of the layer
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @throws IOException
-	 */
-	public void searchByIP(String ip, String layer, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
-		this.searchByIP(ip, layer, 0, null, callback);
 	}
 
 	/**

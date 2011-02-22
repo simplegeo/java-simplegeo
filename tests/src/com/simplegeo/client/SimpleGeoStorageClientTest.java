@@ -147,7 +147,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			records.add(record1);
 			records.add(record2);
 			
-			client.addOrUpdateRecords(records);
+			client.addOrUpdateRecords(records, layer);
 			
 			TestCase.assertEquals(layer, record1.getLayer());
 			TestCase.assertEquals(lat, record1.getGeometry().getPoint().getLat());
@@ -182,7 +182,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			records.add(record1);
 			records.add(record2);
 			
-			client.addOrUpdateRecords(records,  new SimpleGeoCallback<HashMap<String, Object>>() {
+			client.addOrUpdateRecords(records, layer, new SimpleGeoCallback<HashMap<String, Object>>() {
 				
 				@Override
 				public void onSuccess(HashMap<String, Object> hashmap) {
@@ -284,7 +284,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 	public void testGetHistorySync() {
 		try {
 			
-			GeometryCollection geometryCollection = client.getHistory("mojodna.test", "simplegeo-boulder");
+			GeometryCollection geometryCollection = client.getHistory("mojodna.test", "simplegeo-boulder", 0, null);
 			TestCase.assertNotNull(geometryCollection);
 			TestCase.assertNotNull(geometryCollection.getGeometries());
 			TestCase.assertEquals(2, geometryCollection.getGeometries().size());
@@ -303,7 +303,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 
 		try {
-			client.getHistory("mojodna.test", "simplegeo-boulder", new GeometryCollectionCallback() {
+			client.getHistory("mojodna.test", "simplegeo-boulder", 0, null, new GeometryCollectionCallback() {
 				
 					@Override
 					public void onSuccess(GeometryCollection geometryCollection) {
@@ -332,7 +332,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 
 	public void testSearchSync() {
 		try {
-			FeatureCollection featureCollection = client.search(new Point(37.761809d, -122.422832d), "mojodna.test");
+			FeatureCollection featureCollection = client.search(37.761809d, -122.422832d, "mojodna.test", 10, 0, null);
 			TestCase.assertNotNull(featureCollection);
 			TestCase.assertNotNull(featureCollection.getFeatures());
 			TestCase.assertEquals(2, featureCollection.getFeatures().size());
@@ -349,7 +349,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 
 		try {
-			client.search(new Point(37.761809d, -122.422832d), "mojodna.test", new FeatureCollectionCallback() {
+			client.search(37.761809d, -122.422832d, "mojodna.test", 10, 0, null, new FeatureCollectionCallback() {
 				
 					@Override
 					public void onSuccess(FeatureCollection featureCollection) {
@@ -376,7 +376,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 
 	public void testSearchByIPSync() {
 		try {
-			FeatureCollection featureCollection = client.searchByIP("127.0.0.1", "mojodna.test");
+			FeatureCollection featureCollection = client.searchByIP("127.0.0.1", "mojodna.test", 0, null);
 			TestCase.assertNotNull(featureCollection);
 			TestCase.assertNotNull(featureCollection.getFeatures());
 			TestCase.assertEquals(2, featureCollection.getFeatures().size());
@@ -393,7 +393,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 
 		try {
-			client.searchByIP("127.0.0.1", "mojodna.test", new FeatureCollectionCallback() {
+			client.searchByIP("127.0.0.1", "mojodna.test", 0, null, new FeatureCollectionCallback() {
 				
 					@Override
 					public void onSuccess(FeatureCollection featureCollection) {
