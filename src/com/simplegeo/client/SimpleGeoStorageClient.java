@@ -187,8 +187,8 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @param recordId String id of this record
 	 * @throws IOException
 	 */
-	public void deleteRecord(String layer, String recordId) throws IOException {
-		this.executeDelete(String.format(this.getEndpoint("singleRecord"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8")), new JSONHandler());
+	public HashMap<String, Object> deleteRecord(String layer, String recordId) throws IOException {
+		return (HashMap<String, Object>)this.executeDelete(String.format(this.getEndpoint("singleRecord"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8")), new JSONHandler());
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void deleteRecord(String layer, String recordId, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		this.executeDelete(String.format(this.getEndpoint("singleRecord"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8")), new JSONHandler());
+		this.executeDelete(String.format(this.getEndpoint("singleRecord"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8")), new JSONHandler(), callback);
 	}
 	
 	/**

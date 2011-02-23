@@ -252,8 +252,9 @@ public class SimpleGeoStorageClientTest extends TestCase {
 	public void testDeleteRecordSync() {
 		try {
 			
-			client.deleteRecord("mojodna.test", "simplegeo-boulder");
-			
+			HashMap<String, Object> responseMap = client.deleteRecord("mojodna.test", "simplegeo-boulder");
+			TestCase.assertEquals("deleted", responseMap.get("status"));
+
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());			
 		} 
@@ -267,6 +268,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 				
 					@Override
 					public void onSuccess(HashMap<String, Object> hashmap) {
+						TestCase.assertEquals("deleted", hashmap.get("status"));
 						barrierAwait(barrier);
 					}
 					
