@@ -102,7 +102,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		endpoints.put("features", "features/%s.json");
 		endpoints.put("places", "places");
 		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s&radius=%s");
-		endpoints.put("searcByIP", "places/%s.json?q=%s&category=%s&radius=%s");
+		endpoints.put("searchByIP", "places/%s.json?q=%s&category=%s&radius=%s");
 		endpoints.put("searchByMyIP", "places/ip.json?q=%s&category=%s&radius=%s");
 	}
 	

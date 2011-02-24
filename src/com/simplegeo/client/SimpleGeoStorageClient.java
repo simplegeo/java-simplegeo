@@ -51,7 +51,6 @@ import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.GeometryCollection;
-import com.simplegeo.client.types.Point;
 import com.simplegeo.client.types.Record;
 
 /*
