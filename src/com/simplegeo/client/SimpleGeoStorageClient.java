@@ -84,7 +84,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoStorageClient
 	 */
 	public static SimpleGeoStorageClient getInstance() {
-		return getInstance(DEFAULT_HOST, DEFAULT_PORT, DEFAULT_VERSION);
+		return getInstance(DEFAULT_HOST, DEFAULT_PORT, STORAGE_DEFAULT_VERSION);
 	}
 	
 	/**

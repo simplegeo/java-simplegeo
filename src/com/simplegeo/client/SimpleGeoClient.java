@@ -36,6 +36,7 @@ public interface SimpleGeoClient {
 	public static final String DEFAULT_HOST = "http://api.simplegeo.com";
 	public static final String DEFAULT_PORT = "80";
 	public static final String DEFAULT_VERSION = "1.0";
+	public static final String STORAGE_DEFAULT_VERSION = "0.1";
 	public static final double DEFAULT_RADIUS = 25;
 
 	static public enum Handler { JSON, GEOJSON, SIMPLEGEO }
