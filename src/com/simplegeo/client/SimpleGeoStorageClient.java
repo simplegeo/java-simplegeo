@@ -43,6 +43,7 @@ import org.json.JSONException;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.GeoJSONHandler;
+import com.simplegeo.client.handler.GeoJSONLayerHandler;
 import com.simplegeo.client.handler.GeoJSONRecordHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.handler.SimpleGeoResponseHandler;
@@ -51,7 +52,8 @@ import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.GeometryCollection;
-import com.simplegeo.client.types.Point;
+import com.simplegeo.client.types.Layer;
+import com.simplegeo.client.types.LayerCollection;
 import com.simplegeo.client.types.Record;
 
 /*
@@ -103,6 +105,8 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 		endpoints.put("history", "records/%s/%s/history.json?limit=%s&cursor=%s");
 		endpoints.put("searchByLatLon", "records/%s/nearby/%f,%f.json?limit=%s&cursor=%s&radius=%s");
 		endpoints.put("searchByIP", "records/%s/nearby/%s.json?limit=%s&cursor=%s");
+		endpoints.put("layer", "layers/%s.json");
+		endpoints.put("allLayers", "layers.json");
 	}
 	
 	/**
@@ -302,6 +306,120 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 		this.executeGet(String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(ip, "UTF-8"), (limit > 0 ? limit : ""), (cursor == null ? "" : cursor)), new GeoJSONHandler(), callback);
 	}
 	
+	/**
+	 * Synchronously create a new layer.
+	 * 
+	 * @param layer {@link com.simplegeo.client.types.Layer} to be created
+	 * @return HashMap<String, Object> containing the "status"
+	 * @throws IOException
+	 * @throws JSONException 
+	 */
+	public HashMap<String, Object> createLayer(Layer layer) throws IOException, JSONException {
+		String jsonString = Layer.toJSONString(layer);
+		return (HashMap<String, Object>) this.executePut(String.format(this.getEndpoint("layer"), URLEncoder.encode(layer.getName(), "UTF-8")), jsonString, new JSONHandler());
+	}
+	
+	/**
+	 * Asynchronously create a new layer.
+	 * 
+	 * @param layer {@link com.simplegeo.client.types.Layer} to be created
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 * @throws JSONException 
+	 */
+	public void createLayer(Layer layer, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
+		String jsonString = Layer.toJSONString(layer);
+		this.executePut(String.format(this.getEndpoint("layer"), URLEncoder.encode(layer.getName(), "UTF-8")), jsonString, new JSONHandler(), callback);
+	}
+
+	/**
+	 * Synchronously update a layer.
+	 * 
+	 * @param layer {@link com.simplegeo.client.types.Layer} to be updated
+	 * @return HashMap<String, Object> containing the "status"
+	 * @throws IOException
+	 * @throws JSONException 
+	 */
+	public HashMap<String, Object> updateLayer(Layer layer) throws IOException, JSONException {
+		return createLayer(layer);
+	}
+	
+	/**
+	 * Asynchronously update a layer.
+	 * 
+	 * @param layer {@link com.simplegeo.client.types.Layer} to be updated
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 * @throws JSONException 
+	 */
+	public void updateLayer(Layer layer, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
+		createLayer(layer, callback);
+	}
+	
+	/**
+	 * Synchronously delete a layer.
+	 * 
+	 * @param layer String name of the layer to be deleted
+	 * @return HashMap<String, Object> containing the "status"
+	 * @throws IOException
+	 */
+	public HashMap<String, Object> deleteLayer(String layerName) throws IOException {
+		return (HashMap<String, Object>)this.executeDelete(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new JSONHandler());
+	}
+	
+	/**
+	 * Asynchronously delete a layer.
+	 * 
+	 * @param layer String name of the layer to be deleted
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void deleteLayer(String layerName, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
+		this.executeDelete(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new JSONHandler(), callback);
+	}
+
+	/**
+	 * Synchronously retrieve a layer.
+	 * 
+	 * @param layer String name of the layer to be retrieved
+	 * @return {@link com.simplegeo.client.types.Layer}
+	 * @throws IOException
+	 */
+	public Layer getLayer(String layerName) throws IOException {
+		return (Layer)this.executeGet(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new GeoJSONLayerHandler());
+	}
+
+	/**
+	 * Asynchronously retrieve a layer.
+	 * 
+	 * @param layer String name of the layer to be retrieved
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void getLayer(String layerName, SimpleGeoCallback<Layer> callback) throws IOException {
+		this.executeGet(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new GeoJSONLayerHandler(), callback);
+	}
+
+	/**
+	 * Synchronously retrieve all layers.
+	 * 
+	 * @return {@link com.simplegeo.client.types.LayerCollection}
+	 * @throws IOException
+	 */
+	public LayerCollection getLayers() throws IOException {
+		return (LayerCollection)this.executeGet(this.getEndpoint("allLayers"), new GeoJSONLayerHandler());
+	}
+
+	/**
+	 * Asynchronously retrieve a layer.
+	 * 
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void getLayers(SimpleGeoCallback<LayerCollection> callback) throws IOException {
+		this.executeGet(this.getEndpoint("allLayers"), new GeoJSONLayerHandler(), callback);
+	}
+
 	@Override
 	public OAuthClient getHttpClient() {
 		return super.getHttpClient();
