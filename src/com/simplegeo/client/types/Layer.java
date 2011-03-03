@@ -47,6 +47,8 @@ public class Layer {
 	private String title;
 	private String description;
 	private boolean isPublic;
+	private long created;
+	private long updated;
 	private ArrayList<String> callbackURLs;
 	
 	/**
@@ -113,6 +115,14 @@ public class Layer {
 
 	public void setCallbackURLs(ArrayList<String> callbackURLs) {
 		this.callbackURLs = callbackURLs;
+	}	
+
+	public long getCreated() {
+		return created;
+	}
+
+	public long getUpdated() {
+		return updated;
 	}
 
 	public static String toJSONString(Layer layer) throws JSONException{
@@ -140,6 +150,8 @@ public class Layer {
 		layer.setTitle(json.optString("title"));
 		layer.setDescription(json.optString("description"));
 		layer.setPublic(json.optBoolean("public"));
+		layer.created = json.optLong("created");
+		layer.updated = json.optLong("updated");
 		
 		JSONArray urls = json.getJSONArray("callback_urls");
 		ArrayList<String> callbackURLs = new ArrayList<String>();

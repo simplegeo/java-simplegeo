@@ -43,7 +43,7 @@ import org.json.JSONException;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.GeoJSONHandler;
-import com.simplegeo.client.handler.GeoJSONLayerHandler;
+import com.simplegeo.client.handler.JSONLayerHandler;
 import com.simplegeo.client.handler.GeoJSONRecordHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.handler.SimpleGeoResponseHandler;
@@ -386,7 +386,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public Layer getLayer(String layerName) throws IOException {
-		return (Layer)this.executeGet(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new GeoJSONLayerHandler());
+		return (Layer)this.executeGet(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new JSONLayerHandler());
 	}
 
 	/**
@@ -397,7 +397,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getLayer(String layerName, SimpleGeoCallback<Layer> callback) throws IOException {
-		this.executeGet(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new GeoJSONLayerHandler(), callback);
+		this.executeGet(String.format(this.getEndpoint("layer"), URLEncoder.encode(layerName, "UTF-8")), new JSONLayerHandler(), callback);
 	}
 
 	/**
@@ -407,7 +407,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public LayerCollection getLayers() throws IOException {
-		return (LayerCollection)this.executeGet(this.getEndpoint("allLayers"), new GeoJSONLayerHandler());
+		return (LayerCollection)this.executeGet(this.getEndpoint("allLayers"), new JSONLayerHandler());
 	}
 
 	/**
@@ -417,7 +417,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getLayers(SimpleGeoCallback<LayerCollection> callback) throws IOException {
-		this.executeGet(this.getEndpoint("allLayers"), new GeoJSONLayerHandler(), callback);
+		this.executeGet(this.getEndpoint("allLayers"), new JSONLayerHandler(), callback);
 	}
 
 	@Override

@@ -428,7 +428,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
 			HashMap<String, Object> responseMap = client.createLayer(layer);
 			
-			TestCase.assertEquals("ok", responseMap.get("status"));
+			TestCase.assertEquals("OK", responseMap.get("status"));
 			
 		} catch (JSONException e) {
 			TestCase.fail(e.getMessage());
@@ -448,7 +448,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			client.createLayer(layer, new SimpleGeoCallback<HashMap<String, Object>>() {
 					@Override
 					public void onSuccess(HashMap<String, Object> hashmap) {
-						TestCase.assertEquals("ok", hashmap.get("status"));
+						TestCase.assertEquals("OK", hashmap.get("status"));
 						barrierAwait(barrier);
 					}
 					
@@ -473,7 +473,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
 			HashMap<String, Object> responseMap = client.updateLayer(layer);
 			
-			TestCase.assertEquals("ok", responseMap.get("status"));
+			TestCase.assertEquals("OK", responseMap.get("status"));
 			
 		} catch (JSONException e) {
 			TestCase.fail(e.getMessage());
@@ -493,7 +493,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			client.updateLayer(layer, new SimpleGeoCallback<HashMap<String, Object>>() {
 					@Override
 					public void onSuccess(HashMap<String, Object> hashmap) {
-						TestCase.assertEquals("ok", hashmap.get("status"));
+						TestCase.assertEquals("OK", hashmap.get("status"));
 						barrierAwait(barrier);
 					}
 					
@@ -514,7 +514,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		try {			
 			HashMap<String, Object> responseMap = client.deleteLayer("testLayer");
 			
-			TestCase.assertEquals("deleted", responseMap.get("status"));
+			TestCase.assertEquals("Deleted", responseMap.get("status"));
 			
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
@@ -528,7 +528,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			client.deleteLayer("testLayer", new SimpleGeoCallback<HashMap<String, Object>>() {
 					@Override
 					public void onSuccess(HashMap<String, Object> hashmap) {
-						TestCase.assertEquals("deleted", hashmap.get("status"));
+						TestCase.assertEquals("Deleted", hashmap.get("status"));
 						barrierAwait(barrier);
 					}
 					
@@ -553,7 +553,9 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			TestCase.assertEquals(false, layer.isPublic());
 			TestCase.assertEquals("http://example.com/callback/simplegeo", layer.getCallbackURLs().get(0));
 			TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer.getCallbackURLs().get(1));
-			
+			TestCase.assertEquals(1298670526, layer.getCreated());
+			TestCase.assertEquals(1298670526, layer.getUpdated());
+
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		}
@@ -572,6 +574,8 @@ public class SimpleGeoStorageClientTest extends TestCase {
 						TestCase.assertEquals(false, layer.isPublic());
 						TestCase.assertEquals("http://example.com/callback/simplegeo", layer.getCallbackURLs().get(0));
 						TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer.getCallbackURLs().get(1));
+						TestCase.assertEquals(1298670526, layer.getCreated());
+						TestCase.assertEquals(1298670526, layer.getUpdated());
 
 						barrierAwait(barrier);
 					}
@@ -600,7 +604,9 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			TestCase.assertEquals(false, layer1.isPublic());
 			TestCase.assertEquals("http://example.com/callback/simplegeo", layer1.getCallbackURLs().get(0));
 			TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer1.getCallbackURLs().get(1));
-			
+			TestCase.assertEquals(1298670526, layer1.getCreated());
+			TestCase.assertEquals(1298670526, layer1.getUpdated());
+
 			Layer layer2 = layers.getLayers().get(1);
 			TestCase.assertEquals("mojodna.test.2", layer2.getName());
 			TestCase.assertEquals("Mojodna Test Layer 2", layer2.getTitle());
@@ -608,6 +614,8 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			TestCase.assertEquals(false, layer2.isPublic());
 			TestCase.assertEquals("http://example.com/callback/simplegeo/old", layer2.getCallbackURLs().get(0));
 			TestCase.assertEquals("http://example.com/callback/simplegeo/older", layer2.getCallbackURLs().get(1));
+			TestCase.assertEquals(1298670526, layer2.getCreated());
+			TestCase.assertEquals(1298670526, layer2.getUpdated());
 
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
