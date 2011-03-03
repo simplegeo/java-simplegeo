@@ -29,7 +29,7 @@ To actually run the tests in Eclipse, navigate to the `tests/src` folder, right 
 
 ## Building
 
-There are three sets of jar ant tasks included in `build.xml`.  There are 2 jar tasks for each of the Places client, Context client and both.  One task is for building the clients without any of the supporting libs and the other includes the libs.  They are:
+There are four sets of jar ant tasks included in `build.xml`.  There are 2 jar tasks for each of the Places client, Context client Storage client and all.  One task is for building the clients without any of the supporting libs and the other includes the libs.  They are:
 
 * jar-with-libs (includes both clients and supporting libs)
 * jar-without-libs (includes both clients but no supporting libs)
@@ -37,6 +37,8 @@ There are three sets of jar ant tasks included in `build.xml`.  There are 2 jar 
 * places-jar-without-libs (includes places client but no supporting libs)
 * context-jar-with-libs (includes context client and supporting libs)
 * context-jar-without-libs (includes context client but no supporting libs)
+* storage-jar-with-libs (includes storage client and supporting libs)
+* storage-jar-without-libs (includes storage client but no supporting libs)
 
 After running the ant task you require, your jar will be located in the `bin/` folder.
 
