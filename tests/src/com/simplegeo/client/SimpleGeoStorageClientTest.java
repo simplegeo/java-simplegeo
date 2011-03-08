@@ -44,11 +44,11 @@ import com.simplegeo.client.callbacks.FeatureCollectionCallback;
 import com.simplegeo.client.callbacks.GeometryCollectionCallback;
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.test.TestEnvironment;
-import com.simplegeo.client.types.CategoryCollection;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.GeometryCollection;
-import com.simplegeo.client.types.Point;
+import com.simplegeo.client.types.Layer;
+import com.simplegeo.client.types.LayerCollection;
 import com.simplegeo.client.types.Record;
 
 public class SimpleGeoStorageClientTest extends TestCase {
@@ -406,6 +406,247 @@ public class SimpleGeoStorageClientTest extends TestCase {
 						TestCase.assertEquals(40.01685d, featureCollection.getFeatures().get(0).getGeometry().getPoint().getLat());
 						TestCase.assertEquals(-105.27728d, featureCollection.getFeatures().get(1).getGeometry().getPoint().getLon());
 						TestCase.assertEquals(40.01685d, featureCollection.getFeatures().get(1).getGeometry().getPoint().getLat());
+						barrierAwait(barrier);
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						TestCase.fail(errorMessage);			
+					}
+				});
+				barrierAwait(barrier);
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+	
+	public void testCreateLayerSync() {
+		try {
+			ArrayList<String> urls = new ArrayList<String>();
+			urls.add("http://example.com/callback/simplegeo");
+			
+			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
+			HashMap<String, Object> responseMap = client.createLayer(layer);
+			
+			TestCase.assertEquals("OK", responseMap.get("status"));
+			
+		} catch (JSONException e) {
+			TestCase.fail(e.getMessage());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	public void testCreateLayerAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		try {
+			ArrayList<String> urls = new ArrayList<String>();
+			urls.add("http://example.com/callback/simplegeo");
+			
+			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
+			client.createLayer(layer, new SimpleGeoCallback<HashMap<String, Object>>() {
+					@Override
+					public void onSuccess(HashMap<String, Object> hashmap) {
+						TestCase.assertEquals("OK", hashmap.get("status"));
+						barrierAwait(barrier);
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						TestCase.fail(errorMessage);			
+					}
+				});
+				barrierAwait(barrier);
+		} catch (JSONException e) {
+			TestCase.fail(e.getMessage());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+	
+	public void testUpdateLayerSync() {
+		try {
+			ArrayList<String> urls = new ArrayList<String>();
+			urls.add("http://example.com/callback/simplegeo");
+			
+			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
+			HashMap<String, Object> responseMap = client.updateLayer(layer);
+			
+			TestCase.assertEquals("OK", responseMap.get("status"));
+			
+		} catch (JSONException e) {
+			TestCase.fail(e.getMessage());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	public void testUpdateLayerAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		try {
+			ArrayList<String> urls = new ArrayList<String>();
+			urls.add("http://example.com/callback/simplegeo");
+			
+			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
+			client.updateLayer(layer, new SimpleGeoCallback<HashMap<String, Object>>() {
+					@Override
+					public void onSuccess(HashMap<String, Object> hashmap) {
+						TestCase.assertEquals("OK", hashmap.get("status"));
+						barrierAwait(barrier);
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						TestCase.fail(errorMessage);			
+					}
+				});
+				barrierAwait(barrier);
+		} catch (JSONException e) {
+			TestCase.fail(e.getMessage());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+
+	public void testDeleteLayerSync() {
+		try {			
+			HashMap<String, Object> responseMap = client.deleteLayer("testLayer");
+			
+			TestCase.assertEquals("Deleted", responseMap.get("status"));
+			
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	public void testDeleteLayerAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		try {
+			client.deleteLayer("testLayer", new SimpleGeoCallback<HashMap<String, Object>>() {
+					@Override
+					public void onSuccess(HashMap<String, Object> hashmap) {
+						TestCase.assertEquals("Deleted", hashmap.get("status"));
+						barrierAwait(barrier);
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						TestCase.fail(errorMessage);			
+					}
+				});
+				barrierAwait(barrier);
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+
+	public void testGetLayerSync() {
+		try {			
+			Layer layer = client.getLayer("mojodna.test");
+			
+			TestCase.assertEquals("mojodna.test", layer.getName());
+			TestCase.assertEquals("Mojodna Test Layer", layer.getTitle());
+			TestCase.assertEquals("This is a test layer for Mojodna", layer.getDescription());
+			TestCase.assertEquals(false, layer.isPublic());
+			TestCase.assertEquals("http://example.com/callback/simplegeo", layer.getCallbackURLs().get(0));
+			TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer.getCallbackURLs().get(1));
+			TestCase.assertEquals(1298670526, layer.getCreated());
+			TestCase.assertEquals(1298670526, layer.getUpdated());
+
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	public void testGetLayerAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		try {
+			client.getLayer("mojodna.test", new SimpleGeoCallback<Layer>() {
+					@Override
+					public void onSuccess(Layer layer) {
+						TestCase.assertEquals("mojodna.test", layer.getName());
+						TestCase.assertEquals("Mojodna Test Layer", layer.getTitle());
+						TestCase.assertEquals("This is a test layer for Mojodna", layer.getDescription());
+						TestCase.assertEquals(false, layer.isPublic());
+						TestCase.assertEquals("http://example.com/callback/simplegeo", layer.getCallbackURLs().get(0));
+						TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer.getCallbackURLs().get(1));
+						TestCase.assertEquals(1298670526, layer.getCreated());
+						TestCase.assertEquals(1298670526, layer.getUpdated());
+
+						barrierAwait(barrier);
+					}
+					
+					@Override
+					public void onError(String errorMessage) {
+						TestCase.fail(errorMessage);			
+					}
+				});
+				barrierAwait(barrier);
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+	
+	public void testGetLayersSync() {
+		try {			
+			LayerCollection layers = client.getLayers();
+			
+			TestCase.assertEquals(2, layers.getLayers().size());
+			
+			Layer layer1 = layers.getLayers().get(0);
+			TestCase.assertEquals("mojodna.test", layer1.getName());
+			TestCase.assertEquals("Mojodna Test Layer", layer1.getTitle());
+			TestCase.assertEquals("This is a test layer for Mojodna", layer1.getDescription());
+			TestCase.assertEquals(false, layer1.isPublic());
+			TestCase.assertEquals("http://example.com/callback/simplegeo", layer1.getCallbackURLs().get(0));
+			TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer1.getCallbackURLs().get(1));
+			TestCase.assertEquals(1298670526, layer1.getCreated());
+			TestCase.assertEquals(1298670526, layer1.getUpdated());
+
+			Layer layer2 = layers.getLayers().get(1);
+			TestCase.assertEquals("mojodna.test.2", layer2.getName());
+			TestCase.assertEquals("Mojodna Test Layer 2", layer2.getTitle());
+			TestCase.assertEquals("This is another test layer for Mojodna", layer2.getDescription());
+			TestCase.assertEquals(false, layer2.isPublic());
+			TestCase.assertEquals("http://example.com/callback/simplegeo/old", layer2.getCallbackURLs().get(0));
+			TestCase.assertEquals("http://example.com/callback/simplegeo/older", layer2.getCallbackURLs().get(1));
+			TestCase.assertEquals(1298670526, layer2.getCreated());
+			TestCase.assertEquals(1298670526, layer2.getUpdated());
+
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	public void testGetLayersAsync() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		try {
+			client.getLayers(new SimpleGeoCallback<LayerCollection>() {
+					@Override
+					public void onSuccess(LayerCollection layers) {
+						TestCase.assertEquals(2, layers.getLayers().size());
+						
+						Layer layer1 = layers.getLayers().get(0);
+						TestCase.assertEquals("mojodna.test", layer1.getName());
+						TestCase.assertEquals("Mojodna Test Layer", layer1.getTitle());
+						TestCase.assertEquals("This is a test layer for Mojodna", layer1.getDescription());
+						TestCase.assertEquals(false, layer1.isPublic());
+						TestCase.assertEquals("http://example.com/callback/simplegeo", layer1.getCallbackURLs().get(0));
+						TestCase.assertEquals("http://example.com/callback/simplegeo/new", layer1.getCallbackURLs().get(1));
+						
+						Layer layer2 = layers.getLayers().get(1);
+						TestCase.assertEquals("mojodna.test.2", layer2.getName());
+						TestCase.assertEquals("Mojodna Test Layer 2", layer2.getTitle());
+						TestCase.assertEquals("This is another test layer for Mojodna", layer2.getDescription());
+						TestCase.assertEquals(false, layer2.isPublic());
+						TestCase.assertEquals("http://example.com/callback/simplegeo/old", layer2.getCallbackURLs().get(0));
+						TestCase.assertEquals("http://example.com/callback/simplegeo/older", layer2.getCallbackURLs().get(1));
+
 						barrierAwait(barrier);
 					}
 					
