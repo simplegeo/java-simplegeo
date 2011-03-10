@@ -40,6 +40,7 @@ public interface SimpleGeoClient {
 	public static final double DEFAULT_RADIUS = 25;
 
 	static public enum Handler { JSON, GEOJSON, SIMPLEGEO }
+	static public enum HttpRequestMethod { GET, POST, PUT, DELETE }
 	
 	/**
 	 * @return the Http client used to execute all requests

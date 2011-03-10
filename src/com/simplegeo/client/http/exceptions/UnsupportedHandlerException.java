@@ -28,7 +28,6 @@
  */
 package com.simplegeo.client.http.exceptions;
 
-import com.simplegeo.client.http.exceptions.APIException;
 
 /**
  * An exception that is generated when an endpoint does not support

@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import org.json.JSONException;
 
-import com.simplegeo.client.types.CategoryCollection;;
+import com.simplegeo.client.types.CategoryCollection;
 
 /**
  * A response handler used for creating {@link com.simplegeo.client.types.CategoryCollection} from a given payload

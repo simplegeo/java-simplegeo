@@ -29,6 +29,17 @@
 
 package com.simplegeo.client.http;
 
+import java.io.IOException;
+
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+
+import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
+
 /**
  * An interface that defines the only method of the OAuth clients that is used outside of the 
  * response handler; the method that specifies the key & secret.  This is needed because the client
@@ -47,5 +58,22 @@ public interface OAuthClient {
 	 * @param secret the secret key
 	 */
 	public void setToken(String key, String secret);
+	
+	/**
+	 * Execute an OAuth request.
+	 * 
+	 * @param url
+	 * @param method
+	 * @param jsonPayload
+	 * @param responseHandler
+	 * @return
+	 * @throws OAuthMessageSignerException
+	 * @throws OAuthCommunicationException
+	 * @throws OAuthExpectationFailedException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<Object> responseHandler) 
+		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException;
 	
 }

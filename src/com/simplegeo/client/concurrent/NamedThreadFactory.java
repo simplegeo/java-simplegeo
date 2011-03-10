@@ -28,8 +28,8 @@
  */
 package com.simplegeo.client.concurrent;
 
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple subclass of {@link java.util.concurrent.ThreadFactory} that

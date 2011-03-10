@@ -33,10 +33,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
-import org.apache.http.client.methods.HttpGet;
-
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
-import com.simplegeo.client.handler.SimpleGeoResponseHandler;
 import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
@@ -101,7 +98,8 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String, Object> getContext(double lat, double lon) throws IOException {
-		return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler());
+		String uri = String.format(this.getEndpoint("context"), lat, lon);
+		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 	}
 	
 	/**
@@ -113,7 +111,8 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getContext(double lat, double lon, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		this.executeGet(String.format(this.getEndpoint("context"), lat, lon), new JSONHandler(), callback);
+		String uri = String.format(this.getEndpoint("context"), lat, lon);
+		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 	
 	/**
@@ -125,9 +124,11 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 */
 	public HashMap<String, Object> getContextByIP(String ip) throws IOException {
 		if ("".equals(ip)) {
-			return (HashMap<String, Object>) this.executeGet(this.getEndpoint("myIp"), new JSONHandler());
+			String uri = this.getEndpoint("myIp");
+			return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 		} else {
-			return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler());
+			String uri = String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8"));
+			return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 		}
 	}
 	
@@ -140,9 +141,11 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 */
 	public void getContextByIP(String ip, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
 		if ("".equals(ip)) {
-			this.executeGet(this.getEndpoint("myIp"), new JSONHandler(), callback);
+			String uri = this.getEndpoint("myIp");
+			this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 		} else {
-			this.executeGet(String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), new JSONHandler(), callback);
+			String uri = String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8"));
+			this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 		}
 	}
 	
@@ -154,7 +157,8 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String, Object> getContextByAddress(String address) throws IOException {
-		return (HashMap<String, Object>) this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler());
+		String uri = String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"));
+		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 	}
 	
 	/**
@@ -165,60 +169,12 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getContextByAddress(String address, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		this.executeGet(String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), new JSONHandler(), callback);
+		String uri = String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"));
+		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 
 	@Override
 	public OAuthClient getHttpClient() {
 		return super.getHttpClient();
 	}
-
-	@Override
-	protected Object executeGet(String uri, SimpleGeoResponseHandler handler)
-			throws IOException {
-		return super.execute(new HttpGet(uri), new SimpleGeoHandler(handler));
-	}
-	
-	@Override
-	protected void executeGet(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback)
-			throws IOException {
-		super.execute(new HttpGet(uri), new SimpleGeoHandler(handler), callback);
-	}
-
-	@Override
-	protected Object executePost(String uri, String jsonPayload,
-			SimpleGeoResponseHandler handler) throws IOException {
-		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
-	}
-	
-	@Override
-	protected void executePost(String uri, String jsonPayload,
-			SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException {
-		throw new UnsupportedOperationException("Posts are not allowed in the Context service.");
-	}
-
-	@Override
-	protected Object executePut(String uri, String jsonPayload,
-			SimpleGeoResponseHandler handler) throws IOException {
-		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
-	}
-	
-	@Override
-	protected void executePut(String uri, String jsonPayload,
-			SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException {
-		throw new UnsupportedOperationException("Puts are not allowed in the Context service.");
-	}
-
-	@Override
-	protected Object executeDelete(String uri, SimpleGeoResponseHandler handler)
-			throws IOException {
-		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
-	}
-	
-	@Override
-	protected void executeDelete(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback)
-			throws IOException {
-		throw new UnsupportedOperationException("Deletes are not allowed in the Context service.");
-	}
-
 }

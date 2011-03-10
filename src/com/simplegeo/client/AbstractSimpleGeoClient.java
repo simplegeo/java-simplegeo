@@ -38,7 +38,6 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -49,8 +48,8 @@ import org.apache.http.params.HttpProtocolParams;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
-import com.simplegeo.client.handler.SimpleGeoResponseHandler;
 import com.simplegeo.client.http.OAuthClient;
+import com.simplegeo.client.http.OAuthGAEHttpClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
@@ -115,14 +114,12 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	protected Object execute(HttpUriRequest request, SimpleGeoHandler handler)
+	protected Object execute(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler handler)
 		throws ClientProtocolException, IOException {
-
-		logger.info(String.format("sending %s", request.toString()));
 	
 		Object object = null;
 		try {
-			object = httpClient.executeOAuthRequest(request, handler);
+			object = httpClient.executeOAuthRequest(this.removeEmptyParameters(urlString), method, jsonPayload, handler);
 		} catch (OAuthMessageSignerException e) {
 			dealWithAuthorizationException(e);
 		} catch (OAuthExpectationFailedException e) {
@@ -144,19 +141,21 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	protected void execute(HttpUriRequest request, SimpleGeoHandler handler, SimpleGeoCallback callback)
+	protected void execute(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler handler, SimpleGeoCallback callback)
 		throws ClientProtocolException, IOException {
 
-		final HttpUriRequest finalRequest = request;
 		final SimpleGeoHandler finalHandler = handler;
 		final SimpleGeoCallback finalCallback = callback;
+		final String finalUrlString = this.removeEmptyParameters(urlString);
+		final HttpRequestMethod finalMethod = method;
+		final String finalJsonPayload = jsonPayload;
 		
 		threadExecutor.execute(new Thread() {
 			@Override
 			public void run() {
 				Object object = null;
 				try {
-					object = httpClient.executeOAuthRequest(finalRequest, finalHandler);
+					object = httpClient.executeOAuthRequest(finalUrlString, finalMethod, finalJsonPayload, finalHandler);
 				} catch (OAuthMessageSignerException e) {
 					finalCallback.onError(e.getMessage());
 				} catch (OAuthExpectationFailedException e) {
@@ -186,18 +185,26 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 */
 	public OAuthClient getHttpClient() {
 		return httpClient;
-	}	
+	}
 	
-	protected abstract Object executeGet(String uri, SimpleGeoResponseHandler handler) throws IOException;
-	protected abstract void executeGet(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException;
-	
-	protected abstract Object executePost(String uri, String jsonPayload, SimpleGeoResponseHandler handler) throws IOException;
-	protected abstract void executePost(String uri, String jsonPayload, SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException;
-	
-	protected abstract Object executePut(String uri, String jsonPayload, SimpleGeoResponseHandler handler) throws IOException;
-	protected abstract void executePut(String uri, String jsonPayload, SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException;
-
-	protected abstract Object executeDelete(String uri, SimpleGeoResponseHandler handler) throws IOException;
-	protected abstract void executeDelete(String uri, SimpleGeoResponseHandler handler, SimpleGeoCallback callback) throws IOException;
-
+	/**
+	 * Remove empty parameters so we're not sending q=&category=.
+	 * 
+	 * @param uri String uri containing parameters
+	 * @return String uri with empty parameters removed
+	 */
+	private String removeEmptyParameters(String uri) {
+		if (uri.indexOf("?") == -1)
+			return uri;
+		
+		String base = uri.substring(0, uri.indexOf("?"));
+		String[] parameters = uri.substring(uri.indexOf("?") + 1).split("&");
+		String newQuery = "";
+		for (String parameter : parameters) {
+			if (!parameter.endsWith("=")) {
+				newQuery += "&" + parameter;
+			}
+		}
+		return base + "?" + newQuery.replaceFirst("&", "");
+	}
 }

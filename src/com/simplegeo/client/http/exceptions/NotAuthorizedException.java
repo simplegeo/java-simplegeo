@@ -28,7 +28,6 @@
  */
 package com.simplegeo.client.http.exceptions;
 
-import com.simplegeo.client.http.exceptions.APIException;
 
 /**
  * An exception that is created when an Http response contains a status

@@ -29,6 +29,7 @@
 package com.simplegeo.client.http;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -36,14 +37,19 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
-import java.util.logging.Logger;
-
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.HttpParams;
+
+import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
 
 /**
  * A subclass of {@link org.apache.http.impl.client.DefaultHttpClient}
@@ -113,7 +119,9 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * Signs the Http request with the registered token before
 	 * execution.
 	 * 
-	 * @param request the request that will be sent
+	 * @param urlString The url that the request should be sent to.
+	 * @param type The type of request that should be sent.
+	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
 	 * @param responseHandler the handler that will be used on a successful
 	 * response
 	 * @return an Object that was created by the handler
@@ -123,11 +131,42 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public Object executeOAuthRequest(HttpUriRequest request, ResponseHandler<Object> responseHandler) 
+	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<Object> responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
-		
+		HttpUriRequest request = this.buildRequest(urlString, method, jsonPayload);
+		logger.info(String.format("sending %s", request.toString()));
 		this.token.sign(request);
-		
 		return super.execute(request, responseHandler);
+	}
+	
+	/**
+	 * Factory method that builds a HttpUriRequest based on the information passed in.
+	 * 
+	 * @param urlString The url that the request should be sent to.
+	 * @param type The type of request that should be sent.
+	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
+	 * @return HttpUriRequest Either a HttpGet, HttpPost, HttpPut or HttpDelete
+	 */
+	private HttpUriRequest buildRequest(String urlString, HttpRequestMethod method, String jsonPayload) {
+		switch (method) {
+			case GET:
+				HttpGet requestGet = new HttpGet(urlString);
+				return requestGet;
+			case POST:
+				HttpPost requestPost = new HttpPost(urlString);
+				requestPost.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
+				requestPost.addHeader("Content-type", "application/json");
+				return requestPost;
+			case PUT:
+				HttpPut requestPut = new HttpPut(urlString);
+				requestPut.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
+				requestPut.addHeader("Content-type", "application/json");
+				return requestPut;
+			case DELETE:
+				HttpDelete requestDelete = new HttpDelete(urlString);
+				return requestDelete;
+			default:
+				return null;
+		}
 	}
 }
