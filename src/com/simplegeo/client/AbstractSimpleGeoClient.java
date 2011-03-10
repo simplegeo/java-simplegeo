@@ -49,13 +49,13 @@ import org.apache.http.params.HttpProtocolParams;
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.http.OAuthClient;
-import com.simplegeo.client.http.OAuthGAEHttpClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 
 /**
- * Extracts as much common code as possible between the SimpleGeoPlacesClient and the SimpleGeoContextClient.
+ * Extracts as much common code as possible between the SimpleGeoPlacesClient, 
+ * SimpleGeoContextClient and SimpleGeoStorageClient.
  * 
  * @author Casey Crites
  */
