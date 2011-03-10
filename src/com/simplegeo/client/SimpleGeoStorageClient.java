@@ -66,22 +66,8 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoStorageClient
 	 */
 	public static SimpleGeoStorageClient getInstance(String baseUrl, String port, String apiVersion) {
-		return getInstance(baseUrl, port, apiVersion, DEFAULT_CLIENT_TYPE);	
-	}
-	
-	/**
-	 * Method that ensures we only have one instance of the {@link com.simplegeo.client.SimpleGeoStorageClient} instantiated.  Also allows
-	 * server connection variables to be overridden.
-	 * 
-	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
-	 * @param port String 80 is default, but can be overridden.
-	 * @param apiVersion String 1.0 is default, but can be overridden.
-	 * @param type OAuthClientType Type of OAuth client to use for making requests.
-	 * @return SimpleGeoStorageClient
-	 */
-	public static SimpleGeoStorageClient getInstance(String baseUrl, String port, String apiVersion, OAuthClientType type) {
 		if(storageClient == null)
-			storageClient = new SimpleGeoStorageClient(baseUrl, port, apiVersion, type);
+			storageClient = new SimpleGeoStorageClient(baseUrl, port, apiVersion);
 
 		return (SimpleGeoStorageClient) storageClient;		
 	}
@@ -92,7 +78,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @return SimpleGeoStorageClient
 	 */
 	public static SimpleGeoStorageClient getInstance() {
-		return getInstance(DEFAULT_HOST, DEFAULT_PORT, STORAGE_DEFAULT_VERSION, DEFAULT_CLIENT_TYPE);
+		return getInstance(DEFAULT_HOST, DEFAULT_PORT, STORAGE_DEFAULT_VERSION);
 	}
 	
 	/**
