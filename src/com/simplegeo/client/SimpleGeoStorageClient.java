@@ -232,7 +232,6 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @param limit The maximum number of records to return. Default: 10
 	 * @param cursor String encrypted string that is returned when a previous query has reached its prescribed limit and still has more records to return. 
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of record with the specified recordId and layer
 	 * @throws IOException
 	 */
 	public void getHistory(String layer, String recordId,  int limit, String cursor, SimpleGeoCallback<GeometryCollection> callback) throws IOException {
@@ -359,7 +358,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	/**
 	 * Synchronously delete a layer.
 	 * 
-	 * @param layer String name of the layer to be deleted
+	 * @param layerName String name of the layer to be deleted
 	 * @return HashMap<String, Object> containing the "status"
 	 * @throws IOException
 	 */
@@ -370,7 +369,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	/**
 	 * Asynchronously delete a layer.
 	 * 
-	 * @param layer String name of the layer to be deleted
+	 * @param layerName String name of the layer to be deleted
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
@@ -381,7 +380,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	/**
 	 * Synchronously retrieve a layer.
 	 * 
-	 * @param layer String name of the layer to be retrieved
+	 * @param layerName String name of the layer to be retrieved
 	 * @return {@link com.simplegeo.client.types.Layer}
 	 * @throws IOException
 	 */
@@ -392,7 +391,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	/**
 	 * Asynchronously retrieve a layer.
 	 * 
-	 * @param layer String name of the layer to be retrieved
+	 * @param layerName String name of the layer to be retrieved
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
