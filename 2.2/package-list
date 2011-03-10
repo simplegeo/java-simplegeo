@@ -1,1 +1,7 @@
 com.simplegeo.client
+com.simplegeo.client.callbacks
+com.simplegeo.client.concurrent
+com.simplegeo.client.handler
+com.simplegeo.client.http
+com.simplegeo.client.http.exceptions
+com.simplegeo.client.types
