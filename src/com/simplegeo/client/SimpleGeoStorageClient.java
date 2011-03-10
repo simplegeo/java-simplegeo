@@ -233,7 +233,6 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @param limit The maximum number of records to return. Default: 10
 	 * @param cursor String encrypted string that is returned when a previous query has reached its prescribed limit and still has more records to return. 
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @return {@link com.simplegeo.client.types.GeometryCollection} {@link com.simplegeo.client.types.GeometryCollection} representing the history of record with the specified recordId and layer
 	 * @throws IOException
 	 */
 	public void getHistory(String layer, String recordId,  int limit, String cursor, SimpleGeoCallback<GeometryCollection> callback) throws IOException {

@@ -120,7 +120,6 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * execution.
 	 * 
 	 * @param urlString The url that the request should be sent to.
-	 * @param type The type of request that should be sent.
 	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
 	 * @param responseHandler the handler that will be used on a successful
 	 * response

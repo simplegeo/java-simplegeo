@@ -62,7 +62,7 @@ public interface OAuthClient {
 	/**
 	 * Execute an OAuth request.
 	 * 
-	 * @param url
+	 * @param urlString
 	 * @param method
 	 * @param jsonPayload
 	 * @param responseHandler
