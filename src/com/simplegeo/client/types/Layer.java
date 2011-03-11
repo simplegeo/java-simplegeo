@@ -153,10 +153,12 @@ public class Layer {
 		layer.created = json.optLong("created");
 		layer.updated = json.optLong("updated");
 		
-		JSONArray urls = json.getJSONArray("callback_urls");
+		JSONArray urls = json.optJSONArray("callback_urls");
 		ArrayList<String> callbackURLs = new ArrayList<String>();
-		for (int i=0; i < urls.length(); i++) {
-			callbackURLs.add(urls.getString(i));
+		if (urls != null) {
+			for (int i=0; i < urls.length(); i++) {
+				callbackURLs.add(urls.getString(i));
+			}
 		}
 		
 		layer.setCallbackURLs(callbackURLs);
