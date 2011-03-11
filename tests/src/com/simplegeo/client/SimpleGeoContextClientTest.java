@@ -61,7 +61,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		double lon = -122.440033;
 		try {
 			HashMap<String, Object> responseMap = client.getContext(lat, lon);
-			
+			System.out.println(responseMap);
 			this.assertNotNull(responseMap.get("features"));
 			this.assertNotNull(responseMap.get("weather"));
 			this.assertNotNull(responseMap.get("demographics"));

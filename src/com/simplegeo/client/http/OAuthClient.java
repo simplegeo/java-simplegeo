@@ -35,9 +35,6 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-
 import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
 
 /**
@@ -73,7 +70,7 @@ public interface OAuthClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<Object> responseHandler) 
-		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException;
+	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler responseHandler) 
+		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, IOException;
 	
 }

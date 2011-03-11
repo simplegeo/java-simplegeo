@@ -37,15 +37,6 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.http.OAuthClient;
@@ -83,15 +74,8 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 		this.baseUrl = baseUrl == "" ? DEFAULT_HOST : baseUrl;
 		this.port = port == "" ? DEFAULT_PORT : port;
 		this.apiVersion = apiVersion == "" ? DEFAULT_VERSION : apiVersion;
-		
-		// We want to make sure the client is threadsafe
-		HttpParams params = new BasicHttpParams();
-		HttpProtocolParams.setUseExpectContinue(params, false);
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
 
-		this.httpClient = new OAuthHttpClient(connManager, params);
+		this.httpClient = new OAuthHttpClient();
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
 	}
 	
@@ -115,7 +99,7 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * @throws IOException
 	 */
 	protected Object execute(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler handler)
-		throws ClientProtocolException, IOException {
+		throws IOException {
 	
 		Object object = null;
 		try {
@@ -142,7 +126,7 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * @throws IOException
 	 */
 	protected void execute(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler handler, SimpleGeoCallback callback)
-		throws ClientProtocolException, IOException {
+		throws IOException {
 
 		final SimpleGeoHandler finalHandler = handler;
 		final SimpleGeoCallback finalCallback = callback;

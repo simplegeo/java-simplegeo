@@ -28,14 +28,17 @@
  */
 package com.simplegeo.client.http;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
 import com.simplegeo.client.handler.SimpleGeoResponseHandler;
@@ -48,7 +51,7 @@ import com.simplegeo.client.http.exceptions.NotAuthorizedException;
  * 
  * @author Derek Smith
  */
-public class SimpleGeoHandler implements ResponseHandler<Object> {
+public class SimpleGeoHandler {
 	
 	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class.getName());
 	
@@ -71,41 +74,40 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 	/* (non-Javadoc)
 	 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
 	 */
-	public Object handleResponse(HttpResponse response)
+	public Object handleResponse(InputStream response, int statusCode)
 			throws ClientProtocolException, IOException {
 
 		logger.info("received response " + response);
-
-		StatusLine statusLine = response.getStatusLine();
-		int statusCode = statusLine.getStatusCode();
 		
-		HttpEntity entity = response.getEntity();
+		Writer writer = new StringWriter();
+		char[] buffer = new char[1024];
+		try {
+			Reader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
+			int n;
+			while ((n = reader.read(buffer)) != -1) {
+					writer.write(buffer, 0, n);
+			}
+		} finally {
+			response.close();
+		}
+		String jsonString = writer.toString();
 
-		@SuppressWarnings("unused")
-		HttpResponse validResponse = null;
 		switch(statusCode) {
 		
 			case GET_SUCCESS:
 			case POST_SUCCESS:
 			case PUT_SUCCESS:
-				validResponse = response; 
 				break;
 			case BAD_REQUEST:
-				throw APIException.createException(entity, statusLine);
+				throw new APIException(statusCode, jsonString);
 			case NO_SUCH:
-				throw NoSuchEntityException.createException(entity, statusLine);
+				throw new NoSuchEntityException(statusCode, jsonString);
 			case NOT_AUTHORIZED:
-				throw NotAuthorizedException.createException(entity, statusLine);
+				throw new NotAuthorizedException(statusCode, jsonString);
 			default:
-				throw APIException.createException(entity, statusLine);
+				throw new APIException(statusCode, jsonString);
 		
 		}
-		
-		//
-		// Extract the string
-		// 
-		String jsonString = null;
-		jsonString = EntityUtils.toString(response.getEntity());	
 		
 		return handler.parseResponse(jsonString);
 	}
