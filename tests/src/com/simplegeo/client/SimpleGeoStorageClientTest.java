@@ -425,7 +425,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 			ArrayList<String> urls = new ArrayList<String>();
 			urls.add("http://example.com/callback/simplegeo");
 
-			Layer layer = new Layer("testLayer", "Testing Layer", "This layer is for testing only", false, urls);
+			Layer layer = new Layer("testLayer12345", "Testing Layer", "This layer is for testing only", false, urls);
 			HashMap<String, Object> responseMap = client.createLayer(layer);
 
 			TestCase.assertEquals("OK", responseMap.get("status"));

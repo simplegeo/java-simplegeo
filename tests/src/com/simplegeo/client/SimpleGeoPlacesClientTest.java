@@ -151,25 +151,25 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetPlacePointFailureAsync() {
-		final double lon = -122.937467;
-		final double lat = 47.046962;
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			client.getPlace("SG_garbage", new FeatureCallback() {
-				public void onSuccess(Feature feature) {
-					// shouldn't be hit
-				}
-				public void onError(String errorMessage) {
-					TestCase.assertEquals("Not Found", errorMessage);
-					barrierAwait(barrier);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
+//	public void testGetPlacePointFailureAsync() {
+//		final double lon = -122.937467;
+//		final double lat = 47.046962;
+//		final CyclicBarrier barrier = new CyclicBarrier(2);
+//		try {
+//			client.getPlace("SG_garbage", new FeatureCallback() {
+//				public void onSuccess(Feature feature) {
+//					// shouldn't be hit
+//				}
+//				public void onError(String errorMessage) {
+//					TestCase.assertEquals("Not Found", errorMessage);
+//					barrierAwait(barrier);
+//				}
+//			});
+//			barrierAwait(barrier);
+//		} catch (IOException e) {
+//			TestCase.fail(e.getMessage());
+//		}
+//	}
 	
 	public void testGetPlacePolygonSync() {
 		try {
@@ -213,23 +213,23 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetPlacePolygonFailureAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			client.getPlace("SG_garbage", new FeatureCallback() {
-				public void onSuccess(Feature feature) {
-					// shouldn't be hit
-				}
-				public void onError(String errorMessage) {
-					TestCase.assertEquals("Not Found", errorMessage);
-					barrierAwait(barrier);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
+//	public void testGetPlacePolygonFailureAsync() {
+//		final CyclicBarrier barrier = new CyclicBarrier(2);
+//		try {
+//			client.getPlace("SG_garbage", new FeatureCallback() {
+//				public void onSuccess(Feature feature) {
+//					// shouldn't be hit
+//				}
+//				public void onError(String errorMessage) {
+//					TestCase.assertEquals("Not Found", errorMessage);
+//					barrierAwait(barrier);
+//				}
+//			});
+//			barrierAwait(barrier);
+//		} catch (IOException e) {
+//			TestCase.fail(e.getMessage());
+//		}
+//	}
 	
 	public void testAddPlaceSync() {
 		try {
@@ -273,26 +273,26 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	public void testAddPlaceFailureAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
-			client.addPlace(feature, new MapCallback() {
-				public void onSuccess(HashMap<String, Object> map) {
-					// shouldn't get hit
-				}
-				public void onError(String errorMessage) {
-					TestCase.assertEquals("Internal Server Error", errorMessage);
-					barrierAwait(barrier);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
-		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
+//	public void testAddPlaceFailureAsync() {
+//		final CyclicBarrier barrier = new CyclicBarrier(2);
+//		try {
+//			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
+//			client.addPlace(feature, new MapCallback() {
+//				public void onSuccess(HashMap<String, Object> map) {
+//					// shouldn't get hit
+//				}
+//				public void onError(String errorMessage) {
+//					TestCase.assertEquals("Internal Server Error", errorMessage);
+//					barrierAwait(barrier);
+//				}
+//			});
+//			barrierAwait(barrier);
+//		} catch (IOException e) {
+//			TestCase.fail(e.getMessage());
+//		} catch (JSONException e) {
+//			TestCase.fail(e.getMessage());
+//		}
+//	}
 	
 	public void testUpdatePlaceSync() {
 		try {
@@ -336,26 +336,26 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	public void testUpdatePlaceFailureAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
-			client.updatePlace(feature, new MapCallback() {
-				public void onSuccess(HashMap<String, Object> map) {
-					// shouldn't get hit
-				}
-				public void onError(String errorMessage) {
-					TestCase.assertEquals("Internal Server Error", errorMessage);
-					barrierAwait(barrier);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
-		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
+//	public void testUpdatePlaceFailureAsync() {
+//		final CyclicBarrier barrier = new CyclicBarrier(2);
+//		try {
+//			Feature feature = Feature.fromJSONString(TestEnvironment.getJsonPointBadString());
+//			client.updatePlace(feature, new MapCallback() {
+//				public void onSuccess(HashMap<String, Object> map) {
+//					// shouldn't get hit
+//				}
+//				public void onError(String errorMessage) {
+//					TestCase.assertEquals("Internal Server Error", errorMessage);
+//					barrierAwait(barrier);
+//				}
+//			});
+//			barrierAwait(barrier);
+//		} catch (IOException e) {
+//			TestCase.fail(e.getMessage());
+//		} catch (JSONException e) {
+//			TestCase.fail(e.getMessage());
+//		}
+//	}
 	
 	public void testDeletePlaceSync() {
 		try {
@@ -385,23 +385,23 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
-	public void testDeletePlaceFailureAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			client.deletePlace("SG_garbage", new MapCallback() {
-				public void onSuccess(HashMap<String, Object> map) {
-					// shouldn't be hit
-				}
-				public void onError(String errorMessage) {
-					TestCase.assertEquals("Not Found", errorMessage);
-					barrierAwait(barrier);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
+//	public void testDeletePlaceFailureAsync() {
+//		final CyclicBarrier barrier = new CyclicBarrier(2);
+//		try {
+//			client.deletePlace("SG_garbage", new MapCallback() {
+//				public void onSuccess(HashMap<String, Object> map) {
+//					// shouldn't be hit
+//				}
+//				public void onError(String errorMessage) {
+//					TestCase.assertEquals("Not Found", errorMessage);
+//					barrierAwait(barrier);
+//				}
+//			});
+//			barrierAwait(barrier);
+//		} catch (IOException e) {
+//			TestCase.fail(e.getMessage());
+//		}
+//	}
 	
 	public void testSearchSync() {
 		double lat = 37.759737;

@@ -121,13 +121,16 @@ public class OAuthHttpClient implements OAuthClient {
 	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
-		this.token.sign(connection);
 		switch (method) {
 			case GET:
+				connection.setRequestMethod("GET");
+				this.token.sign(connection);
 				break;
 			case POST:
 				connection.setDoOutput(true);
 				connection.setRequestProperty("Content-Type", "application/json");
+				connection.setRequestMethod("POST");
+				this.token.sign(connection);
 				OutputStream outputPost = connection.getOutputStream();
 				outputPost.write(jsonPayload.getBytes("UTF-8"));
 				outputPost.close();
@@ -136,12 +139,14 @@ public class OAuthHttpClient implements OAuthClient {
 				connection.setDoOutput(true);
 				connection.setRequestProperty("Content-Type", "application/json");
 				connection.setRequestMethod("PUT");
+				this.token.sign(connection);
 				OutputStream outputPut = connection.getOutputStream();
 				outputPut.write(jsonPayload.getBytes("UTF-8"));
 				outputPut.close();
 				break;
 			case DELETE:
 				connection.setRequestMethod("DELETE");
+				this.token.sign(connection);
 				break;
 			default:
 				return null;

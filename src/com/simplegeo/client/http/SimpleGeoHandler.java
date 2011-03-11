@@ -76,8 +76,6 @@ public class SimpleGeoHandler {
 	 */
 	public Object handleResponse(InputStream response, int statusCode)
 			throws ClientProtocolException, IOException {
-
-		logger.info("received response " + response);
 		
 		Writer writer = new StringWriter();
 		char[] buffer = new char[1024];
