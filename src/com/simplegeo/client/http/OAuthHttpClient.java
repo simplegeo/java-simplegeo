@@ -151,9 +151,13 @@ public class OAuthHttpClient implements OAuthClient {
 			default:
 				return null;
 		}
-		
-		InputStream response = connection.getInputStream();
-		int responseCode = ((HttpURLConnection) connection).getResponseCode();
+		InputStream response = null;
+		try {
+			response = connection.getInputStream();
+		} catch (IOException e) {
+			response = connection.getErrorStream();
+		}
+		int responseCode = connection.getResponseCode();
 		return responseHandler.handleResponse(response, responseCode);
 	}
 }

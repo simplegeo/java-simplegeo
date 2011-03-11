@@ -77,18 +77,22 @@ public class SimpleGeoHandler {
 	public Object handleResponse(InputStream response, int statusCode)
 			throws ClientProtocolException, IOException {
 		
-		Writer writer = new StringWriter();
-		char[] buffer = new char[1024];
-		try {
-			Reader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
-			int n;
-			while ((n = reader.read(buffer)) != -1) {
-					writer.write(buffer, 0, n);
+		String jsonString = "";
+		
+		if (response != null) {
+			Writer writer = new StringWriter();
+			char[] buffer = new char[1024];
+			try {
+				Reader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
+				int n;
+				while ((n = reader.read(buffer)) != -1) {
+						writer.write(buffer, 0, n);
+				}
+			} finally {
+				response.close();
 			}
-		} finally {
-			response.close();
+			jsonString = writer.toString();
 		}
-		String jsonString = writer.toString();
 
 		switch(statusCode) {
 		
@@ -104,7 +108,6 @@ public class SimpleGeoHandler {
 				throw new NotAuthorizedException(statusCode, jsonString);
 			default:
 				throw new APIException(statusCode, jsonString);
-		
 		}
 		
 		return handler.parseResponse(jsonString);
