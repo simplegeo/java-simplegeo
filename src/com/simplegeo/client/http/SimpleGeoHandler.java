@@ -81,14 +81,13 @@ public class SimpleGeoHandler implements ResponseHandler<Object> {
 		
 		HttpEntity entity = response.getEntity();
 
-		@SuppressWarnings("unused")
-		HttpResponse validResponse = null;
 		switch(statusCode) {
 		
 			case GET_SUCCESS:
+				break;
 			case POST_SUCCESS:
+				break;
 			case PUT_SUCCESS:
-				validResponse = response; 
 				break;
 			case BAD_REQUEST:
 				throw APIException.createException(entity, statusLine);
