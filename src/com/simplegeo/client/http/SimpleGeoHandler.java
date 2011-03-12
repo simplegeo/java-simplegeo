@@ -97,7 +97,9 @@ public class SimpleGeoHandler {
 		switch(statusCode) {
 		
 			case GET_SUCCESS:
+				break;
 			case POST_SUCCESS:
+				break;
 			case PUT_SUCCESS:
 				break;
 			case BAD_REQUEST:
