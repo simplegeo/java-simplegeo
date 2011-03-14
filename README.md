@@ -9,6 +9,10 @@ Version 2.0 of this client is non-backwards compatible.  It was deemed that in o
 
 We hope you find this version of the client much more useful than the 1.0 release.
 
+## Google App Engine
+
+If you need to run this client on Google App Engine, you can use the dev/feature/gae branch for now.  This will be merged into master when a clean way of doing this is determined.
+
 ## Getting Started
 
 For network tests to succeed, you'll want to clone and start the mock SimpleGeo
