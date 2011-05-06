@@ -65,6 +65,30 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
+	public void testEnableAndDisableSSL() {
+		try {
+			// Initialize to use the Places client, since Storage client is static and already initialized
+			SimpleGeoPlacesClient testClient = SimpleGeoPlacesClient.getInstance();
+			
+			// By default, it should use https (SSL)
+			String endPoint = testClient.getEndpoint("endpoints");
+			String expectedResult = String.format("%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HOST, SimpleGeoClient.DEFAULT_PORT, SimpleGeoClient.DEFAULT_VERSION, "endpoints.json");			
+			TestCase.assertEquals(expectedResult, endPoint);
+
+			//Disable SSL
+			testClient.enableSSL(false);			
+			
+			// It should now use http, instead of https
+			endPoint = testClient.getEndpoint("endpoints");
+			expectedResult = String.format("%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HTTP_HOST, SimpleGeoClient.DEFAULT_HTTP_PORT, SimpleGeoClient.DEFAULT_VERSION, "endpoints.json");
+			TestCase.assertEquals(expectedResult, endPoint);			
+
+		} catch (Exception e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+	
 	public void testAddOrUpdateRecordSync() {
 		double lon = -122.937467;
 		double lat = 47.046962;
