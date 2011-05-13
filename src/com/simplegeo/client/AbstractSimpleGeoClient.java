@@ -41,6 +41,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -67,8 +68,8 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	
 	protected static Logger logger = Logger.getLogger(AbstractSimpleGeoClient.class.getName());
 	
-	protected String baseUrl = "http://api.simplegeo.com";
-	protected String port = "80";
+	protected String baseUrl = DEFAULT_HOST;
+	protected String port = DEFAULT_PORT;
 	protected String apiVersion = "1.0";
 	public HashMap<String, String> endpoints = new HashMap<String, String>();
 	
@@ -89,6 +90,7 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 		HttpProtocolParams.setUseExpectContinue(params, false);
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
 
 		this.httpClient = new OAuthHttpClient(connManager, params);
@@ -102,6 +104,20 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 */
 	protected String getEndpoint(String endpointName) {
 		return String.format("%s:%s/%s/%s", baseUrl, port, apiVersion, endpoints.get(endpointName));
+	}
+	
+	/**
+	 * Set the client to enable or disable the use of SSL for SimpleGeo server requests
+	 * @param boolean, true to enable SSL, false to disable SSL
+	 */
+	public void enableSSL(boolean useSSL) {
+		if (useSSL) {
+			baseUrl = DEFAULT_HOST;
+			port = DEFAULT_PORT;
+		} else {
+			baseUrl = DEFAULT_HTTP_HOST;
+			port = DEFAULT_HTTP_PORT;
+		}
 	}
 	
 	/**

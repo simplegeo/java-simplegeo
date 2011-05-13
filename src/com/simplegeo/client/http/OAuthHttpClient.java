@@ -133,7 +133,7 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<Object> responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
 		HttpUriRequest request = this.buildRequest(urlString, method, jsonPayload);
-		logger.info(String.format("sending %s", request.toString()));
+		logger.info(String.format("sending %s with url %s", request.toString(), urlString));
 		this.token.sign(request);
 		return super.execute(request, responseHandler);
 	}
