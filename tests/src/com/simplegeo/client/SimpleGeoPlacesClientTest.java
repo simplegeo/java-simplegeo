@@ -63,6 +63,36 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
+	public void testEnableAndDisableSSL() {
+		try {
+			// Initialize to use the Places client, since Storage client is static and already initialized
+			SimpleGeoContextClient testClient = SimpleGeoContextClient.getInstance();
+			
+			// Although by default SSL is enabled, this has to be called since
+			// the static instance of SimpleGeoContextClient has been previously
+			// initialized (when the entire TestSuite is run) with
+			// TestEnvironment.getBaseUrl() etc
+			testClient.enableSSL(true);
+
+			// By default, it should use https (SSL)
+			String endPoint = testClient.getEndpoint("myIp");
+			String expectedResult = String.format("%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HOST, SimpleGeoClient.DEFAULT_PORT, SimpleGeoClient.DEFAULT_VERSION, "context/ip.json");			
+			TestCase.assertEquals(expectedResult, endPoint);
+
+			//Disable SSL
+			testClient.enableSSL(false);			
+			
+			// It should now use http, instead of https
+			endPoint = testClient.getEndpoint("myIp");
+			expectedResult = String.format("%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HTTP_HOST, SimpleGeoClient.DEFAULT_HTTP_PORT, SimpleGeoClient.DEFAULT_VERSION, "context/ip.json");
+			TestCase.assertEquals(expectedResult, endPoint);			
+
+		} catch (Exception e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+
+
 	public void testGetCategoriesSync() {
 		try {
 			CategoryCollection categoryCollection = client.getCategories();
