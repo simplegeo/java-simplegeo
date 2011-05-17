@@ -65,6 +65,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
+	
 	public void testAddOrUpdateRecordSync() {
 		double lon = -122.937467;
 		double lat = 47.046962;
