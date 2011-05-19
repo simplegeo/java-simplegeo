@@ -46,13 +46,13 @@ import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 import com.simplegeo.client.types.Point;
 
+/**
+ * Class for interacting with the SimpleGeo Places API.
+ * 
+ * @author Casey Crites
+ */
+
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
-	
-	/**
-	 * Class for interacting with the SimpleGeo Places API.
-	 * 
-	 * @author Casey Crites
-	 */
 	
 	protected static SimpleGeoPlacesClient placesClient = null;
 	

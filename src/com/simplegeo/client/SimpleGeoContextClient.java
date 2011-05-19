@@ -38,13 +38,14 @@ import com.simplegeo.client.handler.JSONHandler;
 import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 
+
+/**
+ * Class for interacting with the SimpleGeo Context API.
+ * 
+ * @author Casey Crites
+ */
+
 public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
-	
-	/**
-	 * Class for interacting with the SimpleGeo Context API.
-	 * 
-	 * @author Casey Crites
-	 */
 	
 	protected static SimpleGeoContextClient sharedContextService = null;
 	

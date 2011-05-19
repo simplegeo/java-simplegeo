@@ -108,7 +108,7 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	
 	/**
 	 * Set the client to enable or disable the use of SSL for SimpleGeo server requests
-	 * @param boolean, true to enable SSL, false to disable SSL
+	 * @param useSSL boolean, true to enable SSL, false to disable SSL
 	 */
 	public void enableSSL(boolean useSSL) {
 		if (useSSL) {
@@ -122,9 +122,11 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	
 	/**
 	 * Method for executing HttpRequests synchronously.
-	 * @param request HttpUriRequest
+	 * @param urlString String URL endpoint.
+	 * @param method {@link com.simplegeo.client.SimpleGeoClient.HttpRequestMethod}
+	 * @param jsonPayload String A string with the json that will be sent with the request.
 	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
-	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
+	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.SimpleGeoResponseHandler}
 	 * @return Either a {@link com.simplegeo.client.types.Feature}, {@link com.simplegeo.client.types.FeatureCollection}
 	 * or a regular HashMap<Sring, Object>.
 	 * @throws ClientProtocolException
@@ -150,10 +152,12 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	
 	/**
 	 * Method for executing HttpRequests asynchronously.
-	 * @param request HttpUriRequest
+	 * @param urlString String URL endpoint.
+	 * @param method {@link com.simplegeo.client.SimpleGeoClient.HttpRequestMethod}
+	 * @param jsonPayload String A string with the json that will be sent with the request.
 	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
-	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.ISimpleGeoHandler}
-	 * @param callback ISimpleGeoCallback Any object implementing the ISimpleGeoCallback interface
+	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.SimpleGeoResponseHandler}
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the SimpleGeoCallback interface
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */

@@ -66,7 +66,7 @@ public interface OAuthClient {
 	 * @param method
 	 * @param jsonPayload
 	 * @param responseHandler
-	 * @return
+	 * @return Object
 	 * @throws OAuthMessageSignerException
 	 * @throws OAuthCommunicationException
 	 * @throws OAuthExpectationFailedException
