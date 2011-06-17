@@ -49,7 +49,7 @@ import com.simplegeo.client.types.Point;
 /**
  * Class for interacting with the SimpleGeo Places API.
  * 
- * @author Casey Crites
+ * @author Casey Crites, Kim Vogt
  */
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
@@ -96,6 +96,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 		endpoints.put("features", "features/%s.json");
 		endpoints.put("places", "places");
 		endpoints.put("search", "places/%f,%f.json?q=%s&category=%s&radius=%s");
+		endpoints.put("searchByRadiusOnly", "places/%f,%f.json?radius=%s");
 		endpoints.put("searchByIP", "places/%s.json?q=%s&category=%s&radius=%s");
 		endpoints.put("searchByMyIP", "places/ip.json?q=%s&category=%s&radius=%s");
 	}
@@ -260,6 +261,34 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public void search(double lat, double lon, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		String uri = String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
+	}
+	
+	/**
+	 * Synchronously search for all nearby places in a given radius.
+	 * 
+	 * @param lat double latitude
+	 * @param lon double longitude
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
+	 * @throws IOException
+	 */
+	public FeatureCollection search(double lat, double lon, double radius) throws IOException {
+		String uri = String.format(this.getEndpoint("searchByRadiusOnly"), lat, lon, radius);
+		return (FeatureCollection) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()));
+	}
+	
+	/**
+	 * Asynchronously search for all nearby places in a given radius.
+	 * 
+	 * @param lat Double latitude
+	 * @param lon double longitude
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void search(double lat, double lon, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
+		String uri = String.format(this.getEndpoint("searchByRadiusOnly"), lat, lon, radius);
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
 	}
 	
