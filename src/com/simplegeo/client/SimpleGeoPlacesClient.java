@@ -267,6 +267,30 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	/**
 	 * Synchronously search for all nearby places in a given radius.
 	 * 
+	 * @param point Point {@link com.simplegeo.client.types.Point}
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results
+	 * @throws IOException
+	 */
+	public FeatureCollection search(Point point, double radius) throws IOException {
+		return (FeatureCollection) this.search(point.getLat(), point.getLon(), radius);
+	}
+	
+	/**
+	 * Asynchronously search for all nearby places in a given radius.
+	 * 
+	 * @param point Point {@link com.simplegeo.client.types.Point}
+	 * @param radius double A distance in kilometers used to restrict searches
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void search(Point point, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
+		this.search(point.getLat(), point.getLon(), radius, callback);
+	}
+	
+	/**
+	 * Synchronously search for all nearby places in a given radius.
+	 * 
 	 * @param lat double latitude
 	 * @param lon double longitude
 	 * @param radius double A distance in kilometers used to restrict searches

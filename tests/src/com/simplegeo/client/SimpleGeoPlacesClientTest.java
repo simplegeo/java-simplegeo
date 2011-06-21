@@ -474,6 +474,46 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
+	public void testSearchSyncRadiusOnly() {
+		double lat = 37.759737;
+		double lon = -122.433203;
+		try {
+			FeatureCollection features = client.search(new Point(lat, lon), 25);
+			TestCase.assertEquals(1, features.getFeatures().size());
+			TestCase.assertEquals(features.getFeatures().get(0).getType(), "Feature");
+			TestCase.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
+			TestCase.assertNotNull(features.getFeatures().get(0).getProperties());
+			TestCase.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+	
+	public void testSearchAsyncRadiusOnly() {
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+		final double lat = 37.759737;
+		final double lon = -122.433203;
+		
+		try {
+			client.search(new Point(lat, lon), 25, new FeatureCollectionCallback() {
+				public void onSuccess(FeatureCollection features) {
+					TestCase.assertEquals(1, features.getFeatures().size());
+					TestCase.assertEquals(features.getFeatures().get(0).getType(), "Feature");
+					TestCase.assertEquals(features.getFeatures().get(0).getSimpleGeoId(), "SG_2RgyhpOhiTIVnpe3pN7y45_40.018959_-105.275107@1291798821");
+					TestCase.assertNotNull(features.getFeatures().get(0).getProperties());
+					TestCase.assertNotNull(features.getFeatures().get(0).getGeometry().getPoint());
+					barrierAwait(barrier);
+				}
+				public void onError(String errorMessage) {
+					// shouldn't get hit
+				}
+			});
+			barrierAwait(barrier);
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		}
+	}
+	
 	public void testSearchByAddressSync() {
 		String address = "1535 Pearl St, Boulder, CO";
 		try {
