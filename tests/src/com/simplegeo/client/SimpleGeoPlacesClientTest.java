@@ -31,6 +31,7 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -76,7 +77,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 
 			// By default, it should use https (SSL)
 			String endPoint = testClient.getEndpoint("myIp");
-			String expectedResult = String.format("%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HOST, SimpleGeoClient.DEFAULT_PORT, SimpleGeoClient.DEFAULT_VERSION, "context/ip.json");			
+			String expectedResult = String.format(Locale.US, "%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HOST, SimpleGeoClient.DEFAULT_PORT, SimpleGeoClient.DEFAULT_VERSION, "context/ip.json");			
 			TestCase.assertEquals(expectedResult, endPoint);
 
 			//Disable SSL
@@ -84,7 +85,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			
 			// It should now use http, instead of https
 			endPoint = testClient.getEndpoint("myIp");
-			expectedResult = String.format("%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HTTP_HOST, SimpleGeoClient.DEFAULT_HTTP_PORT, SimpleGeoClient.DEFAULT_VERSION, "context/ip.json");
+			expectedResult = String.format(Locale.US, "%s:%s/%s/%s", SimpleGeoClient.DEFAULT_HTTP_HOST, SimpleGeoClient.DEFAULT_HTTP_PORT, SimpleGeoClient.DEFAULT_VERSION, "context/ip.json");
 			TestCase.assertEquals(expectedResult, endPoint);			
 
 		} catch (Exception e) {
@@ -180,6 +181,30 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 			TestCase.fail(e.getMessage());
 		}
 	}
+
+	public void testGetPlacePointLocale() {
+		double lon = -122.937467;
+		double lat = 47.046962;
+		try {
+			
+			Locale.setDefault(Locale.GERMAN);
+			Feature feature = client.getPlace("SG_4CsrE4oNy1gl8hCLdwu0F0");
+			
+			TestCase.assertEquals("Feature", feature.getType());
+			TestCase.assertEquals("SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830", feature.getSimpleGeoId());
+			TestCase.assertNotNull(feature.getGeometry().getPoint());
+			
+			TestCase.assertEquals(lat, feature.getGeometry().getPoint().getLat());
+			TestCase.assertEquals(lon, feature.getGeometry().getPoint().getLon());
+			TestCase.assertNull(feature.getGeometry().getPolygon());
+			TestCase.assertEquals(10, feature.getProperties().size());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());
+		} finally {
+			Locale.setDefault(Locale.US);
+		}
+	}
+
 	
 	public void testGetPlacePointFailureAsync() {
 		final double lon = -122.937467;

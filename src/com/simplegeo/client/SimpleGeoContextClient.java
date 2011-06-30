@@ -32,6 +32,7 @@ package com.simplegeo.client;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Locale;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.handler.JSONHandler;
@@ -99,7 +100,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String, Object> getContext(double lat, double lon) throws IOException {
-		String uri = String.format(this.getEndpoint("context"), lat, lon);
+		String uri = String.format(Locale.US, this.getEndpoint("context"), lat, lon);
 		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 	}
 	
@@ -112,7 +113,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getContext(double lat, double lon, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		String uri = String.format(this.getEndpoint("context"), lat, lon);
+		String uri = String.format(Locale.US, this.getEndpoint("context"), lat, lon);
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 	
@@ -128,7 +129,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 			String uri = this.getEndpoint("myIp");
 			return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 		} else {
-			String uri = String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8"));
+			String uri = String.format(Locale.US, this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8"));
 			return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 		}
 	}
@@ -145,7 +146,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 			String uri = this.getEndpoint("myIp");
 			this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 		} else {
-			String uri = String.format(this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8"));
+			String uri = String.format(Locale.US, this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8"));
 			this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 		}
 	}
@@ -158,7 +159,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String, Object> getContextByAddress(String address) throws IOException {
-		String uri = String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"));
 		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()));
 	}
 	
@@ -170,7 +171,7 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getContextByAddress(String address, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		String uri = String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"));
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 

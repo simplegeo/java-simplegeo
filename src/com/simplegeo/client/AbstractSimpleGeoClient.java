@@ -31,6 +31,7 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import oauth.signpost.exception.OAuthCommunicationException;
@@ -103,7 +104,7 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * @return String A URL pointing at the desired server
 	 */
 	protected String getEndpoint(String endpointName) {
-		return String.format("%s:%s/%s/%s", baseUrl, port, apiVersion, endpoints.get(endpointName));
+		return String.format(Locale.US, "%s:%s/%s/%s", baseUrl, port, apiVersion, endpoints.get(endpointName));
 	}
 	
 	/**

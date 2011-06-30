@@ -30,6 +30,7 @@ package com.simplegeo.client.types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -170,7 +171,7 @@ public class Record extends Feature {
 	
 	public String toString() {
 		
-		return String.format("<Record id=%s, layer=%s, created=%d>", 
+		return String.format(Locale.US, "<Record id=%s, layer=%s, created=%d>", 
 				getRecordId(), getLayer(), getCreated());
 	}
 

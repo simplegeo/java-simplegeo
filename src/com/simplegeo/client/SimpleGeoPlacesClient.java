@@ -32,6 +32,7 @@ package com.simplegeo.client;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.json.JSONException;
 
@@ -108,7 +109,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public Feature getPlace(String simpleGeoId) throws IOException {
-		String uri = String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
 		return (Feature) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()));
 	}
 	
@@ -119,7 +120,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void getPlace(String simpleGeoId, SimpleGeoCallback<Feature> callback) throws IOException {
-		String uri = String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
 	}
 	
@@ -133,7 +134,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public HashMap<String, Object> addPlace(Feature feature) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
-		String uri = String.format(this.getEndpoint("places"));
+		String uri = String.format(Locale.US, this.getEndpoint("places"));
 		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.POST, jsonString, new SimpleGeoHandler(new JSONHandler()));
 	}
 	
@@ -147,7 +148,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public void addPlace(Feature feature, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
-		String uri = String.format(this.getEndpoint("places"));
+		String uri = String.format(Locale.US, this.getEndpoint("places"));
 		this.execute(uri, HttpRequestMethod.POST, jsonString, new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 	
@@ -161,7 +162,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public HashMap<String, Object> updatePlace(Feature feature) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
-		String uri = String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8"));
 		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.POST, jsonString, new SimpleGeoHandler(new JSONHandler()));
 	}
 	
@@ -175,7 +176,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public void updatePlace(Feature feature, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException, JSONException {
 		String jsonString = feature.toJSONString();
-		String uri = String.format(this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8"));
 		this.execute(uri, HttpRequestMethod.POST, jsonString, new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 	
@@ -187,7 +188,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String, Object> deletePlace(String simpleGeoId) throws IOException {
-		String uri = String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
 		return (HashMap<String, Object>) this.execute(uri, HttpRequestMethod.DELETE, "", new SimpleGeoHandler(new JSONHandler()));
 	}
 	
@@ -199,7 +200,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void deletePlace(String simpleGeoId, SimpleGeoCallback<HashMap<String, Object>> callback) throws IOException {
-		String uri = String.format(this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
+		String uri = String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8"));
 		this.execute(uri, HttpRequestMethod.DELETE, "", new SimpleGeoHandler(new JSONHandler()), callback);
 	}
 	
@@ -243,7 +244,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public FeatureCollection search(double lat, double lon, String query, String category, double radius) throws IOException {
-		String uri = String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+		String uri = String.format(Locale.US, this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 		return (FeatureCollection) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()));
 	}
 	
@@ -259,7 +260,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void search(double lat, double lon, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
-		String uri = String.format(this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+		String uri = String.format(Locale.US, this.getEndpoint("search"), lat, lon, URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
 	}
 	
@@ -274,7 +275,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public FeatureCollection searchByAddress(String address, String query, String category, double radius) throws IOException {
-		String uri = String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+		String uri = String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 		return (FeatureCollection) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()));
 	}
 	
@@ -289,7 +290,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void searchByAddress(String address, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
-		String uri = String.format(this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+		String uri = String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
 	}
 	
@@ -305,10 +306,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public FeatureCollection searchByIP(String ip, String query, String category, double radius) throws IOException {
 		if ("".equals(ip)) {
-			String uri = String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+			String uri = String.format(Locale.US, this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 			return (FeatureCollection) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()));
 		} else {
-			String uri = String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+			String uri = String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 			return (FeatureCollection) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()));
 		}
 	}
@@ -325,10 +326,10 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 */
 	public void searchByIP(String ip, String query, String category, double radius, SimpleGeoCallback<FeatureCollection> callback) throws IOException {
 		if ("".equals(ip)) {
-			String uri = String.format(this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+			String uri = String.format(Locale.US, this.getEndpoint("searchByMyIP"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 			this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
 		} else {
-			String uri = String.format(this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
+			String uri = String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8"), URLEncoder.encode(query, "UTF-8"), URLEncoder.encode(category, "UTF-8"), radius);
 			this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new GeoJSONHandler()), callback);
 		}
 	}
@@ -339,7 +340,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @return {@link com.simplegeo.client.types.CategoryCollection} containing a list of {@link com.simplegeo.client.types.Category} objects
 	 */
 	public CategoryCollection getCategories() throws IOException{
-		String uri = String.format(this.getEndpoint("features"), "categories");
+		String uri = String.format(Locale.US, this.getEndpoint("features"), "categories");
 		return (CategoryCollection) this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new ListHandler()));
 	}
 	
@@ -349,7 +350,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 */
 	public void getCategories(SimpleGeoCallback<CategoryCollection> callback) throws IOException{
-		String uri = String.format(this.getEndpoint("features"), "categories");
+		String uri = String.format(Locale.US, this.getEndpoint("features"), "categories");
 		this.execute(uri, HttpRequestMethod.GET, "", new SimpleGeoHandler(new ListHandler()), callback);
 	}
 

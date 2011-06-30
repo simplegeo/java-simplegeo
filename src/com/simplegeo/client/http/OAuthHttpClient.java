@@ -29,6 +29,7 @@
 package com.simplegeo.client.http;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import oauth.signpost.OAuthConsumer;
@@ -108,9 +109,9 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 			token  = new CommonsHttpOAuthConsumer(key, secret);
 			
 			if(token == null)
-				logger.info(String.format("Failed to created OAuth token."));
+				logger.info(String.format(Locale.US, "Failed to created OAuth token."));
 			else
-				logger.info(String.format("Successfully created OAuth token."));
+				logger.info(String.format(Locale.US, "Successfully created OAuth token."));
 		}
 		
 	}
@@ -133,7 +134,7 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	public Object executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<Object> responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
 		HttpUriRequest request = this.buildRequest(urlString, method, jsonPayload);
-		logger.info(String.format("sending %s with url %s", request.toString(), urlString));
+		logger.info(String.format(Locale.US, "sending %s with url %s", request.toString(), urlString));
 		synchronized(this) {
 			this.token.sign(request);
 		}

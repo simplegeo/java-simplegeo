@@ -32,6 +32,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
@@ -87,7 +88,7 @@ public class APIException extends IOException {
 		if(reason == null)
 			reason = statusLine.getReasonPhrase();
 	
-		logger.info(String.format("(status %d) %s", statusCode, reason));
+		logger.info(String.format(Locale.US, "(status %d) %s", statusCode, reason));
 		
 		return new APIException(statusCode, reason);
 	}
@@ -103,7 +104,7 @@ public class APIException extends IOException {
 		super(reason);
 		this.statusCode = statusCode;
 		
-		logger.info(String.format("(status %d) %s", statusCode, reason));
+		logger.info(String.format(Locale.US, "(status %d) %s", statusCode, reason));
 	}
 
 }
