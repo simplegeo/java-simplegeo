@@ -45,6 +45,7 @@ There are four sets of jar ant tasks included in `build.xml`.  There are 2 jar t
 * storage-jar-without-libs (includes storage client but no supporting libs)
 
 After running the ant task you require, your jar will be located in the `bin/` folder.
+
     $ ant build jar-with-libs
     $ ls bin
     ./  ../  classes/  java-simplegeo-2.2.1.jar
