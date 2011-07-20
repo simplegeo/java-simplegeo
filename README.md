@@ -35,8 +35,8 @@ To actually run the tests in Eclipse, navigate to the `tests/src` folder, right 
 
 There are four sets of jar ant tasks included in `build.xml`.  There are 2 jar tasks for each of the Places client, Context client Storage client and all.  One task is for building the clients without any of the supporting libs and the other includes the libs.  They are:
 
-* jar-with-libs (includes both clients and supporting libs)
-* jar-without-libs (includes both clients but no supporting libs)
+* jar-with-libs (includes all clients and supporting libs)
+* jar-without-libs (includes all clients but no supporting libs)
 * places-jar-with-libs (includes places client and supporting libs)
 * places-jar-without-libs (includes places client but no supporting libs)
 * context-jar-with-libs (includes context client and supporting libs)
@@ -45,6 +45,9 @@ There are four sets of jar ant tasks included in `build.xml`.  There are 2 jar t
 * storage-jar-without-libs (includes storage client but no supporting libs)
 
 After running the ant task you require, your jar will be located in the `bin/` folder.
+    $ ant build jar-with-libs
+    $ ls bin
+    ./  ../  classes/  java-simplegeo-2.2.1.jar
 
 ## Adding to a Java/Android project
 
