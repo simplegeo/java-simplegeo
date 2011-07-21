@@ -65,7 +65,6 @@ The docs are generated using `javadoc` and are updated as often as possible in t
 
 ### Simple Example
 
-    ```java
     import java.io.IOException;
     import java.util.ArrayList;
 
@@ -94,6 +93,5 @@ The docs are generated using `javadoc` and are updated as often as possible in t
             }
         }
     }
-    ```
 
 ### Copyright (C) 2011 SimpleGeo Inc. All rights reserved.
