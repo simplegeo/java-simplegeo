@@ -63,4 +63,35 @@ Right click (ctrl + click) on your project -> Build Path -> Configure Build Path
 
 The docs are generated using `javadoc` and are updated as often as possible in the `gh-pages` branch of this repository.  You can view them [here](http://simplegeo.github.com/java-simplegeo/2.0/index)
 
+### Simple Example
+
+    import java.io.IOException;
+    import java.util.ArrayList;
+
+    import org.json.JSONException;
+
+    import com.simplegeo.client.SimpleGeoPlacesClient;
+    import com.simplegeo.client.types.Feature;
+    import com.simplegeo.client.types.FeatureCollection;
+    import com.simplegeo.client.types.Point;
+
+    public class HelloWorld {
+        public static void main(String[] args) {
+            System.out.println("Hello World");
+            SimpleGeoPlacesClient placesClient = SimpleGeoPlacesClient.getInstance();
+            placesClient.getHttpClient().setToken("2Z7Jkrx49kp8DUwqcqmSAWRGRLyQ5Yhe", "nkdzubf2KXH2qGjkEwf3hFdnawj69yCa");
+            Point bensHouse = new Point(37.800426, -122.439516);
+            FeatureCollection sushiFeatureCollection;
+            try {
+                sushiFeatureCollection = placesClient.search(bensHouse, "sushi", "", 10);
+                ArrayList<Feature> sushiFeatures = sushiFeatureCollection.getFeatures();
+                for (Feature feature: sushiFeatures) {
+                    System.out.println(feature.getProperties().get("name"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 ### Copyright (C) 2011 SimpleGeo Inc. All rights reserved.
