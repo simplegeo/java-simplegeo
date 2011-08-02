@@ -1,8 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.simplegeo.client</groupId>
+  <groupId>com.simplegeo</groupId>
   <artifactId>java-simplegeo</artifactId>
   <version>3.0</version>
+  <packaging>jar</packaging>
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
@@ -36,4 +37,33 @@
   		<version>20090211</version>
   	</dependency>
   </dependencies>
+  <organization>
+  	<name>SimpleGeo, Inc.</name>
+  	<url>https://simplegeo.com</url>
+  </organization>
+  <scm>
+  	<url>https://github.com/simplegeo/java-simplegeo</url>
+  	<connection>scm:git@github.com:simplegeo/java-simplegeo.git</connection>
+  	<developerConnection>scm:git@github.com:simplegeo/java-simplegeo.git</developerConnection>
+  </scm>
+  <developers>
+  	<developer>
+  		<id>caseycrites</id>
+  		<name>Casey Crites</name>
+  		<email>casey@simplegeo.com</email>
+  		<organization>SimpleGeo, Inc.</organization>
+  		<organizationUrl>https://simplegeo.com</organizationUrl>
+  		<roles>
+  			<role>developer</role>
+  		</roles>
+	</developer>
+  </developers>
+  <contributors>
+  	<contributor>
+  		<name>Pranil Kanderi</name>
+  		<email>pranil@mokriya.com</email>
+  		<organization>Mokriya, LLC</organization>
+  		<organizationUrl>www.mokriya.com</organizationUrl>
+  	</contributor>
+  </contributors>
 </project>
