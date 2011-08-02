@@ -60,7 +60,7 @@ public class LayerCollection {
 		this.layers = layers;
 	}
 
-	public static Object fromJSONString(String response) throws JSONException {
+	public static LayerCollection fromJSONString(String response) throws JSONException {
 		JSONObject jsonObject = new JSONObject(response);
 		JSONArray jsonArray = jsonObject.getJSONArray("layers");
 		

@@ -30,15 +30,13 @@
 package com.simplegeo.client;
 
 import java.io.IOException;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.test.TestEnvironment;
 
 public class SimpleGeoContextClientTest extends TestCase {
@@ -50,7 +48,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 	}
 	
 	private void setupClient() throws Exception {
-		client = SimpleGeoContextClient.getInstance();
+		client = new SimpleGeoContextClient();
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
@@ -58,7 +56,8 @@ public class SimpleGeoContextClientTest extends TestCase {
 		double lat = 37.803259;
 		double lon = -122.440033;
 		try {
-			JSONObject json = client.getContext(lat, lon);
+			String jsonString = client.getContext(lat, lon, null);
+			JSONObject json = new JSONObject(jsonString);
 			
 			TestCase.assertNotNull(json.get("features"));
 			TestCase.assertNotNull(json.get("weather"));
@@ -70,35 +69,10 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetContextAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		double lat = 37.803259;
-		double lon = -122.440033;
-		try {
-			client.getContext(lat, lon, new SimpleGeoCallback() {
-				public void onSuccess(JSONObject json) {
-					try {
-						TestCase.assertNotNull(json.get("features"));
-						TestCase.assertNotNull(json.get("weather"));
-						TestCase.assertNotNull(json.get("demographics"));
-					} catch (JSONException e) {
-						TestCase.fail(e.getMessage());
-					}
-					barrierAwait(barrier);
-				}
-				public void onError(String errorMessage) {
-					TestCase.fail(errorMessage);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
-	
 	public void testGetContextByMyIPSync() {
 		try {
-			JSONObject json = client.getContextByIP("");
+			String jsonString = client.getContextByIP("", null);
+			JSONObject json = new JSONObject(jsonString);
 			
 			TestCase.assertNotNull(json.get("query"));
 			TestCase.assertNotNull(json.get("features"));
@@ -108,39 +82,14 @@ public class SimpleGeoContextClientTest extends TestCase {
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
-	
-	public void testGetContextByMyIPAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			client.getContextByIP("", new SimpleGeoCallback() {
-				public void onSuccess(JSONObject json) {
-					try {
-						TestCase.assertNotNull(json.get("query"));
-						TestCase.assertNotNull(json.get("features"));
-						TestCase.assertNotNull(json.get("weather"));
-						TestCase.assertNotNull(json.get("demographics"));
-					} catch (JSONException e) {
-						TestCase.fail(e.getMessage());
-					}
-				
-					barrierAwait(barrier);
-				}
-				public void onError(String errorMessage) {
-					TestCase.fail(errorMessage);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		}
 	}
 	
 	public void testGetContextByIPSync() {
 		try {
-			JSONObject json = client.getContextByIP("92.156.43.27");
+			String jsonString = client.getContextByIP("92.156.43.27", null);
+			JSONObject json = new JSONObject(jsonString);
 			
 			TestCase.assertNotNull(json.get("query"));
 			TestCase.assertNotNull(json.get("features"));
@@ -150,38 +99,14 @@ public class SimpleGeoContextClientTest extends TestCase {
 		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
-		}
-	}
-	
-	public void testGetContextByIPAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
-		try {
-			client.getContextByIP("92.156.43.27", new SimpleGeoCallback() {
-				public void onSuccess(JSONObject json) {
-					try {
-						TestCase.assertNotNull(json.get("query"));
-						TestCase.assertNotNull(json.get("features"));
-						TestCase.assertNotNull(json.get("weather"));
-						TestCase.assertNotNull(json.get("demographics"));
-					} catch (JSONException e) {
-						TestCase.fail(e.getMessage());
-					}
-					barrierAwait(barrier);
-				}
-				public void onError(String errorMessage) {
-					TestCase.fail(errorMessage);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		}
 	}
 	
 	public void testGetContextByAddressSync() {
 		try {
-			JSONObject json = client.getContextByAddress("41 Decatur St, San Francisco, CA");
+			String jsonString = client.getContextByAddress("41 Decatur St, San Francisco, CA", null);
+			JSONObject json = new JSONObject(jsonString);
 			
 			TestCase.assertNotNull(json.get("query"));
 			TestCase.assertNotNull(json.get("features"));
@@ -195,39 +120,44 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
-	public void testGetContextByAddressAsync() {
-		final CyclicBarrier barrier = new CyclicBarrier(2);
+	public void testGetFilteredContext() {
+		double lat = 37.803259;
+		double lon = -122.440033;
 		try {
-			client.getContextByAddress("41 Decatur St, San Francisco, CA", new SimpleGeoCallback() {
-				public void onSuccess(JSONObject json) {
-					try {
-						TestCase.assertNotNull(json.get("query"));
-						TestCase.assertNotNull(json.get("features"));
-						TestCase.assertNotNull(json.get("weather"));
-						TestCase.assertNotNull(json.get("demographics"));
-					} catch (JSONException e) {
-						TestCase.fail(e.getMessage());
-					}
-				
-					barrierAwait(barrier);
-				}
-				public void onError(String errorMessage) {
-					TestCase.fail(errorMessage);
-				}
-			});
-			barrierAwait(barrier);
-		} catch (IOException e) {
+			HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
+			queryParams.put("filter", new String[] {"weather", "features"});
+			queryParams.put("features__category", new String[] {"Neighborhood"});
+			String jsonString = client.getContext(lat, lon, queryParams);
+			JSONObject json = new JSONObject(jsonString);
+			
+			TestCase.assertNotNull(json.get("weather"));
+			TestCase.assertNotNull(json.get("features"));
+			
+			TestCase.assertNull(json.opt("demographics"));
+		} catch (IOException e) {	
+			TestCase.fail(e.getMessage());
+		} catch (JSONException e) {
 			TestCase.fail(e.getMessage());
 		}
-		
 	}
 	
-	final private void barrierAwait(CyclicBarrier barrier) {
+	public void testGetDemographics() {
+		double lat = 37.803259;
+		double lon = -122.440033;
 		try {
-			barrier.await();
-		} catch (InterruptedException e) {
+			HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
+			queryParams.put("filter", new String[] {"demographics.acs"});
+			queryParams.put("demographics.acs__table", new String[] {"B08012"});
+			String jsonString = client.getContext(lat, lon, queryParams);
+			JSONObject json = new JSONObject(jsonString);
+			
+			TestCase.assertNotNull(json.get("demographics"));
+			
+			TestCase.assertNull(json.opt("weather"));
+			TestCase.assertNull(json.opt("features"));
+		} catch (IOException e) {	
 			TestCase.fail(e.getMessage());
-		} catch (BrokenBarrierException e) {
+		} catch (JSONException e) {
 			TestCase.fail(e.getMessage());
 		}
 	}

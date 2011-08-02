@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.http.OAuthClient;
@@ -49,65 +48,29 @@ import com.simplegeo.client.types.Feature;
 
 public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	
-	protected static SimpleGeoPlacesClient placesClient;
-	
-	/**
-	 * Method that ensures we only have one instance of the {@link com.simplegeo.client.SimpleGeoPlacesClient} instantiated.
-	 * 
-	 * @return {@link SimpleGeoPlacesClient}
-	 */
-	public static SimpleGeoPlacesClient getInstance() {
-		if(placesClient == null) { placesClient = new SimpleGeoPlacesClient(); }
-		return placesClient;		
-	}
-
 	/**
 	 * {@link com.simplegeo.client.SimpleGeoPlacesClient} constructor
 	 * 
 	 */
-	private SimpleGeoPlacesClient() {
+	public SimpleGeoPlacesClient() {
 		super();
 		
 		endpoints.put("address", "1.0/places/address.json");
-		endpoints.put("endpoints", "1.0/endpoints.json");
-		endpoints.put("features", "1.0/features/%s.json");
 		endpoints.put("places", "1.0/places");
 		endpoints.put("search", "1.0/places/%f,%f.json");
 		endpoints.put("searchByIP", "1.0/places/%s.json");
 		endpoints.put("searchByMyIP", "1.0/places/ip.json");
 	}
-	
-	/**
-	 * Synchronously get the place that corresponds to the simpleGeoId
-	 * 
-	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
-	 * @return JSONObject
-	 * @throws IOException
-	 */
-	public JSONObject getPlace(String simpleGeoId) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.GET, null, "");
-	}
-	
-	/**
-	 * Asynchronously get the place that corresponds to the simpleGeoId
-	 * 
-	 * @param simpleGeoId String SimpleGeo generated id that corresponds to a place
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback}
-	 * @throws IOException
-	 */
-	public void getPlace(String simpleGeoId, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.GET, null, "", callback);
-	}
-	
+
 	/**
 	 * Synchronously add a new place to the places database
 	 * 
 	 * @param feature {@link com.simplegeo.client.types.Feature} representing a new place.
-	 * @return JSONObject containing a polling token, simplegeoid and a uri.
+	 * @return String containing a polling token, simplegeoid and a uri.
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public JSONObject addPlace(Feature feature) throws IOException, JSONException {
+	public String addPlace(Feature feature) throws IOException, JSONException {
 		return this.execute(String.format(Locale.US, this.getEndpoint("places")), HttpRequestMethod.POST, null, feature.toJSONString());
 	}
 	
@@ -127,12 +90,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * Synchronously update an existing place in the places database.
 	 * 
 	 * @param feature {@link com.simplegeo.client.types.Feature} representing an existing place.
-	 * @return JSONObject containing a polling token.
+	 * @return String containing a polling token.
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public JSONObject updatePlace(Feature feature) throws IOException, JSONException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString());
+	public String updatePlace(Feature feature) throws IOException, JSONException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString());
 	}
 	
 	/**
@@ -144,17 +107,17 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws JSONException
 	 */
 	public void updatePlace(Feature feature, SimpleGeoCallback callback) throws IOException, JSONException {
-		this.execute(String.format(Locale.US, this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString(), callback);
+		this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString(), callback);
 	}
 	
 	/**
 	 * Synchronously delete an existing place from the places database.
 	 * 
 	 * @param simpleGeoId String corresponding to an existing place.
-	 * @return JSONObject containing a polling token.
+	 * @return String containing a polling token.
 	 * @throws IOException
 	 */
-	public JSONObject deletePlace(String simpleGeoId) throws IOException {
+	public String deletePlace(String simpleGeoId) throws IOException {
 		return this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.DELETE, null, "");
 	}
 	
@@ -174,12 +137,12 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * 
 	 * @param lat double latitude
 	 * @param lon double longitude
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
-	public JSONObject search(double lat, double lon, HashMap<String, String> extraParams) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("search"), lat, lon), HttpRequestMethod.GET, extraParams, "");
+	public String search(double lat, double lon, HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("search"), lat, lon), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
@@ -187,105 +150,91 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * 
 	 * @param lat Double latitude
 	 * @param lon double longitude
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void search(double lat, double lon, HashMap<String, String> extraParams, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("search"), lat, lon), HttpRequestMethod.GET, extraParams, "", callback);
+	public void search(double lat, double lon, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("search"), lat, lon), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 	
 	/**
 	 * Synchronously search by a physical address.
 	 * 
 	 * @param address String Physical address, such as 41 Decatur St, San Francisco, CA
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
-	public JSONObject searchByAddress(String address, HashMap<String, String> extraParams) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), HttpRequestMethod.GET, extraParams, "");
+	public String searchByAddress(String address, HashMap<String, String[]> queryParams) throws IOException {
+		if (queryParams == null) { queryParams = new HashMap<String, String[]>(); }
+		queryParams.put("address", new String[] {address});
+		return this.execute(this.getEndpoint("address"), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
 	 * Asynchronously search by a physical address.
 	 * 
 	 * @param address Physical address, such as 41 Decatur St, San Francisco, CA
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void searchByAddress(String address, HashMap<String, String> extraParams, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), HttpRequestMethod.GET, extraParams, "", callback);
+	public void searchByAddress(String address, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		if (queryParams == null) { queryParams = new HashMap<String, String[]>(); }
+		queryParams.put("address", new String[] {address});
+		this.execute(this.getEndpoint("address"), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 	
 	/**
 	 * Synchronously search by a specific IP.
 	 * 
 	 * @param ip String IP address If blank, your IP address will be used
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
-	public JSONObject searchByIP(String ip, HashMap<String, String> extraParams) throws IOException {
-		if (ip == null || "".equals(ip)) { return this.searchByIP(extraParams); }
-		return this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, extraParams, "");
+	public String searchByIP(String ip, HashMap<String, String[]> queryParams) throws IOException {
+		if (ip == null || "".equals(ip)) { return this.searchByIP(queryParams); }
+		return this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
 	 * Asynchronously search by a specific IP.
 	 * 
 	 * @param ip String IP address If blank, your IP address will be used
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void searchByIP(String ip, HashMap<String, String> extraParams, SimpleGeoCallback callback) throws IOException {
+	public void searchByIP(String ip, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
 		if (ip == null || "".equals(ip)) {
-			this.searchByIP(extraParams, callback);
+			this.searchByIP(queryParams, callback);
 		} else {
-			this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, extraParams, "", callback);
+			this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
 		}
 	}
 		
 	/**
 	 * Synchronously search by your IP.
 	 * 
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @return {@link com.simplegeo.client.types.FeatureCollection} {@link com.simplegeo.client.types.FeatureCollection} containing search results.
 	 * @throws IOException
 	 */
-	public JSONObject searchByIP(HashMap<String, String> extraParams) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("searchByMyIP")), HttpRequestMethod.GET, extraParams, "");
+	public String searchByIP(HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("searchByMyIP")), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
 	 * Asynchronously search by your IP.
 	 * 
-	 * @param extraParams HashMap<String, String> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void searchByIP(HashMap<String, String> extraParams, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("searchByMyIP")), HttpRequestMethod.GET, extraParams, "", callback);
-	}
-	
-	/**
-	 * Synchronously get a list of all the possible Feature categories
-	 * 
-	 * @return {@link com.simplegeo.client.types.CategoryCollection} containing a list of {@link com.simplegeo.client.types.Category} objects
-	 */
-	public JSONObject getCategories() throws IOException{
-		return this.execute(String.format(Locale.US, this.getEndpoint("features"), "categories"), HttpRequestMethod.GET, null, "");
-	}
-	
-	/**
-	 * Asynchronously get a list of all the possible Feature categories
-	 * 
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 */
-	public void getCategories(SimpleGeoCallback callback) throws IOException{
-		this.execute(String.format(Locale.US, this.getEndpoint("features"), "categories"), HttpRequestMethod.GET, null, "", callback);
+	public void searchByIP(HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("searchByMyIP")), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 
 	@Override

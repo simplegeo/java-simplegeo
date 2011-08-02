@@ -31,8 +31,8 @@ public class Annotation {
 	
 	public JSONObject toJSON() throws JSONException {
 		JSONObject json = new JSONObject();
-		json.put("private", isPrivate);
-		json.put("annotations", annotations);
+		json.put("private", this.isPrivate());
+		json.put("annotations", this.getAnnotations());
 		return json;
 	}
 	

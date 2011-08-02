@@ -48,6 +48,12 @@ public class Feature {
 		
 	}
 	
+	public Feature(Geometry geometry, String type, HashMap<String, Object> properties) {
+		this.geometry = geometry;
+		this.type = type;
+		this.properties = properties;
+	}
+	
 	public Feature(String simpleGeoId, Geometry geometry, String type, HashMap<String, Object> properties) {
 		this.simpleGeoId = simpleGeoId;
 		this.geometry = geometry;
@@ -89,7 +95,7 @@ public class Feature {
 	
 	public static Feature fromJSON(JSONObject json) throws JSONException {
 		Feature feature = new Feature();
-		feature.setSimpleGeoId(json.getString("id"));
+		feature.setSimpleGeoId(json.optString("id"));
 		feature.setType("Feature");
 		JSONObject jsonGeometry = json.getJSONObject("geometry");
 		if ("Point".equals(jsonGeometry.getString("type"))) {
@@ -125,7 +131,7 @@ public class Feature {
 		JSONObject json = new JSONObject();
 		json.put("geometry", this.getGeometryJSON());
 		json.put("type", "Feature");
-		json.put("id", this.getSimpleGeoId());
+		if (this.getSimpleGeoId() != null) { json.put("id", this.getSimpleGeoId()); }
 		json.put("properties", this.getPropertyJSON());
 		return json;
 	}

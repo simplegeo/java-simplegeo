@@ -29,15 +29,12 @@
 package com.simplegeo.client.http;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.http.exceptions.NoSuchEntityException;
@@ -48,7 +45,7 @@ import com.simplegeo.client.http.exceptions.NotAuthorizedException;
  * 
  * @author Derek Smith
  */
-public class SimpleGeoHandler implements ResponseHandler<JSONObject> {
+public class SimpleGeoHandler implements ResponseHandler<String> {
 	private static Logger logger = Logger.getLogger(SimpleGeoHandler.class.getName());
 	
 	/* Status codes */
@@ -66,7 +63,7 @@ public class SimpleGeoHandler implements ResponseHandler<JSONObject> {
 	/* (non-Javadoc)
 	 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
 	 */
-	public JSONObject handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+	public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 
 		logger.info("received response " + response);
 
@@ -86,12 +83,6 @@ public class SimpleGeoHandler implements ResponseHandler<JSONObject> {
 			default:
 				throw APIException.createException(response.getEntity(), response.getStatusLine());
 		}
-		JSONObject json = null;
-		try {
-			json = new JSONObject(EntityUtils.toString(response.getEntity()));
-		} catch (JSONException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-		return json;
+		return EntityUtils.toString(response.getEntity());
 	}
 }

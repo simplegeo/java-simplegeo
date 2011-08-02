@@ -82,7 +82,7 @@ public class GeometryCollection {
 		return cursor;
 	}	
 	
-	public static Object fromJSONString(String response) throws JSONException {
+	public static GeometryCollection fromJSONString(String response) throws JSONException {
 		JSONObject jsonObject = new JSONObject(response);
 		
 		JSONArray jsonArray = jsonObject.getJSONArray("geometries");

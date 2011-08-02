@@ -31,9 +31,8 @@ package com.simplegeo.client;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Locale;
-
-import org.json.JSONObject;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import com.simplegeo.client.http.OAuthClient;
@@ -47,44 +46,33 @@ import com.simplegeo.client.http.OAuthClient;
 
 public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	
-	protected static SimpleGeoContextClient sharedContextService;
-	
-	/**
-	 * Method that ensures we only have one instance of the {@link com.simplegeo.client.SimpleGeoContextClient} instantiated.
-	 * 
-	 * @return {@link com.simplegeo.client.SimpleGeoContextClient}
-	 */
-	public static SimpleGeoContextClient getInstance() {
-		if(sharedContextService == null) { sharedContextService = new SimpleGeoContextClient(); }
-		return sharedContextService;
-	}
-
 	/**
 	 * {@link com.simplegeo.client.SimpleGeoContextClient} constructor
-	 * 
-	 * @param baseUrl String api.simplegeo.com is default, but can be overridden.
-	 * @param port String 80 is default, but can be overridden.
-	 * @param apiVersion String 1.0 is default, but can be overridden.
 	 */
-	private SimpleGeoContextClient() {
+	public SimpleGeoContextClient() {
 		super();
 		
 		endpoints.put("address", "1.0/context/address.json?address=%s");
 		endpoints.put("context", "1.0/context/%f,%f.json");
 		endpoints.put("ip", "1.0/context/%s.json");
 		endpoints.put("myIp", "1.0/context/ip.json");
+		endpoints.put("boundingBox", "1.0/context/%f,%f,%f,%f.json");
+		endpoints.put("searchDemographics", "1.0/context/demographics/search.json");
 	}
-	
+
 	/**
 	 * Synchronously get context for the given latitude and longitude.
 	 * 
+	 * https://simplegeo.com/docs/api-endpoints/simplegeo-context
+	 * 
 	 * @param lat double latitude
 	 * @param lon double longitude
-	 * @return JSONObject
+	 * @param queryParams HashMap<String, String[]>
+	 * @return String
 	 * @throws IOException
 	 */
-	public JSONObject getContext(double lat, double lon) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("context"), lat, lon), HttpRequestMethod.GET, null, "");
+	public String getContext(double lat, double lon, HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("context"), lat, lon), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
@@ -92,82 +80,150 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * 
 	 * @param lat double latitude
 	 * @param lon double longitude
+	 * @param queryParams HashMap<String, String>
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContext(double lat, double lon, SimpleGeoCallback callback) throws IOException {
+	public void getContext(double lat, double lon, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
 		this.execute(String.format(Locale.US, this.getEndpoint("context"), lat, lon), HttpRequestMethod.GET, null, "", callback);
 	}
-	
+		
 	/**
 	 * Synchronously get context for a specific IP.
 	 * 
 	 * @param ip String IP Address If blank, your IP address will be used
-	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
+	 * @param queryParams HashMap<String, String>
+	 * @return String
 	 * @throws IOException
 	 */
-	public JSONObject getContextByIP(String ip) throws IOException {
-		if (ip == null || "".equals(ip)) { return this.getContextByIP(); }
-		return this.execute(String.format(Locale.US, this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, null, "");
+	public String getContextByIP(String ip, HashMap<String, String[]> queryParams) throws IOException {
+		if (ip == null || "".equals(ip)) { return this.getContextByIP(queryParams); }
+		return this.execute(String.format(Locale.US, this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
 	 * Asynchronously get context for a specific IP.
 	 * 
 	 * @param ip String IP Address If blank, your IP address will be used
+	 * @param queryParams HashMap<String, String>
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContextByIP(String ip, SimpleGeoCallback callback) throws IOException {
+	public void getContextByIP(String ip, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
 		if (ip == null || "".equals(ip)) { 
-			this.getContextByIP(ip, callback);
+			this.getContextByIP(queryParams, callback);
 		} else {
-			this.execute(String.format(Locale.US, this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, null, "", callback);
+			this.execute(String.format(Locale.US, this.getEndpoint("ip"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
 		}
 	}
-		
+	
 	/**
 	 * Synchronously get context for your IP.
 	 * 
-	 * @return JSONObject containing weather, features, demographics and query
+	 * @param queryParams HashMap<String, String>
+	 * @return String containing weather, features, demographics and query
 	 * @throws IOException
 	 */
-	public JSONObject getContextByIP() throws IOException {
-		return this.execute(this.getEndpoint("myIp"), HttpRequestMethod.GET, null, "");
+	public String getContextByIP(HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(this.getEndpoint("myIp"), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
 	 * Asynchronously get context for your IP.
 	 * 
+	 * @param queryParams HashMap<String, String>
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContextByIP(SimpleGeoCallback callback) throws IOException {
-		this.execute(this.getEndpoint("myIp"), HttpRequestMethod.GET, null, "", callback);
+	public void getContextByIP(HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(this.getEndpoint("myIp"), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 	
 	/**
 	 * Synchronously get context for a physical street address.
 	 * 
 	 * @param address String Physical street address
+	 * @param queryParams HashMap<String, String>
 	 * @return HashMap<String, Object> HashMap containing weather, features, demographics and query
 	 * @throws IOException
 	 */
-	public JSONObject getContextByAddress(String address) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), HttpRequestMethod.GET, null, "");
+	public String getContextByAddress(String address, HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), HttpRequestMethod.GET, queryParams, "");
 	}
 	
 	/**
 	 * Asynchronously get context for a physical street address.
 	 * 
 	 * @param address String Physical street address
+	 * @param queryParams HashMap<String, String>
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getContextByAddress(String address, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), HttpRequestMethod.GET, null, "", callback);
+	public void getContextByAddress(String address, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("address"), URLEncoder.encode(address, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 
+	/**
+	 * Synchronously get context for the given bounding box.
+	 * 
+	 * https://simplegeo.com/docs/api-endpoints/simplegeo-context
+	 * 
+	 * @param nwLat double Northwest corner latitude
+	 * @param nwLon double Northwest corner longitude
+	 * @param seLat double Southeast corner latitude
+	 * @param seLon double Southeast corner longitude
+	 * @param queryParams HashMap<String, String>
+	 * @return String
+	 * @throws IOException
+	 */
+	public String getContextByBoundingBox(double nwLat, double nwLon, double seLat, double seLon, HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("boundingBox"), nwLat, nwLon, seLat, seLon), HttpRequestMethod.GET, queryParams, "");
+	}
+	
+	/**
+	 * Asynchronously get context for the given bounding box.
+	 * 
+	 * https://simplegeo.com/docs/api-endpoints/simplegeo-context
+	 * 
+	 * @param nwLat double Northwest corner latitude
+	 * @param nwLon double Northwest corner longitude
+	 * @param seLat double Southeast corner latitude
+	 * @param seLon double Southeast corner longitude
+	 * @param queryParams HashMap<String, String>
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void getContextByBoundingBox(double nwLat, double nwLon, double seLat, double seLon, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("boundingBox"), nwLat, nwLon, seLat, seLon), HttpRequestMethod.GET, null, "", callback);
+	}
+	
+	/**
+	 * Synchronously search demographics.
+	 * 
+	 * https://simplegeo.com/docs/api-endpoints/simplegeo-context#demographics
+	 * 
+	 * @param queryParams HashMap<String, String>
+	 * @return String
+	 * @throws IOException
+	 */
+	public String searchDemographics(HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("searchDemographics")), HttpRequestMethod.GET, queryParams, "");
+	}
+		
+	/**
+	 * Asynchronously search demographics.
+	 * 
+	 * https://simplegeo.com/docs/api-endpoints/simplegeo-context#demographics
+	 * 
+	 * @param queryParams HashMap<String, String>
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @return String
+	 * @throws IOException
+	 */
+	public void searchDemographics(HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("searchDemographics")), HttpRequestMethod.GET, queryParams, "", callback);
+	}
+	
 	@Override
 	public OAuthClient getHttpClient() {
 		return super.getHttpClient();

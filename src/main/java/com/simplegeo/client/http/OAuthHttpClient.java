@@ -49,10 +49,8 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.HttpParams;
-import org.json.JSONObject;
 
 import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
-import com.simplegeo.client.http.OAuthClient;
 
 /**
  * A subclass of {@link org.apache.http.impl.client.DefaultHttpClient}
@@ -116,21 +114,21 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
 	 * @param responseHandler the handler that will be used on a successful
 	 * response
-	 * @return an Object that was created by the handler
+	 * @return String
 	 * @throws OAuthMessageSignerException
 	 * @throws OAuthCommunicationException
 	 * @throws OAuthExpectationFailedException
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public JSONObject executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<JSONObject> responseHandler) 
+	public String executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<String> responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
 		HttpUriRequest request = this.buildRequest(urlString, method, jsonPayload);
 		logger.info(String.format(Locale.US, "sending %s with url %s", request.toString(), urlString));
 		synchronized(this) {
 			this.token.sign(request);
 		}
-		return (JSONObject) super.execute(request, responseHandler);
+		return super.execute(request, responseHandler);
 	}
 	
 	/**
