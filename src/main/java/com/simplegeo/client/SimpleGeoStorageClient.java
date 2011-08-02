@@ -60,6 +60,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 		endpoints.put("history", "0.1/records/%s/%s/history.json");
 		endpoints.put("searchByLatLon", "0.1/records/%s/nearby/%f,%f.json");
 		endpoints.put("searchByIP", "0.1/records/%s/nearby/%s.json");
+		endpoints.put("searchByMyIP", "0.1/records/%s/nearby/ip.json");
 		endpoints.put("layer", "0.1/layers/%s.json");
 		endpoints.put("allLayers", "0.1/layers.json");
 	}
@@ -223,6 +224,7 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public String searchByIP(String ip, String layer, HashMap<String, String[]> queryParams) throws IOException {
+		if (ip == null || "".equals(ip)) { return this.searchByMyIP(layer, queryParams); }
 		return this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "");
 	}
 	
@@ -236,7 +238,35 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void searchByIP(String ip, String layer, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
+		if (ip == null || "".equals(ip)) { 
+			this.searchByMyIP(layer, queryParams, callback);
+		} else {
+			this.execute(String.format(Locale.US, this.getEndpoint("searchByIP"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(ip, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
+		}
+	}
+	
+	/**
+	 * Synchronously search for records near a given IP address for the specified layer.
+	 * 
+	 * @param layer String name of the layer
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as radius, limit and cursor.
+	 * @return String
+	 * @throws IOException
+	 */
+	public String searchByMyIP(String layer, HashMap<String, String[]> queryParams) throws IOException {
+		return this.execute(String.format(Locale.US, this.getEndpoint("searchByMyIP"), URLEncoder.encode(layer, "UTF-8")), HttpRequestMethod.GET, queryParams, "");
+	}
+	
+	/**
+	 * Asynchronously search for records near a given IP address for the specified layer.
+	 * 
+	 * @param layer String name of the layer
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as radius, limit and cursor.
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 * @throws IOException
+	 */
+	public void searchByMyIP(String layer, HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("searchByMyIP"), URLEncoder.encode(layer, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 	
 	/**

@@ -30,8 +30,8 @@ package com.simplegeo.client.test;
 
 public class TestEnvironment {
 
-	private static final String ACCESS_KEY = "qQpqpD7EEVHcH7ZRKSWCAFAvNrJK6Rqu";
-    private static final String SECRET_KEY = "x7pS3Kx5WcEuQDqGzgqTyqeTmCRJrSvw";
+	private static final String ACCESS_KEY = "consumerKey";
+    private static final String SECRET_KEY = "consumerSecret";
 
     private static final String JSON_POINT_STRING = "{\"geometry\": { \"type\": \"Point\",\"coordinates\": [-122.937467,47.046962]},\"type\": \"Feature\",\"id\": \"SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Master West Olympia\",\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"postcode\": \"98502\"}}";
     private static final String JSON_POINT_STRING_NO_ID = "{\"geometry\": { \"type\": \"Point\",\"coordinates\": [-122.937467,47.046962]},\"type\": \"Feature\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Mistress West Olympia\",\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"postcode\": \"98502\"}}";

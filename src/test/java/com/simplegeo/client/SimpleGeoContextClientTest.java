@@ -134,7 +134,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 			TestCase.assertNotNull(json.get("features"));
 			
 			TestCase.assertNull(json.opt("demographics"));
-		} catch (IOException e) {	
+		} catch (IOException e) {
 			TestCase.fail(e.getMessage());
 		} catch (JSONException e) {
 			TestCase.fail(e.getMessage());
