@@ -183,6 +183,19 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		} 
 	}
 
+	public void testSearchByMyIPSync() {
+		try {
+			String jsonString = client.searchByMyIP("casey.testing.layer", null);
+			FeatureCollection featureCollection = FeatureCollection.fromJSONString(jsonString);
+			
+			TestCase.assertNotNull(featureCollection.getFeatures());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} catch (JSONException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+
 	public void testCreateLayerSync() {
 		try {
 			ArrayList<String> urls = new ArrayList<String>();
