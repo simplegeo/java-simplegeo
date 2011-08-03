@@ -4,6 +4,11 @@
   <artifactId>java-simplegeo</artifactId>
   <version>3.0</version>
   <packaging>jar</packaging>
+  <parent>
+  	<groupId>org.sonatype.oss</groupId>
+  	<artifactId>oss-parent</artifactId>
+  	<version>7</version>
+  </parent>
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
