@@ -188,7 +188,6 @@ public class SimpleGeoContextClient extends AbstractSimpleGeoClient {
 	 * 
 	 * @param queryParams HashMap<String, String>
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 * @return String
 	 * @throws IOException
 	 */
 	public void searchDemographics(HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {

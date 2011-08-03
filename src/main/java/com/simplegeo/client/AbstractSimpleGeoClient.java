@@ -69,19 +69,17 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * Method for executing HttpRequests synchronously.
 	 * @param urlString String URL endpoint.
 	 * @param method {@link com.simplegeo.client.SimpleGeoClient.HttpRequestMethod}
-	 * @param extraParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @param jsonPayload String A string with the json that will be sent with the request.
-	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
-	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.SimpleGeoResponseHandler}
 	 * @return String
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	protected String execute(String urlString, HttpRequestMethod method, HashMap<String, String[]> extraParams, String jsonPayload) throws ClientProtocolException, IOException {
+	protected String execute(String urlString, HttpRequestMethod method, HashMap<String, String[]> queryParams, String jsonPayload) throws ClientProtocolException, IOException {
 	
 		String response = "";
 		try {
-			response = httpClient.executeOAuthRequest(urlString + this.buildQueryString(extraParams), method, jsonPayload, new SimpleGeoHandler());
+			response = httpClient.executeOAuthRequest(urlString + this.buildQueryString(queryParams), method, jsonPayload, new SimpleGeoHandler());
 		} catch (OAuthMessageSignerException e) {
 			dealWithAuthorizationException(e);
 		} catch (OAuthExpectationFailedException e) {
@@ -98,18 +96,16 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * Method for executing HttpRequests asynchronously.
 	 * @param urlString String URL endpoint.
 	 * @param method {@link com.simplegeo.client.SimpleGeoClient.HttpRequestMethod}
-	 * @param extraParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
+	 * @param queryParams HashMap<String, String[]> Extra parameters to put in the query string such as, radius, q and category.
 	 * @param jsonPayload String A string with the json that will be sent with the request.
-	 * @param handler {@link com.simplegeo.client.http.SimpleGeoHandler} to call back when the request completes.
-	 * It will then in turn hand off to an instance of  {@link com.simplegeo.client.handler.SimpleGeoResponseHandler}
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the SimpleGeoCallback interface
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	protected void execute(String urlString, HttpRequestMethod method, HashMap<String, String[]> extraParams, String jsonPayload, SimpleGeoCallback callback) throws ClientProtocolException, IOException {
+	protected void execute(String urlString, HttpRequestMethod method, HashMap<String, String[]> queryParams, String jsonPayload, SimpleGeoCallback callback) throws ClientProtocolException, IOException {
 
 		final SimpleGeoCallback finalCallback = callback;
-		final String finalUrlString = urlString + this.buildQueryString(extraParams);
+		final String finalUrlString = urlString + this.buildQueryString(queryParams);
 		final HttpRequestMethod finalMethod = method;
 		final String finalJsonPayload = jsonPayload;
 		

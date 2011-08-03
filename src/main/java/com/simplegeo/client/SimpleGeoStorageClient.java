@@ -152,8 +152,8 @@ public class SimpleGeoStorageClient extends AbstractSimpleGeoClient {
 	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
 	 * @throws IOException
 	 */
-	public void getHistory(String layer, String recordId,  int limit, String cursor, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("history"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8")), HttpRequestMethod.GET, null, "", callback);
+	public void getHistory(String layer, String recordId,  HashMap<String, String[]> queryParams, SimpleGeoCallback callback) throws IOException {
+		this.execute(String.format(Locale.US, this.getEndpoint("history"), URLEncoder.encode(layer, "UTF-8"), URLEncoder.encode(recordId, "UTF-8")), HttpRequestMethod.GET, queryParams, "", callback);
 	}
 
 	
