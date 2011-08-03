@@ -1,6 +1,6 @@
 package com.simplegeo.client.test;
 
-public class TestEnvironment {
+public abstract class TestEnvironment {
 
 	private static String ACCESS_KEY = "consumerKey";
 	private static String SECRET_KEY = "consumerSecret";
