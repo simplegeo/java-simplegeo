@@ -21,6 +21,16 @@ Version 3.0 of this client is non-backwards compatible.  Older versions of the c
 
 ## Maven
 
+If you're developing a Java project with Maven, adding the SimpleGeo jar to your project is super simple.  Just add this snippet to to your pom.xml
+
+    <dependency>
+        <groupId>com.simplegeo</groupId>
+        <artifactId>java-simplegeo</artifactId>
+        <version>3.0</version>
+    </dependency>
+
+If you're not using Maven, you can download the jar from any maven central repository or from right here.
+
 ## Adding to a Java/Android project
 
 ### Eclipse
@@ -30,9 +40,9 @@ Right click (ctrl + click) on your project -> Build Path -> Configure Build Path
     $ SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
     $ placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
 
-## Documents
+## Documentation
 
-The docs are generated using `javadoc` and are updated as often as possible in the `gh-pages` branch of this repository.  You can view them [here](https://ci.public.simplegeo.com/job/java-simplegeo/)
+The docs are generated using `javadoc` and are updated as often as we build the client in our public Jenkins environment.  You can view them [here](https://ci.public.simplegeo.com/job/java-simplegeo/)
 
 ### Simple Example
 
