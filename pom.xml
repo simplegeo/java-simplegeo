@@ -42,7 +42,7 @@
   	<url>https://simplegeo.com</url>
   </organization>
   <scm>
-  	<url>https://github.com/simplegeo/java-simplegeo</url>
+  	<url>git@github.com:simplegeo/java-simplegeo.git</url>
   	<connection>scm:git@github.com:simplegeo/java-simplegeo.git</connection>
   	<developerConnection>scm:git@github.com:simplegeo/java-simplegeo.git</developerConnection>
   </scm>
@@ -66,4 +66,11 @@
   		<organizationUrl>www.mokriya.com</organizationUrl>
   	</contributor>
   </contributors>
+  <licenses>
+  	<license>
+  		<name>Apache License, Version 2.0</name>
+  		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+  		<distribution>repo</distribution>
+  	</license>
+  </licenses>
 </project>

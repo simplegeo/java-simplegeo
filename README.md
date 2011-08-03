@@ -5,9 +5,7 @@ synchronous and asynchronous calls are provided.
 
 ## Disclaimer
 
-Version 2.0 of this client is non-backwards compatible.  It was deemed that in order to better serve the community, the library needed a near complete rewrite to make it more conducive to asynchronous programming.  Older versions of the client are still available by selecting a 1.x tag from the drop down.
-
-We hope you find this version of the client much more useful than the 1.0 release.
+Version 3.0 of this client is non-backwards compatible.  Older versions of the client are still available by selecting a 1.x or 2.x tag from the drop down.
 
 ## Google App Engine
 
