@@ -32,7 +32,7 @@ Right click (ctrl + click) on your project -> Build Path -> Configure Build Path
 
 ## Documents
 
-The docs are generated using `javadoc` and are updated as often as possible in the `gh-pages` branch of this repository.  You can view them [here](http://simplegeo.github.com/java-simplegeo/2.0/index)
+The docs are generated using `javadoc` and are updated as often as possible in the `gh-pages` branch of this repository.  You can view them [here](https://ci.public.simplegeo.com/job/java-simplegeo/)
 
 ### Simple Example
 
