@@ -2,8 +2,8 @@ package com.simplegeo.client.test;
 
 public class TestEnvironment {
 
-	private static final String ACCESS_KEY = System.getenv("OAUTH_KEY") == null || "".equals(System.getenv("OAUTH_KEY")) ? "consumerKey" : System.getenv("OAUTH_KEY");
-	private static final String SECRET_KEY = System.getenv("OAUTH_SECRET") == null || "".equals(System.getenv("OAUTH_SECRET")) ? "consumerSecret" : System.getenv("OAUTH_SECRET");
+	private static String ACCESS_KEY = "consumerKey";
+	private static String SECRET_KEY = "consumerSecret";
 
     private static final String JSON_POINT_STRING = "{\"geometry\": { \"type\": \"Point\",\"coordinates\": [-122.937467,47.046962]},\"type\": \"Feature\",\"id\": \"SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Master West Olympia\",\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"postcode\": \"98502\"}}";
     private static final String JSON_POINT_STRING_NO_ID = "{\"geometry\": { \"type\": \"Point\",\"coordinates\": [-122.937467,47.046962]},\"type\": \"Feature\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Mistress West Olympia\",\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"postcode\": \"98502\"}}";
@@ -12,14 +12,24 @@ public class TestEnvironment {
     private static final String JSON_MULTIPOLYGON_STRING = "{\"geometry\": { \"type\": \"MultiPolygon\",\"coordinates\": [[[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]], [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],[[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]]},\"type\": \"Feature\",\"id\": \"SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Master West Olympia\",\"tags\": [\"eating\"],\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"categories\": [[\"Food & Drink\",\"Restaurants\",\"\"]],\"postcode\": \"98502\"}}";
     
     public static String getKey() throws Exception {
-	    if(ACCESS_KEY.equals("consumerKey"))
-		    throw new Exception("Please replace ACCESS_KEY with a valid String");
+	    if(ACCESS_KEY.equals("consumerKey")) {
+	    	if (System.getenv("OAUTH_KEY") != null && !"".equals(System.getenv("OAUTH_KEY"))) {
+	    		ACCESS_KEY = System.getenv("OAUTH_KEY");
+	    	} else {
+			    throw new Exception("Please replace ACCESS_KEY with a valid String or set the OAUTH_KEY environment var.");
+	    	}
+	    }
 	    return ACCESS_KEY;
     }
 
     public static String getSecret() throws Exception {
-	    if(SECRET_KEY.equals("consumerSecret"))
-		    throw new Exception("Please replace SECRET_KEY with a valid String");
+	    if(SECRET_KEY.equals("consumerSecret")) {
+	    	if (System.getenv("OAUTH_SECRET") != null && !"".equals(System.getenv("OAUTH_SECRET"))) {
+	    		SECRET_KEY = System.getenv("OAUTH_SECRET");
+	    	} else {
+			    throw new Exception("Please replace SECRET_KEY with a valid String or set the OAUTH_SECRET environment var.");
+	    	}
+	    }
 	    return SECRET_KEY;    	   
    	}
 
