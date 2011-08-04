@@ -1,7 +1,6 @@
 # java-simplegeo
 
-A thread-safe, Java HttpClient used to interface with the SimpleGeo Places and Context API. Both
-synchronous and asynchronous calls are provided. 
+A thread-safe, Java HttpClient used to interface with the SimpleGeo Places, Context and Storage API. Both synchronous and asynchronous calls are provided. 
 
 ## Disclaimer
 
@@ -19,7 +18,9 @@ Version 3.0 of this client is non-backwards compatible.  Older versions of the c
 * Demographics searching for Context is also fully supported.  Simply create a query parameter with type demographics.acs\_\_table and add as many table names to the String[].
 * The entire project has been converted to Maven in order to help automate builds and documentation.
 
-## Maven
+## Adding to a Java/Android project without Maven
+
+### Maven
 
 If you're developing a Java project with Maven, adding the SimpleGeo jar to your project is super simple.  Just add this snippet to to your pom.xml
 
@@ -29,9 +30,8 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
         <version>3.0</version>
     </dependency>
 
-## Adding to a Java/Android project without Maven
 
-### Eclipse
+### Eclipse (Non-Maven)
 
 1. Right click (ctrl + click) on your project
 2. Build Path
@@ -61,7 +61,7 @@ The docs are generated using `javadoc` and are updated as often as we build the 
     public class HelloWorld {
         public static void main(String[] args) {
             SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
-            placesClient.getHttpClient().setToken("your_token", "your_secret");
+            placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
             HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
             queryParams.put("category", new String[] {"sushi"});
             try {
