@@ -18,7 +18,7 @@ Version 3.0 of this client is non-backwards compatible.  Older versions of the c
 * Demographics searching for Context is also fully supported.  Simply create a query parameter with type demographics.acs\_\_table and add as many table names to the String[].
 * The entire project has been converted to Maven in order to help automate builds and documentation.
 
-## Adding to a Java/Android project without Maven
+## Adding to a Java/Android project
 
 ### Maven
 
