@@ -29,13 +29,16 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
         <version>3.0</version>
     </dependency>
 
-If you're not using Maven, you can download the jar from any maven central repository or from right here.
-
-## Adding to a Java/Android project
+## Adding to a Java/Android project without Maven
 
 ### Eclipse
 
-Right click (ctrl + click) on your project -> Build Path -> Configure Build Path -> Select the Libraries tab -> Add JARs (if the SimpleGeo jar is in your workspace)/Add External JARs (if the SimpleGeo jar is on your filesystem) -> Navigate to the jar you want to add and click OK.  The jar has been added to your project and you can start using it by getting an instance and setting your OAuth Token like so:
+1. Right click (ctrl + click) on your project
+2. Build Path
+3. Configure Build Path
+4. Select the Libraries tab
+5. Add JARs (if the SimpleGeo jar is in your workspace)/Add External JARs (if the SimpleGeo jar is on your filesystem)
+6. Navigate to the jar you want to add and click OK.  The jar has been added to your project and you can start using it by getting an instance and setting your OAuth Token like so:
 
     $ SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
     $ placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
@@ -54,24 +57,23 @@ The docs are generated using `javadoc` and are updated as often as we build the 
     import com.simplegeo.client.SimpleGeoPlacesClient;
     import com.simplegeo.client.types.Feature;
     import com.simplegeo.client.types.FeatureCollection;
-    import com.simplegeo.client.types.Point;
 
     public class HelloWorld {
         public static void main(String[] args) {
-            System.out.println("Hello World");
             SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
-            placesClient.getHttpClient().setToken("2Z7Jkrx49kp8DUwqcqmSAWRGRLyQ5Yhe", "nkdzubf2KXH2qGjkEwf3hFdnawj69yCa");
-            Point bensHouse = new Point(37.800426, -122.439516);
+            placesClient.getHttpClient().setToken("your_token", "your_secret");
+            HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
+            queryParams.put("category", new String[] {"sushi"});
             try {
-                HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
-                queryParams.put("category", new String[] {"sushi"});
-                JSONObject sushiJSON = placesClient.search(bensHouse, queryParams);
-                FeatureCollection sushiFeatureCollection = FeatureCollection.fromJSON(sushiJSON);
+                String sushiString = placesClient.search(37.800426, -122.439516, queryParams);
+                FeatureCollection sushiFeatureCollection = FeatureCollection.fromJSONString(sushiString);
                 ArrayList<Feature> sushiFeatures = sushiFeatureCollection.getFeatures();
                 for (Feature feature: sushiFeatures) {
                     System.out.println(feature.getProperties().get("name"));
                 }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
