@@ -45,7 +45,7 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
 
 ## Documentation
 
-The docs are generated using `javadoc` and are updated as often as we build the client in our public Jenkins environment.  You can view them [here](https://ci.public.simplegeo.com/job/java-simplegeo/)
+The docs are generated using `javadoc` and are updated as often as we build the client in our public Jenkins environment.  You can view them [here](https://ci.public.simplegeo.com/job/java-simplegeo/javadoc)
 
 ### Simple Example
 
