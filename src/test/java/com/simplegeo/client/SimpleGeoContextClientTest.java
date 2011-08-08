@@ -7,22 +7,26 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.simplegeo.client.test.TestEnvironment;
 
-public class SimpleGeoContextClientTest extends TestCase {
+public class SimpleGeoContextClientTest {
 	
-	protected SimpleGeoContextClient client;
+	protected static SimpleGeoContextClient client;
 	
-	public void setUp() throws Exception {
-		this.setupClient();
+	@BeforeClass
+	public static void setUp() throws Exception {
+		setupClient();
 	}
 	
-	private void setupClient() throws Exception {
+	private static void setupClient() throws Exception {
 		client = new SimpleGeoContextClient();
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
+	@Test
 	public void testGetContextSync() {
 		double lat = 37.803259;
 		double lon = -122.440033;
@@ -40,6 +44,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetContextByMyIPSync() {
 		try {
 			String jsonString = client.getContextByIP("", null);
@@ -57,6 +62,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetContextByIPSync() {
 		try {
 			String jsonString = client.getContextByIP("92.156.43.27", null);
@@ -74,6 +80,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetContextByAddressSync() {
 		try {
 			String jsonString = client.getContextByAddress("41 Decatur St, San Francisco, CA", null);
@@ -91,6 +98,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetFilteredContext() {
 		double lat = 37.803259;
 		double lon = -122.440033;
@@ -112,6 +120,7 @@ public class SimpleGeoContextClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetDemographics() {
 		double lat = 37.803259;
 		double lon = -122.440033;

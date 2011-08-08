@@ -43,6 +43,43 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
     $ SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
     $ placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
 
+## Dependencies
+
+In case you decide not to use maven on your project, the following jars are required in order for the SimpleGeo jar to work.
+
+* junit-4.8.2.jar
+* signpost-core-1.2.1.1.jar
+* signpost-commonshttp4-1.2.1.1.jar
+* commons-codec-1.3.jar
+* httpclient-4.1.1.jar
+* commons-logging-1.1.1.jar
+* httpcore-4.1.3.jar
+* json-20090211.jar
+
+All of these jars should be widely available on line, but I suggest search.maven.org as a central place that you'll be able to find all of them easily.
+
+
+## Tests
+
+If you're interested in running the tests, you need to do a small piece of set up and then you can run them one of two ways.
+
+### Setup
+
+* Find file TestEnvironment.java in the com.simplegeo.client.test package in the src/test/java folder.
+* Replace consumerKey and consumerSecret with your oauth key and secret from https://simplegeo.com.
+* If you have a paid account, set paidAccount to true, else leave it false.
+
+### From the command line
+
+    $ cd ~/path/to/java-simplegeo
+    $ mvn test
+
+### From Eclipse
+
+* Ctrl + click on the src/test/java
+* Run As
+* JUnit Test
+
 ## Documentation
 
 The docs are generated using `javadoc` and are updated as often as we build the client in our public Jenkins environment.  You can view them [here](https://ci.public.simplegeo.com/job/java-simplegeo/javadoc)

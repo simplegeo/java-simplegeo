@@ -4,6 +4,7 @@ public abstract class TestEnvironment {
 
 	private static String ACCESS_KEY = "consumerKey";
 	private static String SECRET_KEY = "consumerSecret";
+	private static boolean PAID_ACCOUNT = false;
 
     private static final String JSON_POINT_STRING = "{\"geometry\": { \"type\": \"Point\",\"coordinates\": [-122.937467,47.046962]},\"type\": \"Feature\",\"id\": \"SG_4CsrE4oNy1gl8hCLdwu0F0_47.046962_-122.937467@1290636830\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Master West Olympia\",\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"postcode\": \"98502\"}}";
     private static final String JSON_POINT_STRING_NO_ID = "{\"geometry\": { \"type\": \"Point\",\"coordinates\": [-122.937467,47.046962]},\"type\": \"Feature\",\"properties\": {\"city\": \"Olympia\",\"name\": \"Burger Mistress West Olympia\",\"country\": \"us\",\"phone\": \"3603575451\",\"owner\": \"simplegeo\",\"state\": \"WA\",\"address\": \"2820 Harrison Ave NW\",\"postcode\": \"98502\"}}";
@@ -32,8 +33,15 @@ public abstract class TestEnvironment {
 	    }
 	    return SECRET_KEY;    	   
    	}
-
-    public static String getJsonPointString() {
+    
+    public static boolean isPaidAccount() {
+    	if (System.getenv("PAID_ACCOUNT") != null && !"".equals(System.getenv("PAID_ACCOUNT"))) {
+    		PAID_ACCOUNT = "true".equals(System.getenv("PAID_ACCOUNT")) ? true : false;
+    	}
+		return PAID_ACCOUNT;
+	}
+    
+	public static String getJsonPointString() {
 		return JSON_POINT_STRING;
 	}
     

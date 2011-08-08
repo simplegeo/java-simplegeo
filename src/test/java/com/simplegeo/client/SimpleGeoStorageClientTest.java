@@ -1,5 +1,7 @@
 package com.simplegeo.client;
 
+import static org.junit.Assume.assumeTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +10,9 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.FeatureCollection;
@@ -16,19 +21,26 @@ import com.simplegeo.client.types.Layer;
 import com.simplegeo.client.types.LayerCollection;
 import com.simplegeo.client.types.Record;
 
-public class SimpleGeoStorageClientTest extends TestCase {
+public class SimpleGeoStorageClientTest {
 
-	protected SimpleGeoStorageClient client;
+	protected static SimpleGeoStorageClient client;
 	
-	public void setUp() throws Exception {
-		this.setupClient();
+	@BeforeClass
+	public static void setUp() throws Exception {
+		setupClient();
 	}
 	
-	private void setupClient() throws Exception {
+	private static void setupClient() throws Exception {
 		client = new SimpleGeoStorageClient();
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 	
+	@Before
+	public void mustHavePaidAccount() {
+		assumeTrue(TestEnvironment.isPaidAccount());
+	}
+
+	@Test
 	public void testAddOrUpdateRecordSync() {
 		double lon = -122.937467;
 		double lat = 47.046962;
@@ -54,6 +66,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testAddOrUpdateRecordsSync() {
 		double lon = -122.937467;
 		double lat = 47.046962;
@@ -87,6 +100,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetRecordSync() {
 		try {
 			String jsonString = client.getRecord("casey.testing.layer", "simplegeo-boulder");
@@ -100,6 +114,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		} 
 	}
 
+	@Test
 	public void testGetHistorySync() {
 		try {
 			String jsonString = client.getHistory("casey.testing.layer", "simplegeo-boulder", null);
@@ -113,6 +128,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		} 
 	}
 	
+	@Test
 	public void testDeleteRecordSync() {
 		try {
 			String jsonString = client.deleteRecord("casey.testing.layer", "simplegeo-boulder");
@@ -126,6 +142,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testSearchSync() {
 		try {
 			HashMap<String, String[]> params = new HashMap<String, String[]>();
@@ -141,6 +158,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		} 
 	}
 	
+	@Test
 	public void testSearchByIPSync() {
 		try {
 			String jsonString = client.searchByIP("173.164.219.53", "casey.testing.layer", null);
@@ -154,6 +172,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		} 
 	}
 
+	@Test
 	public void testSearchByMyIPSync() {
 		try {
 			String jsonString = client.searchByMyIP("casey.testing.layer", null);
@@ -167,6 +186,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		} 
 	}
 
+	@Test
 	public void testCreateLayerSync() {
 		try {
 			ArrayList<String> urls = new ArrayList<String>();
@@ -185,6 +205,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testUpdateLayerSync() {
 		try {
 			ArrayList<String> urls = new ArrayList<String>();
@@ -203,6 +224,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testDeleteLayerSync() {
 		try {			
 			String jsonString = client.deleteLayer("java.client.testing.layer");
@@ -217,6 +239,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetLayerSync() {
 		try {			
 			String jsonString = client.getLayer("casey.testing.layer");
@@ -230,6 +253,7 @@ public class SimpleGeoStorageClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testGetLayersSync() {
 		try {			
 			HashMap<String, String[]> queryParams = new HashMap<String, String[]>();

@@ -8,23 +8,27 @@ import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.simplegeo.client.test.TestEnvironment;
 import com.simplegeo.client.types.Feature;
 
-public class SimpleGeoPlacesClientTest extends TestCase {
+public class SimpleGeoPlacesClientTest {
 
-	protected SimpleGeoPlacesClient client;
+	protected static SimpleGeoPlacesClient client;
 	
-	public void setUp() throws Exception {
-		this.setupClient();
+	@BeforeClass
+	public static void setUp() throws Exception {
+		setupClient();
 	}
 	
-	private void setupClient() throws Exception {
+	private static void setupClient() throws Exception {
 		client = new SimpleGeoPlacesClient();
 		client.getHttpClient().setToken(TestEnvironment.getKey(), TestEnvironment.getSecret());
 	}
 
+	@Test
 	public void testGetCategoriesSync() {
 		try {
 			String jsonString = client.getCategories();
@@ -38,6 +42,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetFeaturePointSync() {
 		try {
 			String jsonString = client.getFeature("SG_12NOI6r1xICCpP4bMdyHsq_37.778644_-122.389380@1303263314");
@@ -51,6 +56,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetPlacePolygonSync() {
 		try {
 			String jsonString = client.getFeature("SG_0Bw22I6fWoxnZ4GDc8YlXd");
@@ -64,6 +70,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAddUpdateDeletePlaceSync() {
 		try {
 			JSONObject origJson = new JSONObject(TestEnvironment.getJsonPointStringNoId());
@@ -92,6 +99,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testSearchSync() {
 		double lat = 37.759737;
 		double lon = -122.433203;
@@ -110,6 +118,7 @@ public class SimpleGeoPlacesClientTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testSearchByAddressSync() {
 		String address = "1535 Pearl St, Boulder, CO";
 		try {
