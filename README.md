@@ -40,8 +40,8 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
 5. Add JARs (if the SimpleGeo jar is in your workspace)/Add External JARs (if the SimpleGeo jar is on your filesystem)
 6. Navigate to the jar you want to add and click OK.  The jar has been added to your project and you can start using it by getting an instance and setting your OAuth Token like so:
 
-    $ SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
-    $ placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
+    SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
+    placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
 
 ## Dependencies
 
