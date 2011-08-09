@@ -30,8 +30,17 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
         <version>3.0</version>
     </dependency>
 
+### Using maven to build a jar with dependencies
 
-### Eclipse (Non-Maven)
+If you're developing a java project that doesn't use maven, but you want a jar that has all dependencies, you can run the following command:
+
+    $ cd ~/path/to/java-simplegeo
+    $ mvn assembly:single
+
+You should then have a jar with the name java-simplegeo-3.0-jar-with-dependencies.jar.  Feel free to rename this and then add it to your project.
+
+
+### Eclipse
 
 1. Right click (ctrl + click) on your project
 2. Build Path
@@ -50,10 +59,10 @@ In case you decide not to use maven on your project, the following jars are requ
 * junit-4.8.2.jar
 * signpost-core-1.2.1.1.jar
 * signpost-commonshttp4-1.2.1.1.jar
-* commons-codec-1.3.jar
 * httpclient-4.1.1.jar
-* commons-logging-1.1.1.jar
 * httpcore-4.1.3.jar
+* commons-codec-1.3.jar
+* commons-logging-1.1.1.jar
 * json-20090211.jar
 
 All of these jars should be widely available on line, but I suggest search.maven.org as a central place that you'll be able to find all of them easily.
