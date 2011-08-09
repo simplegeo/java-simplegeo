@@ -102,29 +102,26 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	protected void execute(String urlString, HttpRequestMethod method, HashMap<String, String[]> queryParams, String jsonPayload, SimpleGeoCallback callback) throws ClientProtocolException, IOException {
+	protected void execute(String urlString, final HttpRequestMethod method, HashMap<String, String[]> queryParams, final String jsonPayload, final SimpleGeoCallback callback) throws ClientProtocolException, IOException {
 
-		final SimpleGeoCallback finalCallback = callback;
 		final String finalUrlString = urlString + this.buildQueryString(queryParams);
-		final HttpRequestMethod finalMethod = method;
-		final String finalJsonPayload = jsonPayload;
 		
 		threadExecutor.execute(new Thread() {
 			@Override
 			public void run() {
 				String response = "";
 				try {
-					response = httpClient.executeOAuthRequest(finalUrlString, finalMethod, finalJsonPayload, new SimpleGeoHandler());
+					response = httpClient.executeOAuthRequest(finalUrlString, method, jsonPayload, new SimpleGeoHandler());
 				} catch (OAuthMessageSignerException e) {
-					finalCallback.onError(e.getMessage());
+					callback.onError(e.getMessage());
 				} catch (OAuthExpectationFailedException e) {
-					finalCallback.onError(e.getMessage());
+					callback.onError(e.getMessage());
 				} catch (OAuthCommunicationException e) {
-					finalCallback.onError(e.getMessage());
+					callback.onError(e.getMessage());
 				} catch (IOException e) {
-					finalCallback.onError(e.getMessage());
+					callback.onError(e.getMessage());
 				}
-				finalCallback.onSuccess(response);
+				callback.onSuccess(response);
 			}
 		});
 	}
