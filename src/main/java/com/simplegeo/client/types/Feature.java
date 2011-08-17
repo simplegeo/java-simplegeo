@@ -64,6 +64,7 @@ public class Feature {
 		this.properties = properties;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Feature fromJSON(JSONObject json) throws JSONException {
 		Feature feature = new Feature();
 		feature.setSimpleGeoId(json.optString("id"));

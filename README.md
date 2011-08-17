@@ -13,8 +13,8 @@ Version 3.0 of this client is non-backwards compatible.  Older versions of the c
 * All return types are now Strings.  These Strings are actually JSON and can be converted directly to JSONObject or JSONArray.  Also, most data structures contain static methods that will convert the String to that structure for you.
 * Handlers have gone away.  Previously we allowed specific handlers to be specified to format returned data for you.  Now if you want to do this, simply use the appropriate fromJSONString method of the data structure you want with the resulting json String.
 * Querying by multiple categories, filtering by multiple sections in context, etc. is now fully supported.  To query by multiple categories, simply populate the String array in your queryParams HashMap as so.
-    HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
-    queryParams.put("category", new String[] {"restaurant", "bar"});
+        HashMap<String, String[]> queryParams = new HashMap<String, String[]>();
+        queryParams.put("category", new String[] {"restaurant", "bar"});
 * Demographics searching for Context is also fully supported.  Simply create a query parameter with type demographics.acs\_\_table and add as many table names to the String[].
 * The entire project has been converted to Maven in order to help automate builds and documentation.
 
