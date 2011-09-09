@@ -32,10 +32,10 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
 
 ### Using maven to build a jar with dependencies
 
-If you're developing a java project that doesn't use maven, but you want a jar that has all dependencies, you can run the following command:
+If you're developing a java project that doesn't use maven, but you want a jar that has all dependencies, you can run the following (Note: You must first hvae your TestEnvironment set up correctly):
 
     $ cd ~/path/to/java-simplegeo
-    $ mvn assembly:single
+    $ mvn package
 
 You should then have a jar with the name java-simplegeo-3.0-jar-with-dependencies.jar.  Feel free to rename this and then add it to your project.
 
