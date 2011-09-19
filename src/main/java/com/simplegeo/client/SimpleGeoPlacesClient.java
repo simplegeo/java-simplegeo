@@ -26,11 +26,31 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	public SimpleGeoPlacesClient() {
 		super();
 		
+		endpoints.put("categories", "1.0/features/categories.json");
 		endpoints.put("address", "1.0/places/address.json");
 		endpoints.put("places", "1.0/places");
+		endpoints.put("delete", "1.0/features/%s.json");
 		endpoints.put("search", "1.0/places/%f,%f.json");
 		endpoints.put("searchByIP", "1.0/places/%s.json");
 		endpoints.put("searchByMyIP", "1.0/places/ip.json");
+	}
+
+	/**
+	 * Synchronously get a list of all the possible Feature categories
+	 * 
+	 * @return String containing a JSONArray of categories
+	 */
+	public String getCategories() throws IOException{
+		return this.execute(this.getEndpoint("categories"), HttpRequestMethod.GET, null, "");
+	}
+	
+	/**
+	 * Asynchronously get a list of all the possible Feature categories
+	 * 
+	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
+	 */
+	public void getCategories(SimpleGeoCallback callback) throws IOException{
+		this.execute(this.getEndpoint("categories"), HttpRequestMethod.GET, null, "", callback);
 	}
 
 	/**
@@ -66,7 +86,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws JSONException
 	 */
 	public String updatePlace(Feature feature) throws IOException, JSONException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString());
+		return this.execute(String.format(Locale.US, this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString());
 	}
 	
 	/**
@@ -78,7 +98,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws JSONException
 	 */
 	public void updatePlace(Feature feature, SimpleGeoCallback callback) throws IOException, JSONException {
-		this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString(), callback);
+		this.execute(String.format(Locale.US, this.getEndpoint("places"), URLEncoder.encode(feature.getSimpleGeoId(), "UTF-8")), HttpRequestMethod.POST, null, feature.toJSONString(), callback);
 	}
 	
 	/**
@@ -89,7 +109,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public String deletePlace(String simpleGeoId) throws IOException {
-		return this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.DELETE, null, "");
+		return this.execute(String.format(Locale.US, this.getEndpoint("delete"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.DELETE, null, "");
 	}
 	
 	/**
@@ -100,7 +120,7 @@ public class SimpleGeoPlacesClient extends AbstractSimpleGeoClient {
 	 * @throws IOException
 	 */
 	public void deletePlace(String simpleGeoId, SimpleGeoCallback callback) throws IOException {
-		this.execute(String.format(Locale.US, this.getEndpoint("features"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.DELETE, null, "", callback);
+		this.execute(String.format(Locale.US, this.getEndpoint("delete"), URLEncoder.encode(simpleGeoId, "UTF-8")), HttpRequestMethod.DELETE, null, "", callback);
 	}
 
 	/**

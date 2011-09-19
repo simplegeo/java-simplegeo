@@ -28,6 +28,8 @@ import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
+import com.simplegeo.client.http.SimpleGeoHttpRequestInterceptor;
+import com.simplegeo.client.http.SimpleGeoRedirectStrategy;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.types.Annotation;
 
@@ -55,13 +57,17 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 		
 		HttpParams params = new BasicHttpParams();
 		HttpProtocolParams.setUseExpectContinue(params, false);
+		HttpProtocolParams.setUserAgent(params, "SimpleGeo Java Client");
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		schemeRegistry.register(new Scheme("https", PORT, SSLSocketFactory.getSocketFactory()));
 		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(schemeRegistry);
 
 		this.httpClient = new OAuthHttpClient(connManager, params);
+		this.httpClient.setRedirectStrategy(new SimpleGeoRedirectStrategy());
+		this.httpClient.addRequestInterceptor(new SimpleGeoHttpRequestInterceptor());
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
-		endpoints.put("features", "1.0/features/%s.json");
+		
+		endpoints.put("features", "1.2/places/%s.json");
 		endpoints.put("annotations", "1.0/features/%s/annotations.json");
 	}
 
@@ -145,24 +151,6 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	
 	// Common API endpoints
 
-	/**
-	 * Synchronously get a list of all the possible Feature categories
-	 * 
-	 * @return {@link com.simplegeo.client.types.CategoryCollection} containing a list of {@link com.simplegeo.client.types.Category} objects
-	 */
-	public String getCategories() throws IOException{
-		return this.execute(String.format(Locale.US, this.getEndpoint("features"), "categories"), HttpRequestMethod.GET, null, "");
-	}
-	
-	/**
-	 * Asynchronously get a list of all the possible Feature categories
-	 * 
-	 * @param callback {@link com.simplegeo.client.callbacks.SimpleGeoCallback} Any object implementing the {@link com.simplegeo.client.callbacks.SimpleGeoCallback} interface
-	 */
-	public void getCategories(SimpleGeoCallback callback) throws IOException{
-		this.execute(String.format(Locale.US, this.getEndpoint("features"), "categories"), HttpRequestMethod.GET, null, "", callback);
-	}
-	
 	/**
 	 * Synchronously retrieve a SimpleGeo feature.
 	 * 

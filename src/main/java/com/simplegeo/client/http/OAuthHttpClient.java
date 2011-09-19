@@ -1,6 +1,7 @@
 package com.simplegeo.client.http;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -21,6 +22,9 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.SyncBasicHttpContext;
 
 import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
 
@@ -58,7 +62,7 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * @return the consumer secret
 	 */
 	public String getSecret() {
-		return token.getTokenSecret();
+		return token.getConsumerSecret();
 	}
 	
 	/**
@@ -95,12 +99,17 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 */
 	public String executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<String> responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
-		HttpUriRequest request = this.buildRequest(urlString, method, jsonPayload);
+		HttpUriRequest request = buildRequest(urlString, method, jsonPayload);
 		logger.info(String.format(Locale.US, "sending %s with url %s", request.toString(), urlString));
+		
+		HttpContext context = new BasicHttpContext();
+		context.setAttribute("consumerKey", this.getKey());
+		context.setAttribute("consumerSecret", this.getSecret());
+		
 		synchronized(this) {
 			this.token.sign(request);
 		}
-		return super.execute(request, responseHandler);
+		return super.execute(request, responseHandler, new SyncBasicHttpContext(context));
 	}
 	
 	/**
@@ -111,7 +120,7 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
 	 * @return HttpUriRequest Either a HttpGet, HttpPost, HttpPut or HttpDelete
 	 */
-	private HttpUriRequest buildRequest(String urlString, HttpRequestMethod method, String jsonPayload) {
+	public static HttpUriRequest buildRequest(String urlString, HttpRequestMethod method, String jsonPayload) {
 		switch (method) {
 			case GET:
 				HttpGet requestGet = new HttpGet(urlString);
