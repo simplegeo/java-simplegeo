@@ -159,6 +159,22 @@ public class SimpleGeoStorageClientTest {
 	}
 	
 	@Test
+	public void testSearchByAddressSync() {
+		try {
+			HashMap<String, String[]> params = new HashMap<String, String[]>();
+			params.put("limit", new String[] {"10"});
+			String jsonString = client.searchByAddress("41 decatur st, san francisco, ca", "casey.testing.layer", params);
+			FeatureCollection featureCollection = FeatureCollection.fromJSONString(jsonString);
+			
+			TestCase.assertNotNull(featureCollection.getFeatures());
+		} catch (IOException e) {
+			TestCase.fail(e.getMessage());			
+		} catch (JSONException e) {
+			TestCase.fail(e.getMessage());			
+		} 
+	}
+	
+	@Test
 	public void testSearchByIPSync() {
 		try {
 			String jsonString = client.searchByIP("173.164.219.53", "casey.testing.layer", null);

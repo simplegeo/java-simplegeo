@@ -18,7 +18,7 @@ Version 3.0 of this client is non-backwards compatible.  Older versions of the c
 * Demographics searching for Context is also fully supported.  Simply create a query parameter with type demographics.acs\_\_table and add as many table names to the String[].
 * The entire project has been converted to Maven in order to help automate builds and documentation.
 
-## Adding to a Java/Android project
+## Adding to a Java project
 
 ### Maven
 
@@ -27,17 +27,17 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
     <dependency>
         <groupId>com.simplegeo</groupId>
         <artifactId>java-simplegeo</artifactId>
-        <version>3.0</version>
+        <version>3.x</version>
     </dependency>
 
 ### Using maven to build a jar with dependencies
 
-If you're developing a java project that doesn't use maven, but you want a jar that has all dependencies, you can run the following (Note: You must first hvae your TestEnvironment set up correctly):
+If you're developing a java project that doesn't use maven, but you want a jar that has all dependencies, you can run the following:
 
     $ cd ~/path/to/java-simplegeo
-    $ mvn package
+    $ mvn package -Dmaven.test.skip=true
 
-You should then have a jar with the name java-simplegeo-3.0-jar-with-dependencies.jar.  Feel free to rename this and then add it to your project.
+You should then have a jar with the name java-simplegeo-3.x.jar.  Feel free to rename this and then add it to your project.  If you want to run the tests, remove the option and make sure your _TestEnvironment.java_ is set up with your oauth info.
 
 
 ### Eclipse
@@ -59,14 +59,13 @@ In case you decide not to use maven on your project, the following jars are requ
 * junit-4.8.2.jar
 * signpost-core-1.2.1.1.jar
 * signpost-commonshttp4-1.2.1.1.jar
-* httpclient-4.1.1.jar
-* httpcore-4.1.3.jar
+* httpclient-4.0.jar
+* httpcore-4.0.jar
 * commons-codec-1.3.jar
 * commons-logging-1.1.1.jar
 * json-20090211.jar
 
 All of these jars should be widely available on line, but I suggest search.maven.org as a central place that you'll be able to find all of them easily.
-
 
 ## Tests
 

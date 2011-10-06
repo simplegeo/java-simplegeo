@@ -29,7 +29,7 @@ import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
 import com.simplegeo.client.http.SimpleGeoHttpRequestInterceptor;
-import com.simplegeo.client.http.SimpleGeoRedirectStrategy;
+import com.simplegeo.client.http.SimpleGeoRedirectHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.types.Annotation;
 
@@ -59,12 +59,12 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 		HttpProtocolParams.setUseExpectContinue(params, false);
 		HttpProtocolParams.setUserAgent(params, "SimpleGeo Java Client");
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("https", PORT, SSLSocketFactory.getSocketFactory()));
-		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(schemeRegistry);
+		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), PORT));
+		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
 
 		this.httpClient = new OAuthHttpClient(connManager, params);
-		this.httpClient.setRedirectStrategy(new SimpleGeoRedirectStrategy());
 		this.httpClient.addRequestInterceptor(new SimpleGeoHttpRequestInterceptor());
+		this.httpClient.setRedirectHandler(new SimpleGeoRedirectHandler());
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
 		
 		endpoints.put("features", "1.2/places/%s.json");
