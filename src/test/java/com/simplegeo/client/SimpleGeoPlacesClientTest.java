@@ -3,11 +3,10 @@ package com.simplegeo.client;
 import java.io.IOException;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,11 +33,11 @@ public class SimpleGeoPlacesClientTest {
 			String jsonString = client.getCategories();
 			JSONArray json = new JSONArray(jsonString);
 			
-			TestCase.assertTrue(json.length() > 0);
+			Assert.assertTrue(json.length() > 0);
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
@@ -48,11 +47,11 @@ public class SimpleGeoPlacesClientTest {
 			String jsonString = client.getFeature("SG_12NOI6r1xICCpP4bMdyHsq_37.778644_-122.389380@1303263314");
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertEquals("SG_12NOI6r1xICCpP4bMdyHsq_37.778644_-122.389380@1303263314", json.get("id"));
+			Assert.assertEquals("SG_12NOI6r1xICCpP4bMdyHsq_37.778644_-122.389380@1303263314", json.get("id"));
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
@@ -62,11 +61,11 @@ public class SimpleGeoPlacesClientTest {
 			String jsonString = client.getFeature("SG_0Bw22I6fWoxnZ4GDc8YlXd");
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd", json.get("id"));
+			Assert.assertEquals("SG_0Bw22I6fWoxnZ4GDc8YlXd", json.get("id"));
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
@@ -78,24 +77,24 @@ public class SimpleGeoPlacesClientTest {
 			String jsonString = client.addPlace(feature);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("id"));
+			Assert.assertNotNull(json.get("id"));
 			String newPlaceHandle = json.getString("id");
 			
 			feature = Feature.fromJSON(origJson);
 			feature.setSimpleGeoId(newPlaceHandle);
 			jsonString = client.updatePlace(feature);
 			
-			TestCase.assertNotNull(json.get("id"));
-			TestCase.assertEquals(newPlaceHandle, json.getString("id"));
+			Assert.assertNotNull(json.get("id"));
+			Assert.assertEquals(newPlaceHandle, json.getString("id"));
 			
 			jsonString = client.deletePlace(newPlaceHandle);
 			json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("token"));
+			Assert.assertNotNull(json.get("token"));
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -110,11 +109,11 @@ public class SimpleGeoPlacesClientTest {
 			String jsonString = client.search(lat, lon, params);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json);
+			Assert.assertNotNull(json);
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
@@ -127,11 +126,11 @@ public class SimpleGeoPlacesClientTest {
 			String jsonString = client.searchByAddress(address, params);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json);
+			Assert.assertNotNull(json);
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 }

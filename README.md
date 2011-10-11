@@ -30,9 +30,9 @@ If you're developing a Java project with Maven, adding the SimpleGeo jar to your
         <version>3.x</version>
     </dependency>
 
-### Using maven to build a jar with dependencies
+### Using maven to build a jar
 
-If you're developing a java project that doesn't use maven, but you want a jar that has all dependencies, you can run the following:
+If you're developing a java project that doesn't use maven, you can download the jar from github or package one yourself using maven.
 
     $ cd ~/path/to/java-simplegeo
     $ mvn package -Dmaven.test.skip=true
@@ -52,18 +52,23 @@ You should then have a jar with the name java-simplegeo-3.x.jar.  Feel free to r
         SimpleGeoPlacesClient placesClient = new SimpleGeoPlacesClient();
         placesClient.getHttpClient().setToken("oauth-key", "oauth-secret");
 
+## Adding to an Android project
+
+1. Add java-simplegeo-3.1.2.jar to your build path.
+1. Add signpost-core-1.2.1.1.jar, signpost-commonshttp4-1.2.1.1.jar and commons-codec-1.5.jar to your build path.
+
 ## Dependencies
 
 In case you decide not to use maven on your project, the following jars are required in order for the SimpleGeo jar to work.
 
-* junit-4.8.2.jar
+* junit-4.8.2.jar (testing only)
 * signpost-core-1.2.1.1.jar
 * signpost-commonshttp4-1.2.1.1.jar
-* httpclient-4.0.jar
-* httpcore-4.0.jar
-* commons-codec-1.3.jar
-* commons-logging-1.1.1.jar
-* json-20090211.jar
+* httpclient-4.0.jar (java only)
+* httpcore-4.0.jar (java only)
+* commons-codec-1.5.jar
+* commons-logging-1.1.1.jar (java only)
+* json-20090211.jar (java only)
 
 All of these jars should be widely available on line, but I suggest search.maven.org as a central place that you'll be able to find all of them easily.
 

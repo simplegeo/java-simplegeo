@@ -3,10 +3,9 @@ package com.simplegeo.client;
 import java.io.IOException;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,13 +33,13 @@ public class SimpleGeoContextClientTest {
 			String jsonString = client.getContext(lat, lon, null);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("features"));
-			TestCase.assertNotNull(json.get("weather"));
-			TestCase.assertNotNull(json.get("demographics"));
+			Assert.assertNotNull(json.get("features"));
+			Assert.assertNotNull(json.get("weather"));
+			Assert.assertNotNull(json.get("demographics"));
 		} catch (IOException e) {	
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -50,15 +49,15 @@ public class SimpleGeoContextClientTest {
 			String jsonString = client.getContextByIP("", null);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("query"));
-			TestCase.assertNotNull(json.get("features"));
-			TestCase.assertNotNull(json.get("weather"));
-			TestCase.assertNotNull(json.get("demographics"));
+			Assert.assertNotNull(json.get("query"));
+			Assert.assertNotNull(json.get("features"));
+			Assert.assertNotNull(json.get("weather"));
+			Assert.assertNotNull(json.get("demographics"));
 			
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -68,15 +67,15 @@ public class SimpleGeoContextClientTest {
 			String jsonString = client.getContextByIP("92.156.43.27", null);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("query"));
-			TestCase.assertNotNull(json.get("features"));
-			TestCase.assertNotNull(json.get("weather"));
-			TestCase.assertNotNull(json.get("demographics"));
+			Assert.assertNotNull(json.get("query"));
+			Assert.assertNotNull(json.get("features"));
+			Assert.assertNotNull(json.get("weather"));
+			Assert.assertNotNull(json.get("demographics"));
 			
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -86,15 +85,15 @@ public class SimpleGeoContextClientTest {
 			String jsonString = client.getContextByAddress("41 Decatur St, San Francisco, CA", null);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("query"));
-			TestCase.assertNotNull(json.get("features"));
-			TestCase.assertNotNull(json.get("weather"));
-			TestCase.assertNotNull(json.get("demographics"));
+			Assert.assertNotNull(json.get("query"));
+			Assert.assertNotNull(json.get("features"));
+			Assert.assertNotNull(json.get("weather"));
+			Assert.assertNotNull(json.get("demographics"));
 		
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -109,14 +108,14 @@ public class SimpleGeoContextClientTest {
 			String jsonString = client.getContext(lat, lon, queryParams);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("weather"));
-			TestCase.assertNotNull(json.get("features"));
+			Assert.assertNotNull(json.get("weather"));
+			Assert.assertNotNull(json.get("features"));
 			
-			TestCase.assertNull(json.opt("demographics"));
+			Assert.assertNull(json.opt("demographics"));
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -131,14 +130,14 @@ public class SimpleGeoContextClientTest {
 			String jsonString = client.getContext(lat, lon, queryParams);
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertNotNull(json.get("demographics"));
+			Assert.assertNotNull(json.get("demographics"));
 			
-			TestCase.assertNull(json.opt("weather"));
-			TestCase.assertNull(json.opt("features"));
+			Assert.assertNull(json.opt("weather"));
+			Assert.assertNull(json.opt("features"));
 		} catch (IOException e) {	
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 }

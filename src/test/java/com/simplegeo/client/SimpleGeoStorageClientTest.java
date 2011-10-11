@@ -6,10 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,15 +53,15 @@ public class SimpleGeoStorageClientTest {
 			record.setProperties(properties);
 			client.addOrUpdateRecord(record);
 			
-			TestCase.assertEquals(layer, record.getLayer());
-			TestCase.assertEquals(lat, record.getGeometry().getPoint().getLat());
-			TestCase.assertEquals(lon, record.getGeometry().getPoint().getLon());
-			TestCase.assertEquals(testPropertyValue, record.getProperties().get(testPropertyKey));
+			Assert.assertEquals(layer, record.getLayer());
+			Assert.assertEquals(lat, record.getGeometry().getPoint().getLat(), 0d);
+			Assert.assertEquals(lon, record.getGeometry().getPoint().getLon(), 0d);
+			Assert.assertEquals(testPropertyValue, record.getProperties().get(testPropertyKey));
 			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -88,15 +87,15 @@ public class SimpleGeoStorageClientTest {
 			
 			client.addOrUpdateRecords(records, layer);
 			
-			TestCase.assertEquals(layer, record1.getLayer());
-			TestCase.assertEquals(lat, record1.getGeometry().getPoint().getLat());
-			TestCase.assertEquals(lon, record1.getGeometry().getPoint().getLon());
-			TestCase.assertEquals(testPropertyValue, record1.getProperties().get(testPropertyKey));
+			Assert.assertEquals(layer, record1.getLayer());
+			Assert.assertEquals(lat, record1.getGeometry().getPoint().getLat(), 0d);
+			Assert.assertEquals(lon, record1.getGeometry().getPoint().getLon(), 0d);
+			Assert.assertEquals(testPropertyValue, record1.getProperties().get(testPropertyKey));
 			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
@@ -106,11 +105,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.getRecord("casey.testing.layer", "simplegeo-boulder");
 			Record record = Record.fromJSONString(jsonString);
 			
-			TestCase.assertEquals("simplegeo-boulder", record.getRecordId());
+			Assert.assertEquals("simplegeo-boulder", record.getRecordId());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} 
 	}
 
@@ -120,11 +119,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.getHistory("casey.testing.layer", "simplegeo-boulder", null);
 			GeometryCollection geoColl = GeometryCollection.fromJSONString(jsonString);
 			
-			TestCase.assertNotNull(geoColl.getGeometries());
+			Assert.assertNotNull(geoColl.getGeometries());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} 
 	}
 	
@@ -134,11 +133,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.deleteRecord("casey.testing.layer", "simplegeo-boulder");
 			JSONObject json = new JSONObject(jsonString);
 			
-			TestCase.assertEquals("Accepted", json.get("status"));
+			Assert.assertEquals("Accepted", json.get("status"));
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
@@ -150,11 +149,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.search(37.761809d, -122.422832d, "casey.testing.layer", params);
 			FeatureCollection featureCollection = FeatureCollection.fromJSONString(jsonString);
 			
-			TestCase.assertNotNull(featureCollection.getFeatures());
+			Assert.assertNotNull(featureCollection.getFeatures());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} 
 	}
 	
@@ -166,11 +165,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.searchByAddress("41 decatur st, san francisco, ca", "casey.testing.layer", params);
 			FeatureCollection featureCollection = FeatureCollection.fromJSONString(jsonString);
 			
-			TestCase.assertNotNull(featureCollection.getFeatures());
+			Assert.assertNotNull(featureCollection.getFeatures());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} 
 	}
 	
@@ -180,11 +179,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.searchByIP("173.164.219.53", "casey.testing.layer", null);
 			FeatureCollection featureCollection = FeatureCollection.fromJSONString(jsonString);
 			
-			TestCase.assertNotNull(featureCollection.getFeatures());
+			Assert.assertNotNull(featureCollection.getFeatures());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} 
 	}
 
@@ -194,11 +193,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.searchByMyIP("casey.testing.layer", null);
 			FeatureCollection featureCollection = FeatureCollection.fromJSONString(jsonString);
 			
-			TestCase.assertNotNull(featureCollection.getFeatures());
+			Assert.assertNotNull(featureCollection.getFeatures());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());			
+			Assert.fail(e.getMessage());			
 		} 
 	}
 
@@ -212,12 +211,12 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.createLayer(layer);
 			JSONObject json = new JSONObject(jsonString);
 
-			TestCase.assertEquals("OK", json.get("status"));
+			Assert.assertEquals("OK", json.get("status"));
 
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -231,12 +230,12 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.updateLayer(layer);
 			JSONObject json = new JSONObject(jsonString);
 
-			TestCase.assertEquals("OK", json.get("status"));
+			Assert.assertEquals("OK", json.get("status"));
 
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -246,12 +245,12 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.deleteLayer("java.client.testing.layer");
 			JSONObject json = new JSONObject(jsonString);
 
-			TestCase.assertEquals("Deleted", json.get("status"));
+			Assert.assertEquals("Deleted", json.get("status"));
 
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -261,11 +260,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.getLayer("casey.testing.layer");
 			Layer layer = Layer.fromJSONString(jsonString);
 
-			TestCase.assertEquals("casey.testing.layer", layer.getName());
+			Assert.assertEquals("casey.testing.layer", layer.getName());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 	
@@ -276,11 +275,11 @@ public class SimpleGeoStorageClientTest {
 			String jsonString = client.getLayers(queryParams);
 			LayerCollection layers = LayerCollection.fromJSONString(jsonString);
 			
-			TestCase.assertNotNull(layers.getLayers());
+			Assert.assertNotNull(layers.getLayers());
 		} catch (IOException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		} catch (JSONException e) {
-			TestCase.fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 }
