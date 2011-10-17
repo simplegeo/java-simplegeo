@@ -128,20 +128,6 @@ public class SimpleGeoStorageClientTest {
 	}
 	
 	@Test
-	public void testDeleteRecordSync() {
-		try {
-			String jsonString = client.deleteRecord("casey.testing.layer", "simplegeo-boulder");
-			JSONObject json = new JSONObject(jsonString);
-			
-			Assert.assertEquals("Accepted", json.get("status"));
-		} catch (IOException e) {
-			Assert.fail(e.getMessage());			
-		} catch (JSONException e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	@Test
 	public void testSearchSync() {
 		try {
 			HashMap<String, String[]> params = new HashMap<String, String[]>();
@@ -238,22 +224,7 @@ public class SimpleGeoStorageClientTest {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
-	@Test
-	public void testDeleteLayerSync() {
-		try {			
-			String jsonString = client.deleteLayer("java.client.testing.layer");
-			JSONObject json = new JSONObject(jsonString);
 
-			Assert.assertEquals("Deleted", json.get("status"));
-
-		} catch (IOException e) {
-			Assert.fail(e.getMessage());
-		} catch (JSONException e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-	
 	@Test
 	public void testGetLayerSync() {
 		try {			
