@@ -1,29 +1,22 @@
 package com.simplegeo.client.http;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Logger;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.SyncBasicHttpContext;
 
 import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
 
@@ -33,19 +26,11 @@ import com.simplegeo.client.SimpleGeoClient.HttpRequestMethod;
  * 
  * @author Derek Smith
  */
-public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
+public class OAuthHttpClient implements OAuthClient {
 	
 	private static Logger logger = Logger.getLogger(OAuthHttpClient.class.getName());
 	private OAuthConsumer token;
-			
-	/**
-	 * @param connManager
-	 * @param params
-	 */
-	public OAuthHttpClient(ThreadSafeClientConnManager connManager, HttpParams params) {
-		super(connManager, params);
-	}
-
+	
 	/**
 	 * Returns the consumer key that is used to sign Http requests.
 	 * 
@@ -73,7 +58,7 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 */
 	public void setToken(String key, String secret) {
 		if(key != null && secret != null) {
-			token  = new CommonsHttpOAuthConsumer(key, secret);
+			token  = new DefaultOAuthConsumer(key, secret);
 			if(token == null)
 				logger.info(String.format(Locale.US, "Failed to created OAuth token."));
 			else
@@ -82,8 +67,7 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	}
 	
 	/**
-	 * Signs the Http request with the registered token before
-	 * execution.
+	 * Signs the Http request with the registered token before execution.
 	 * 
 	 * @param urlString The url that the request should be sent to.
 	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
@@ -96,49 +80,67 @@ public class OAuthHttpClient extends DefaultHttpClient implements OAuthClient {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public String executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, ResponseHandler<String> responseHandler) 
+	public String executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
-		HttpUriRequest request = buildRequest(urlString, method, jsonPayload);
-		logger.info(String.format(Locale.US, "sending %s with url %s", request.toString(), urlString));
-		
-		HttpContext context = new BasicHttpContext();
-		context.setAttribute("consumerKey", this.getKey());
-		context.setAttribute("consumerSecret", this.getSecret());
-		
-		synchronized(this) {
-			this.token.sign(request);
+		HttpsURLConnection connection = null;
+		InputStream response = null;
+		while (true) {
+			connection = buildRequest(urlString, method);
+			response = makeRequest(connection, method, jsonPayload);
+			if (connection.getResponseCode() != 301 && connection.getResponseCode() != 302) {
+				break;
+			}
+			// It's a redirect, rebuild the connection from the response
+			urlString = connection.getHeaderField("Location");
+			
+			connection = null;
+			response = null;
 		}
-		return super.execute(request, responseHandler, new SyncBasicHttpContext(context));
+		return responseHandler.handleResponse(response, connection.getResponseCode());
 	}
 	
-	/**
-	 * Factory method that builds a HttpUriRequest based on the information passed in.
-	 * 
-	 * @param urlString The url that the request should be sent to.
-	 * @param type The type of request that should be sent.
-	 * @param jsonPayload The json string that should be sent along with POSTs and PUTs.
-	 * @return HttpUriRequest Either a HttpGet, HttpPost, HttpPut or HttpDelete
-	 */
-	public static HttpUriRequest buildRequest(String urlString, HttpRequestMethod method, String jsonPayload) {
+	private HttpsURLConnection buildRequest(String urlString, HttpRequestMethod method) 
+			throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException, ClientProtocolException, IOException {
+		HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
+		connection.setRequestProperty("User-Agent", "SimpleGeo Java Client");
+		connection.setInstanceFollowRedirects(false);
 		switch (method) {
 			case GET:
-				HttpGet requestGet = new HttpGet(urlString);
-				return requestGet;
+				connection.setRequestMethod("GET");
+				break;
 			case POST:
-				HttpPost requestPost = new HttpPost(urlString);
-				requestPost.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
-				requestPost.addHeader("Content-type", "application/json");
-				return requestPost;
+				connection.setDoOutput(true);
+				connection.setRequestProperty("Content-Type", "application/json");
+				connection.setRequestMethod("POST");
+				break;
 			case PUT:
-				HttpPut requestPut = new HttpPut(urlString);
-				requestPut.setEntity(new ByteArrayEntity(jsonPayload.getBytes()));
-				requestPut.addHeader("Content-type", "application/json");
-				return requestPut;
+				connection.setDoOutput(true);
+				connection.setRequestProperty("Content-Type", "application/json");
+				connection.setRequestMethod("PUT");
+				break;
 			case DELETE:
-				HttpDelete requestDelete = new HttpDelete(urlString);
-				return requestDelete;
+				connection.setRequestMethod("DELETE");
+				break;
 			default:
 				return null;
 		}
+		this.token.sign(connection);
+		return connection;
 	}
+	
+	private InputStream makeRequest(HttpURLConnection connection, HttpRequestMethod method, String jsonPayload) throws IOException {
+		if (method == HttpRequestMethod.PUT || method == HttpRequestMethod.POST) {
+			OutputStream os = connection.getOutputStream();
+			os.write(jsonPayload.getBytes("UTF-8"));
+			os.close();
+		}
+		InputStream response = null;
+		try {
+			response = connection.getInputStream();
+		} catch (IOException e) {
+			response = connection.getErrorStream();
+		}
+		return response;
+	}
+	
 }

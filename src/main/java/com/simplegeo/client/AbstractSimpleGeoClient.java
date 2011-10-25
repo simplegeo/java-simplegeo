@@ -14,13 +14,6 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.json.JSONException;
 
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
@@ -28,8 +21,6 @@ import com.simplegeo.client.concurrent.RequestThreadPoolExecutor;
 import com.simplegeo.client.http.OAuthClient;
 import com.simplegeo.client.http.OAuthHttpClient;
 import com.simplegeo.client.http.SimpleGeoHandler;
-import com.simplegeo.client.http.SimpleGeoHttpRequestInterceptor;
-import com.simplegeo.client.http.SimpleGeoRedirectHandler;
 import com.simplegeo.client.http.exceptions.APIException;
 import com.simplegeo.client.types.Annotation;
 
@@ -55,16 +46,7 @@ public abstract class AbstractSimpleGeoClient implements SimpleGeoClient {
 	 */
 	protected AbstractSimpleGeoClient() {
 		
-		HttpParams params = new BasicHttpParams();
-		HttpProtocolParams.setUseExpectContinue(params, false);
-		HttpProtocolParams.setUserAgent(params, "SimpleGeo Java Client");
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), PORT));
-		ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
-
-		this.httpClient = new OAuthHttpClient(connManager, params);
-		this.httpClient.addRequestInterceptor(new SimpleGeoHttpRequestInterceptor());
-		this.httpClient.setRedirectHandler(new SimpleGeoRedirectHandler());
+		this.httpClient = new OAuthHttpClient();
 		this.threadExecutor = new RequestThreadPoolExecutor("SimpleGeoClient");
 		
 		endpoints.put("features", "1.2/places/%s.json");
