@@ -8,8 +8,6 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
@@ -82,7 +80,7 @@ public class OAuthHttpClient implements OAuthClient {
 	 */
 	public String executeOAuthRequest(String urlString, HttpRequestMethod method, String jsonPayload, SimpleGeoHandler responseHandler) 
 		throws OAuthMessageSignerException, OAuthCommunicationException, OAuthExpectationFailedException, ClientProtocolException, IOException {
-		HttpsURLConnection connection = null;
+		HttpURLConnection connection = null;
 		InputStream response = null;
 		while (true) {
 			connection = buildRequest(urlString, method);
@@ -99,9 +97,9 @@ public class OAuthHttpClient implements OAuthClient {
 		return responseHandler.handleResponse(response, connection.getResponseCode());
 	}
 	
-	private HttpsURLConnection buildRequest(String urlString, HttpRequestMethod method) 
+	private HttpURLConnection buildRequest(String urlString, HttpRequestMethod method) 
 			throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException, ClientProtocolException, IOException {
-		HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
+		HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
 		connection.setRequestProperty("User-Agent", "SimpleGeo Java Client");
 		connection.setInstanceFollowRedirects(false);
 		switch (method) {
